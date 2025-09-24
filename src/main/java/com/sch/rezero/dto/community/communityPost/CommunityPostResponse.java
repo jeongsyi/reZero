@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.communityPost;
+package com.sch.rezero.dto.community.communityPost;
 
 import java.time.LocalDateTime;
 import java.util.List;

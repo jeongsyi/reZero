@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.scrap;
+package com.sch.rezero.dto.recycling.scrap;
 
 import java.time.LocalDateTime;
 
