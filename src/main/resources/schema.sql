@@ -16,47 +16,48 @@ CREATE TABLE IF NOT EXISTS users
 (
     id          BIGSERIAL PRIMARY KEY,
     login_id    VARCHAR(50)  NOT NULL UNIQUE,
-    password    VARCHAR      NOT NULL,
+    password    VARCHAR(255) NOT NULL,
     name        VARCHAR(100) NOT NULL,
-    role        VARCHAR(20)  NOT NULL CHECK (role in ('ADMIN', 'USER')) DEFAULT 'USER',
+    role        VARCHAR(20)  NOT NULL CHECK (role IN ('ADMIN', 'USER')) DEFAULT 'USER',
     birth       DATE,
     region      VARCHAR(100),
-    profile_url VARCHAR
-);
+    profile_url VARCHAR(255)
+    );
 
-CREATE TABLE IF NOT EXISTS category
+CREATE TABLE IF NOT EXISTS categories
 (
     id       BIGSERIAL PRIMARY KEY,
     category VARCHAR(20) NOT NULL
-);
+    );
 
 CREATE TABLE IF NOT EXISTS recycling_posts
 (
     id               BIGSERIAL PRIMARY KEY,
-    user_id          BIGINT      NOT NULL,
-    title            VARCHAR     NOT NULL,
-    description      TEXT        NOT NULL,
-    created_at       timestamptz NOT NULL DEFAULT NOW(),
+    user_id          BIGINT       NOT NULL,
+    title            VARCHAR(255) NOT NULL,
+    description      TEXT         NOT NULL,
+    created_at       timestamptz  NOT NULL DEFAULT NOW(),
     updated_at       timestamptz,
-    thumb_nail_image VARCHAR     NOT NULL,
-    category         VARCHAR(20) NOT NULL,
+    thumb_nail_image VARCHAR(255) NOT NULL,
+    category_id      BIGINT       NOT NULL,
 
-    CONSTRAINT FK_users_TO_recycling_posts FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE
-
-);
+    CONSTRAINT fk_users_to_recycling_posts FOREIGN KEY (user_id)
+    REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_categories_to_recycling_posts FOREIGN KEY (category_id)
+    REFERENCES categories (id) ON DELETE RESTRICT
+    );
 
 CREATE TABLE IF NOT EXISTS recycling_images
 (
     id           BIGSERIAL PRIMARY KEY,
-    recycling_id BIGINT      NOT NULL,
-    image_url    VARCHAR     NOT NULL,
-    created_at   timestamptz NOT NULL DEFAULT NOW(),
+    recycling_id BIGINT       NOT NULL,
+    image_url    VARCHAR(255) NOT NULL,
+    created_at   timestamptz  NOT NULL DEFAULT NOW(),
     updated_at   timestamptz,
 
-    CONSTRAINT FK_recycling_posts_TO_recycling_images FOREIGN KEY (recycling_id)
-        REFERENCES recycling_posts (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_recycling_posts_to_recycling_images FOREIGN KEY (recycling_id)
+    REFERENCES recycling_posts (id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS qna_comments
 (
@@ -68,13 +69,13 @@ CREATE TABLE IF NOT EXISTS qna_comments
     created_at   timestamptz NOT NULL DEFAULT NOW(),
     updated_at   timestamptz,
 
-    CONSTRAINT FK_recycling_posts_TO_qna_comments FOREIGN KEY (recycling_id)
-        REFERENCES recycling_posts (id) ON DELETE CASCADE,
-    CONSTRAINT FK_users_TO_qna_comments FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_qna_comments_TO_qna_comments FOREIGN KEY (parent_id)
-        REFERENCES qna_comments (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_recycling_posts_to_qna_comments FOREIGN KEY (recycling_id)
+    REFERENCES recycling_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_to_qna_comments FOREIGN KEY (user_id)
+    REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_qna_comments_to_qna_comments FOREIGN KEY (parent_id)
+    REFERENCES qna_comments (id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS scraps
 (
@@ -83,11 +84,11 @@ CREATE TABLE IF NOT EXISTS scraps
     user_id      BIGINT      NOT NULL,
     created_at   timestamptz NOT NULL DEFAULT NOW(),
 
-    CONSTRAINT FK_recycling_posts_TO_scraps FOREIGN KEY (recycling_id)
-        REFERENCES recycling_posts (id) ON DELETE CASCADE,
-    CONSTRAINT FK_users_TO_scraps FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_recycling_posts_to_scraps FOREIGN KEY (recycling_id)
+    REFERENCES recycling_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_to_scraps FOREIGN KEY (user_id)
+    REFERENCES users (id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS follows
 (
@@ -96,39 +97,39 @@ CREATE TABLE IF NOT EXISTS follows
     follower_id  BIGINT      NOT NULL,
     created_at   timestamptz NOT NULL DEFAULT NOW(),
 
-    CONSTRAINT FK_users_TO_follows_1 FOREIGN KEY (following_id)
-        REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_users_TO_follows_2 FOREIGN KEY (follower_id)
-        REFERENCES users (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_users_to_follows_1 FOREIGN KEY (following_id)
+    REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_to_follows_2 FOREIGN KEY (follower_id)
+    REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT uq_follows UNIQUE (following_id, follower_id)
+    );
 
 
 CREATE TABLE IF NOT EXISTS community_posts
 (
     id               BIGSERIAL PRIMARY KEY,
-    user_id          BIGINT      NOT NULL,
-    title            VARCHAR     NOT NULL,
-    description      TEXT        NOT NULL,
-    created_at       timestamptz NOT NULL DEFAULT NOW(),
+    user_id          BIGINT       NOT NULL,
+    title            VARCHAR(255) NOT NULL,
+    description      TEXT         NOT NULL,
+    created_at       timestamptz  NOT NULL DEFAULT NOW(),
     updated_at       timestamptz,
-    thumb_nail_image VARCHAR     NOT NULL,
+    thumb_nail_image VARCHAR(255) NOT NULL,
 
-    CONSTRAINT FK_users_TO_community_posts FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE
-
-);
+    CONSTRAINT fk_users_to_community_posts FOREIGN KEY (user_id)
+    REFERENCES users (id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS community_images
 (
     id           BIGSERIAL PRIMARY KEY,
-    community_id BIGINT      NOT NULL,
-    image_url    VARCHAR     NOT NULL,
-    created_at   timestamptz NOT NULL DEFAULT NOW(),
+    community_id BIGINT       NOT NULL,
+    image_url    VARCHAR(255) NOT NULL,
+    created_at   timestamptz  NOT NULL DEFAULT NOW(),
     updated_at   timestamptz,
 
-    CONSTRAINT FK_community_posts_TO_community_images FOREIGN KEY (community_id)
-        REFERENCES community_posts (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_community_posts_to_community_images FOREIGN KEY (community_id)
+    REFERENCES community_posts (id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS community_comments
 (
@@ -140,10 +141,10 @@ CREATE TABLE IF NOT EXISTS community_comments
     created_at   timestamptz NOT NULL DEFAULT NOW(),
     updated_at   timestamptz,
 
-    CONSTRAINT FK_community_posts_TO_community_comments FOREIGN KEY (community_id)
-        REFERENCES community_posts (id) ON DELETE CASCADE,
-    CONSTRAINT FK_users_TO_community_comments FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_community_comments_TO_community_comments FOREIGN KEY (parent_id)
-        REFERENCES community_comments (id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_community_posts_to_community_comments FOREIGN KEY (community_id)
+    REFERENCES community_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_to_community_comments FOREIGN KEY (user_id)
+    REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_community_comments_to_community_comments FOREIGN KEY (parent_id)
+    REFERENCES community_comments (id) ON DELETE CASCADE
+    );
