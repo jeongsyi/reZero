@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.communityPost;
+package com.sch.rezero.dto.community.communityPost;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

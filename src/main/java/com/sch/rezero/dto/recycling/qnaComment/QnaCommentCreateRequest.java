@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.qnaComment;
+package com.sch.rezero.dto.recycling.qnaComment;
 
 import jakarta.validation.constraints.NotBlank;
 

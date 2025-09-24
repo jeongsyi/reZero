@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.recyclingPost;
+package com.sch.rezero.dto.recycling.recyclingPost;
 
 import java.time.LocalDateTime;
 import java.util.List;
