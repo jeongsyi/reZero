@@ -1,6 +1,6 @@
 package com.sch.rezero.dto.user.auth;
 
-import com.sch.rezero.entity.users.Role;
+import com.sch.rezero.entity.user.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
