@@ -18,4 +18,10 @@ public class Category {
 
     @Column(nullable = false, length = 20)
     private String category;
+
+    public void update(String category) {
+        if (!this.category.equals(category) && category != null) {
+            this.category = category;
+        }
+    }
 }
