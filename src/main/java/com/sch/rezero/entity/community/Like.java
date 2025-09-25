@@ -25,17 +25,17 @@ public class Like {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "community_id", nullable = false)
-  CommunityPost communityPost;
+  private CommunityPost communityPost;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  User user;
+  private User user;
 
   @Column(name = "created_at", nullable = false)
-  LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
 }

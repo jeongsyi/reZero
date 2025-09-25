@@ -25,26 +25,33 @@ public class CommunityComment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  User user;
+  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "community_id", nullable = false)
-  CommunityPost communityPost;
+  private CommunityPost communityPost;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
-  CommunityComment parent;
+  private CommunityComment parent;
 
   @Column(nullable = false)
-  String content;
+  private String content;
 
   @Column(name = "created_at", nullable = false)
-  LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at")
-  LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
+
+  public void update(String content) {
+    if (content != null && !content.equals(this.content)) {
+      this.content = content;
+    }
+    this.updatedAt = LocalDateTime.now();
+  }
 }
