@@ -26,7 +26,7 @@ public class QnaComment {
     private RecyclingPost post;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name ="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,4 +44,10 @@ public class QnaComment {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void update(String content) {
+        if (!this.content.equals(content) && content != null) {
+            this.content = content;
+        }
+    }
 }
