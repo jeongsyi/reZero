@@ -6,8 +6,8 @@ public record UserResponse(
     String role,
     String profileUrl,
 
-    Integer follwerCount,
-    Integer follwingCount
+    Integer followerCount,
+    Integer followingCount
 ) {
 
 }

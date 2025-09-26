@@ -1,4 +1,4 @@
-package com.sch.rezero.entity.community;
+package com.sch.rezero.entity.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,38 +15,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
-@Table(name = "community_images")
+@Table(name = "follows")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CommunityImage {
+public class Follow {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "community_id")
-  CommunityPost communityPost;
+  @JoinColumn(name = "follower_id", nullable = false)
+  private User follower;
 
-  @Column(nullable = false)
-  String image_url;
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "following_id", nullable = false)
+  private User following;
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  private void update(String image_url) {
-    if (image_url != null && !image_url.equals(this.image_url)) {
-      this.image_url = image_url;
-    }
-  }
 
 }

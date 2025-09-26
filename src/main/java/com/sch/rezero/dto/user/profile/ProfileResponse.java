@@ -10,8 +10,8 @@ public record ProfileResponse(
     LocalDate birth,
     String profileUrl,
 
-    Integer follwerCount,
-    Integer follwingCount
+    Integer followerCount,
+    Integer followingCount
 ) {
 
 }

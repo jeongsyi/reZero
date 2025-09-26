@@ -1,6 +1,5 @@
 package com.sch.rezero.dto.community.communityComment;
 
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 public record CommunityCommentResponse(

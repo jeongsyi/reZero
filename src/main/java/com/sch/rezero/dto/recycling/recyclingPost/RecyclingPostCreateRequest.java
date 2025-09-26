@@ -17,8 +17,6 @@ public record RecyclingPostCreateRequest(
         @NotBlank
         String thumbNailImage,
 
-        List<@NotBlank String> imageUrls,
-
         @Size(max = 20)
         @NotBlank
         String category
