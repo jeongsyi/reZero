@@ -148,3 +148,18 @@ CREATE TABLE IF NOT EXISTS community_comments
     CONSTRAINT fk_community_comments_to_community_comments FOREIGN KEY (parent_id)
     REFERENCES community_comments (id) ON DELETE CASCADE
     );
+
+CREATE TABLE IF NOT EXISTS community_likes
+(
+    id           BIGSERIAL PRIMARY KEY,
+    community_id BIGINT      NOT NULL,
+    user_id      BIGINT      NOT NULL,
+    created_at   timestamptz NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT fk_community_posts_to_community_likes FOREIGN KEY (community_id)
+        REFERENCES community_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_to_community_likes FOREIGN KEY (user_id)
+        REFERENCES users (id) ON DELETE CASCADE,
+
+    CONSTRAINT uq_community_likes UNIQUE (community_id, user_id)
+);
