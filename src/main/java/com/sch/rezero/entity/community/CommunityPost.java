@@ -51,7 +51,10 @@ public class CommunityPost {
   private List<CommunityComment> comments = new ArrayList<>();
 
   @OneToMany(mappedBy = "communityPost", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<CommunityImage> images = new ArrayList<>();
+  private List<CommunityImage> images = new ArrayList<>();
+
+  @OneToMany(mappedBy = "communityPost", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Like> likes = new ArrayList<>();
 
   public void update(String title, String description) {
     if (title != null && !title.equals(this.title)) {
