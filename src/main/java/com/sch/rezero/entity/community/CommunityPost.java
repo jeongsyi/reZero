@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -19,10 +20,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
-@Table(name = "community_images")
+@Table(name = "community_posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CommunityPost {
@@ -38,12 +41,15 @@ public class CommunityPost {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false)
+  @Lob
+  @Column(columnDefinition = "TEXT", nullable = false)
   private String description;
 
-  @Column(name = "created_at", nullable = false)
+  @CreationTimestamp
+  @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
+  @UpdateTimestamp
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
@@ -63,6 +69,5 @@ public class CommunityPost {
     if (description != null && !description.equals(this.description)) {
       this.description = description;
     }
-    this.updatedAt = LocalDateTime.now();
   }
 }
