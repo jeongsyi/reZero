@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "community_posts")
+@Table(name = "community_images")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CommunityPost {
@@ -50,7 +50,6 @@ public class CommunityPost {
   @OneToMany(mappedBy = "communityPost", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CommunityComment> comments = new ArrayList<>();
 
-  @SuppressWarnings("JpaAttributeTypeInspection")
   @OneToMany(mappedBy = "communityPost", cascade = CascadeType.ALL, orphanRemoval = true)
   List<CommunityImage> images = new ArrayList<>();
 
