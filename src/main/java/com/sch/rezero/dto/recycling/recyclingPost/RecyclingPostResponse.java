@@ -7,13 +7,13 @@ public record RecyclingPostResponse(
         Long id,
         String title,
         String description,
-        String thumbNailImage,
+        String thumbNailImageUrl,
         String category,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String userName,
 
-        List<Long> imageIds,
+        List<String> imageUrls,
         Integer commentCount,
         Integer scrapCount
 ) {

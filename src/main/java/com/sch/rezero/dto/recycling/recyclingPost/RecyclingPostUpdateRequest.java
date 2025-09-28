@@ -10,7 +10,6 @@ public record RecyclingPostUpdateRequest(
         @Size(max = 255)
         String thumbNailImage,
 
-        @Size(max = 20)
-        String category
+        Long categoryId
 ) {
 }

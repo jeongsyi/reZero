@@ -58,7 +58,15 @@ public class RecyclingPost {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Scrap> scraps = new ArrayList<>();
 
-    public void update(String title, String description, String thumbNailImage, String category) {
+    public RecyclingPost(User user, String title, String description, String thumbNailImageUrl, Category category) {
+        this.user = user;
+        this.title = title;
+        this.description = description;
+        this.thumbNailImageUrl = thumbNailImageUrl;
+        this.category = category;
+    }
+
+    public void update(String title, String description, String thumbNailImage, Category category) {
         if (!this.title.equals(title) && title != null) {
             this.title = title;
         }
@@ -69,8 +77,12 @@ public class RecyclingPost {
             this.thumbNailImageUrl = thumbNailImage;
         }
 
-        if (!this.category.getCategory().equals(category) && category != null) {
-            this.category.update(category);
+        if (category != null) {
+            this.category = category;
         }
+    }
+
+    public void addImage(RecyclingImage image) {
+        this.images.add(image);
     }
 }
