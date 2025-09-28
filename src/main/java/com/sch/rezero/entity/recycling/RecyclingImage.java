@@ -34,4 +34,9 @@ public class RecyclingImage {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public RecyclingImage(RecyclingPost post, RecyclingImage image) {
+        this.post = post;
+        this.imageUrl = image.getImageUrl();
+    }
 }
