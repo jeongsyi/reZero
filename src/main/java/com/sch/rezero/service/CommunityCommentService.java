@@ -67,7 +67,7 @@ public class CommunityCommentService {
     CommunityPost communityPost = validateCommunityPostId(communityPostId);
     CommunityComment communityComment = validateCommunityCommentId(communityCommentId);
 
-    if(!communityPost.getUser().getId().equals(userId)) {
+    if(!communityComment.getUser().getId().equals(userId)) {
       throw new EntityNotFoundException("요청한 ID와 실제 댓글 ID가 다릅니다.");
     }
 

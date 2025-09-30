@@ -8,6 +8,7 @@ import com.sch.rezero.entity.user.User;
 import com.sch.rezero.mapper.community.CommunityPostMapper;
 import com.sch.rezero.repository.community.CommunityPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -47,16 +48,26 @@ public class CommunityPostService {
   }
 
   @Transactional
-  public CommunityPostResponse update(Long postId, CommunityPostUpdateRequest communityUpdateCreate) {
+  public CommunityPostResponse update(Long userId, Long postId, CommunityPostUpdateRequest communityUpdateCreate) {
     CommunityPost communityPost = validateCommunityPostId(postId);
+
+    if (!communityPost.getUser().getId().equals(userId)) {
+      throw new EntityNotFoundException("요청한 ID와 실제 ID가 다릅니다.");
+    }
 
     communityPost.update(communityUpdateCreate.title(), communityUpdateCreate.description());
     return communityPostMapper.toCommunityPostResponse(communityPost);
   }
 
   @Transactional
-  public void delete(Long communityPostId) {
+  public void delete(Long userId, Long communityPostId) {
     CommunityPost communityPost = validateCommunityPostId(communityPostId);
+
+    if (!communityPost.getUser().getId().equals(userId)) {
+      throw new EntityNotFoundException("요청한 ID와 실제 ID가 다릅니다.");
+
+    }
+
     communityPostRepository.delete(communityPost);
   }
 
