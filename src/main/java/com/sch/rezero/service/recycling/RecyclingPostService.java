@@ -52,19 +52,26 @@ public class RecyclingPostService {
 //        }
 
         recyclingPostRepository.save(recyclingPost);
-        return recyclingPostMapper.toDto(recyclingPost);
+        return recyclingPostMapper.toRecyclingResponse(recyclingPost);
     }
 
     @Transactional(readOnly = true)
     public RecyclingPostResponse find(Long postId) {
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-        return recyclingPostMapper.toDto(recyclingPost);
+        return recyclingPostMapper.toRecyclingResponse(recyclingPost);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public List<RecyclingPostResponse> findAll() {
+        return recyclingPostRepository.findAll().stream()
+                .map(recyclingPostMapper::toRecyclingResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<RecyclingPostResponse> findAllByUserId(Long userId) {
         return recyclingPostRepository.findAllByUserId(userId).stream()
-                .map(recyclingPostMapper::toDto)
+                .map(recyclingPostMapper::toRecyclingResponse)
                 .toList();
     }
 
@@ -77,7 +84,7 @@ public class RecyclingPostService {
                 recyclingPostUpdateRequest.description(),
                 recyclingPostUpdateRequest.thumbNailImage(),
                 category);
-        return recyclingPostMapper.toDto(recyclingPost);
+        return recyclingPostMapper.toRecyclingResponse(recyclingPost);
     }
 
     @Transactional
