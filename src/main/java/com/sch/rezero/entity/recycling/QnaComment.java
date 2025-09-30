@@ -45,6 +45,13 @@ public class QnaComment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public QnaComment(RecyclingPost post, User user, QnaComment parent, String content) {
+        this.post = post;
+        this.user = user;
+        this.parent = parent;
+        this.content = content;
+    }
+
     public void update(String content) {
         if (!this.content.equals(content) && content != null) {
             this.content = content;

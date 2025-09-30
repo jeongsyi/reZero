@@ -19,6 +19,10 @@ public class Category {
     @Column(nullable = false)
     private String category;
 
+    public Category(String category) {
+        this.category = category;
+    }
+
     public void update(String category) {
         if (!this.category.equals(category) && category != null) {
             this.category = category;

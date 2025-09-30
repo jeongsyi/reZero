@@ -31,4 +31,9 @@ public class Scrap {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public Scrap(RecyclingPost post, User user) {
+        this.post = post;
+        this.user = user;
+    }
 }

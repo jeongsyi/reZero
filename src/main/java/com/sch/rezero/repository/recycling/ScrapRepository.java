@@ -4,6 +4,10 @@ import com.sch.rezero.entity.recycling.Scrap;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface ScrapPostRepository extends JpaRepository<Scrap, Long> {
+public interface ScrapRepository extends JpaRepository<Scrap, Long> {
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
+    List<Scrap> findAllByPostId(Long postId);
 }

@@ -12,5 +12,5 @@ public interface RecyclingPostMapper {
     @Mapping(target = "imageUrls", expression = "java(recyclingPost.getImages().stream().map(image -> image.getImageUrl()).toList())")
     @Mapping(target = "commentCount", expression = "java(recyclingPost.getComments().size())")
     @Mapping(target = "scrapCount", expression = "java(recyclingPost.getScraps().size())")
-    RecyclingPostResponse toDto(RecyclingPost recyclingPost);
+    RecyclingPostResponse toRecyclingResponse(RecyclingPost recyclingPost);
 }
