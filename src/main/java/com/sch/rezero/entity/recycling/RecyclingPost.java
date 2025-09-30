@@ -85,4 +85,8 @@ public class RecyclingPost {
     public void addImage(RecyclingImage image) {
         this.images.add(image);
     }
+
+    public void deleteImage(RecyclingImage image) {
+       this.images.remove(image);
+    }
 }

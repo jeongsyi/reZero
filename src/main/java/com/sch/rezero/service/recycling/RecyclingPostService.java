@@ -4,10 +4,12 @@ import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostCreateRequest;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostResponse;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostUpdateRequest;
 import com.sch.rezero.entity.recycling.Category;
+import com.sch.rezero.entity.recycling.RecyclingImage;
 import com.sch.rezero.entity.recycling.RecyclingPost;
 import com.sch.rezero.entity.user.User;
 import com.sch.rezero.mapper.recycling.RecyclingPostMapper;
 import com.sch.rezero.repository.recycling.CategoryRepository;
+import com.sch.rezero.repository.recycling.RecyclingImageRepository;
 import com.sch.rezero.repository.recycling.RecyclingPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class RecyclingPostService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final RecyclingPostMapper recyclingPostMapper;
+    private final RecyclingImageRepository recyclingImageRepository;
 
     @Transactional
     public RecyclingPostResponse create(Long userId,
@@ -81,5 +84,17 @@ public class RecyclingPostService {
     public void delete(Long postId) {
         RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         recyclingPostRepository.delete(post);
+    }
+
+    @Transactional
+    public void deleteImage(Long postId, Long imageId) {
+        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
+
+        if (!image.getPost().equals(post)) {
+            throw new IllegalStateException("해당 게시글의 이미지가 아닙니다.");
+        }
+
+        post.deleteImage(image);
     }
 }
