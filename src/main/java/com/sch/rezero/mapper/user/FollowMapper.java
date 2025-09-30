@@ -1,0 +1,14 @@
+package com.sch.rezero.mapper.user;
+
+import com.sch.rezero.dto.user.follow.FollowResponse;
+import com.sch.rezero.entity.user.Follow;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring")
+public interface FollowMapper {
+
+  @Mapping(source = "following.id", target = "followingId")
+  FollowResponse toFollowResponse(Follow follow);
+
+}
