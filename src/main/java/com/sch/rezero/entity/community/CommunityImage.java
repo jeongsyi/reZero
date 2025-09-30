@@ -33,7 +33,7 @@ public class CommunityImage {
   CommunityPost communityPost;
 
   @Column(nullable = false)
-  String image_url;
+  String imageUrl;
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,8 +44,8 @@ public class CommunityImage {
   private LocalDateTime updatedAt;
 
   private void update(String image_url) {
-    if (image_url != null && !image_url.equals(this.image_url)) {
-      this.image_url = image_url;
+    if (image_url != null && !image_url.equals(this.imageUrl)) {
+      this.imageUrl = image_url;
     }
   }
 

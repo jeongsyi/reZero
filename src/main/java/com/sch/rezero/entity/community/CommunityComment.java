@@ -52,6 +52,14 @@ public class CommunityComment {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  public CommunityComment(User user, CommunityPost communityPost, CommunityComment parent,
+      String content) {
+    this.user = user;
+    this.communityPost = communityPost;
+    this.parent = parent;
+    this.content = content;
+  }
+
   public void update(String content) {
     if (content != null && !content.equals(this.content)) {
       this.content = content;
