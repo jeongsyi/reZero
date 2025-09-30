@@ -29,11 +29,18 @@ public class User {
     @Column(name = "login_id", nullable = false)
     private String loginId;
 
+
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private Role role;
+
+    @Column(name = "profile_url")
+    private String profileUrl;
 
     private LocalDate birth;
     private String region;
