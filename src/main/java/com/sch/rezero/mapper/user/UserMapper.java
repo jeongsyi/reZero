@@ -9,9 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-  @Mapping(source = "id", target = "userId")
+  @Mapping(target = "userId", source = "user.loginId")
   UserResponse toUserResponse(User user, Integer followerCount, Integer followingCount);
 
-  @Mapping(source = "id", target = "userId")
+  @Mapping(target = "userId", source = "user.loginId")
   ProfileResponse toProfileResponse(User user);
 }

@@ -8,6 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface QnaCommentMapper {
     @Mapping(source = "parent.id", target = "parentId")
-    @Mapping(source = "user.name", target = "username")
+    @Mapping(source = "user.name", target = "userName")
     QnaCommentResponse toQnaCommentResponse(QnaComment qnaComment);
 }
