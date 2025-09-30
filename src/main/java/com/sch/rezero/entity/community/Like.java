@@ -40,4 +40,9 @@ public class Like {
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
+  public Like(CommunityPost communityPost, User user) {
+    this.communityPost = communityPost;
+    this.user = user;
+    this.createdAt = LocalDateTime.now();
+  }
 }
