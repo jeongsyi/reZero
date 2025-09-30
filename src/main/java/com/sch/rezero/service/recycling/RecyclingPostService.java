@@ -1,4 +1,4 @@
-package com.sch.rezero.service.service;
+package com.sch.rezero.service.recycling;
 
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostCreateRequest;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostResponse;
