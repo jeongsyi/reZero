@@ -51,4 +51,36 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> comments = new ArrayList<>();
 
+    public User(String loginId, String password, String name, Role role, String profileUrl,
+        LocalDate birth, String region) {
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+        this.profileUrl = profileUrl;
+        this.birth = birth;
+        this.region = region;
+    }
+
+    public void update(String loginId, String password, String name, String profileUrl,
+        LocalDate birth, String region) {
+        if (this.loginId != null && !this.loginId.equals(loginId)) {
+            this.loginId = loginId;
+        }
+        if (this.password != null && !this.password.equals(password)) {
+            this.password = password;
+        }
+        if (this.name != null && !this.name.equals(name)) {
+            this.name = name;
+        }
+        if (!this.profileUrl.equals(profileUrl)) {
+            this.profileUrl = profileUrl;
+        }
+        if (!this.birth.equals(birth)) {
+            this.birth = birth;
+        }
+        if (!this.region.equals(region)) {
+            this.region = region;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.user.auth;
+package com.sch.rezero.dto.user.profile;
 
 import com.sch.rezero.entity.user.Role;
 import jakarta.persistence.EnumType;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
-public record UserCreateRequest(
+public record ProfileCreateRequest(
     @NotBlank
     String userId,
 
