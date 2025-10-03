@@ -1,4 +1,4 @@
-package com.sch.rezero.service;
+package com.sch.rezero.service.community;
 
 import com.sch.rezero.dto.community.communityPost.CommunityPostCreateRequest;
 import com.sch.rezero.dto.community.communityPost.CommunityPostResponse;
