@@ -1,4 +1,4 @@
-package com.sch.rezero.service.service;
+package com.sch.rezero.service.community;
 
 import com.sch.rezero.dto.community.likes.LikeResponse;
 import com.sch.rezero.entity.community.CommunityPost;
@@ -10,7 +10,6 @@ import com.sch.rezero.repository.community.LikeRepository;
 import com.sch.rezero.repository.user.UserRepository;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.control.MappingControl.Use;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

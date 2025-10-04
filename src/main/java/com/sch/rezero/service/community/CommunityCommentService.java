@@ -1,4 +1,4 @@
-package com.sch.rezero.service;
+package com.sch.rezero.service.community;
 
 import com.sch.rezero.dto.community.communityComment.CommunityCommentCreateRequest;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentResponse;
@@ -33,10 +33,7 @@ public class CommunityCommentService {
 
     CommunityPost communityPost = validateCommunityPostId(communityPostId);
 
-    CommunityComment parent = null;
-    if (communityCommentCreateRequest.parentId() != null) {
-      parent = validateCommunityCommentId(communityCommentCreateRequest.parentId());
-    }
+    CommunityComment parent = communityCommentRepository.findById(communityCommentCreateRequest.parentId()).orElse(null);
 
     CommunityComment communityComment = new CommunityComment(
         user,

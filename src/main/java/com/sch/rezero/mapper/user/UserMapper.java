@@ -13,5 +13,5 @@ public interface UserMapper {
   UserResponse toUserResponse(User user, Integer followerCount, Integer followingCount);
 
   @Mapping(target = "userId", source = "user.loginId")
-  ProfileResponse toProfileResponse(User user);
+  ProfileResponse toProfileResponse(User user, Integer followerCount, Integer followingCount);
 }
