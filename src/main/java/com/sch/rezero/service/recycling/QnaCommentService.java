@@ -49,10 +49,14 @@ public class QnaCommentService {
     }
 
     @Transactional
-    public QnaCommentResponse update(Long postId, Long commentId, QnaCommentUpdateRequest qnaCommentUpdateRequest) {
+    public QnaCommentResponse update(Long userId, Long postId, Long commentId, QnaCommentUpdateRequest qnaCommentUpdateRequest) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         QnaComment qnaComment = qnaCommentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
 
+        if (!user.getId().equals(recyclingPost.getUser().getId())) {
+            throw new IllegalArgumentException("댓글을 작성한 사용자만 수정 가능합니다");
+        }
         if (!qnaComment.getPost().equals(recyclingPost)) {
             throw new IllegalArgumentException("게시물에서 해당 댓글을 찾을 수 없습니다 ");
         }
@@ -61,8 +65,14 @@ public class QnaCommentService {
     }
 
     @Transactional
-    public void delete(Long commentId) {
+    public void delete(Long userId, Long commentId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         QnaComment qnaComment = qnaCommentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
+
+        if (!user.getId().equals(qnaComment.getUser().getId())) {
+            throw new IllegalArgumentException("댓글을 작성한 사용자만 삭제 가능합니다");
+        }
+
         qnaCommentRepository.delete(qnaComment);
     }
 }
