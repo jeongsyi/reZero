@@ -5,8 +5,19 @@ public record RecyclingPostQuery(
         String description,
         Long idAfter,
         String cursor,
-        int size,
+        Integer size,
         String sortField,
         String sortDirection
 ) {
+    public RecyclingPostQuery {
+        if (size == null) {
+            size = 20;
+        }
+        if (sortField == null) {
+            sortField = "id";
+        }
+        if (sortDirection == null) {
+            sortDirection = "desc";
+        }
+    }
 }
