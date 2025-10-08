@@ -3,6 +3,9 @@ package com.sch.rezero.repository.recycling.impl;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostQuery;
 import com.sch.rezero.dto.response.CursorPageResponse;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.sch.rezero.entity.recycling.QRecyclingPost.recyclingPost;
+import static com.sch.rezero.entity.recycling.QScrap.scrap;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
                 .where(
                         query.title() != null ? recyclingPost.title.containsIgnoreCase(query.title()) : null,
                         query.description() != null ? recyclingPost.description.containsIgnoreCase(query.description()) : null,
+                        query.userName() != null ? recyclingPost.user.name.contains(query.userName()) : null,
                         buildCursorCondition(query)
                 )
                 .orderBy(sortResolve(query.sortField(), query.sortDirection()))
@@ -47,6 +52,7 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
             RecyclingPost last = posts.get(posts.size() - 1);
             nextCursor = switch (query.sortField()) {
                 case "title" -> last.getTitle();
+                case "scrap" -> String.valueOf(last.getScraps().size());
                 default -> String.valueOf(last.getId());
             };
             nextIdAfter = last.getId();
@@ -66,6 +72,13 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
             case "title" ->
                     isDesc ? recyclingPost.title.lt(query.cursor()).or(recyclingPost.title.eq(query.cursor()).and(recyclingPost.id.lt(query.idAfter())))
                             : recyclingPost.title.gt(query.cursor()).or(recyclingPost.title.eq(query.cursor()).and(recyclingPost.id.gt(query.idAfter())));
+            case "scrap" -> {
+                var expr = scrapCountExpr();
+                Long cursorValue = Long.valueOf(query.cursor());
+
+                yield isDesc ? expr.lt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.lt(query.idAfter())))
+                        : expr.gt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.gt(query.idAfter())));
+            }
             default -> isDesc ? recyclingPost.id.lt(query.idAfter()) : recyclingPost.id.gt(query.idAfter());
         };
     }
@@ -76,7 +89,16 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
         return switch (sortField) {
             case "title" -> new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.title),
                     new OrderSpecifier<>(order, recyclingPost.id)};
+            case "scrap" -> new OrderSpecifier[]{new OrderSpecifier<>(order, scrapCountExpr()),
+                    new OrderSpecifier<>(order, recyclingPost.id)};
             default -> new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.id)};
         };
+    }
+
+    private NumberExpression<Long> scrapCountExpr() {
+        return Expressions.asNumber(JPAExpressions
+                .select(scrap.count())
+                .from(scrap)
+                .where(scrap.post.eq(recyclingPost)));
     }
 }

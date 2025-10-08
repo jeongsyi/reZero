@@ -3,6 +3,7 @@ package com.sch.rezero.dto.recycling.recyclingPost;
 public record RecyclingPostQuery(
         String title,
         String description,
+        String userName,
         Long idAfter,
         String cursor,
         Integer size,
