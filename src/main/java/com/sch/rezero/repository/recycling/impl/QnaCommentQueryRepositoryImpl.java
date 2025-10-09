@@ -50,6 +50,13 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
         return new CursorPageResponse<>(parentComments, nextCursor, nextIdAfter, query.size(), hasNext);
     }
 
+    @Override
+    public List<QnaComment> findRepliesByParentIds(List<Long> parentIds) {
+        return queryFactory.selectFrom(qnaComment)
+                .where(qnaComment.parent.id.in(parentIds))
+                .fetch();
+    }
+
     private BooleanExpression buildCursorCondition(QnaCommentQuery query) {
         if (query.cursor() == null || query.idAfter() == null) {
             return null;
