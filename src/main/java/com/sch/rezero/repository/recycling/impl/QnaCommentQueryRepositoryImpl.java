@@ -43,8 +43,8 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
 
         if (!parentComments.isEmpty()) {
             QnaComment last = parentComments.get(parentComments.size() - 1);
-            nextIdAfter = last.getId();
             nextCursor = String.valueOf(last.getCreatedAt());
+            nextIdAfter = last.getId();
         }
 
         return new CursorPageResponse<>(parentComments, nextCursor, nextIdAfter, query.size(), hasNext);
@@ -63,12 +63,13 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
         }
 
         boolean isDesc = "desc".equalsIgnoreCase(query.sortDirection());
-        LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
 
         return switch (query.sortField()) {
-            case "createdAt" ->
-                    isDesc ? qnaComment.createdAt.lt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.lt(query.idAfter())))
-                            : qnaComment.createdAt.gt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.gt(query.idAfter())));
+            case "createdAt" -> {
+                LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
+                yield isDesc ? qnaComment.createdAt.lt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.lt(query.idAfter())))
+                        : qnaComment.createdAt.gt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.gt(query.idAfter())));
+            }
             default -> isDesc ? qnaComment.id.lt(query.idAfter()) : qnaComment.id.gt(query.idAfter());
         };
     }
