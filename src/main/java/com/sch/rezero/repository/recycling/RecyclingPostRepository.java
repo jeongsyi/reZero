@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RecyclingPostRepository extends JpaRepository<RecyclingPost, Long> {
+public interface RecyclingPostRepository extends JpaRepository<RecyclingPost, Long>, RecyclingPostQueryRepository {
     List<RecyclingPost> findAllByUserId(Long userId);
     boolean existsByCategory(Category category);
 }
