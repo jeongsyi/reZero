@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ScrapRepository extends JpaRepository<Scrap, Long> {
+public interface ScrapRepository extends JpaRepository<Scrap, Long>, ScrapQueryRepository {
     boolean existsByPostIdAndUserId(Long postId, Long userId);
     List<Scrap> findAllByPostId(Long postId);
 }
