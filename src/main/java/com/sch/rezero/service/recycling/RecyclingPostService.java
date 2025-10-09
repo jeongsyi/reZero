@@ -32,10 +32,12 @@ public class RecyclingPostService {
     private final RecyclingImageRepository recyclingImageRepository;
 
     @Transactional
-    public RecyclingPostResponse create(Long userId,
-                                        RecyclingPostCreateRequest recyclingPostCreateRequest,
-                                        List<MultipartFile> recyclingImage) {
+    public RecyclingPostResponse create(Long userId, RecyclingPostCreateRequest recyclingPostCreateRequest, List<MultipartFile> recyclingImage) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        if (!(user.getRole() == Role.ADMIN)) {
+            throw new IllegalStateException("관리자만 재활용법 게시물 작성이 가능합니다.");
+        }
+
         Category category = categoryRepository.findById(recyclingPostCreateRequest.categoryId()).orElseThrow(NoSuchElementException::new);
 
         RecyclingPost recyclingPost = new RecyclingPost(
@@ -78,12 +80,19 @@ public class RecyclingPostService {
     }
 
     @Transactional
-    public RecyclingPostResponse update(Long postId,
-                                        RecyclingPostUpdateRequest recyclingPostUpdateRequest) {
+    public RecyclingPostResponse update(Long userId, Long postId, RecyclingPostUpdateRequest recyclingPostUpdateRequest) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         Category category = categoryRepository.findById(recyclingPostUpdateRequest.categoryId()).orElseThrow(NoSuchElementException::new);
+
+        if (!user.getId().equals(recyclingPost.getUser().getId())) {
+            throw new IllegalArgumentException("본인이 작성한 게시물만 수정 가능합니다");
+        }
+
         recyclingPost.update(
-                recyclingPostUpdateRequest.title(),
+        recyclingPostUpdateRequest.title(),
+
+        recyclingPost.update(recyclingPostUpdateRequest.title(),
                 recyclingPostUpdateRequest.description(),
                 recyclingPostUpdateRequest.thumbNailImage(),
                 category
@@ -92,18 +101,28 @@ public class RecyclingPostService {
     }
 
     @Transactional
-    public void delete(Long postId) {
+    public void delete(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+
+        if (!user.getId().equals(post.getUser().getId())) {
+            throw new IllegalArgumentException("본인이 작성한 게시물만 삭제 가능합니다");
+        }
+
         recyclingPostRepository.delete(post);
     }
 
     @Transactional
-    public void deleteImage(Long postId, Long imageId) {
+    public void deleteImage(Long userId, Long postId, Long imageId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
 
-        if (!image.getPost().equals(post)) {
-            throw new IllegalStateException("해당 게시글의 이미지가 아닙니다.");
+        if (!user.getId().equals(post.getUser().getId())) {
+            throw new IllegalArgumentException("게시물이 작성한 사용자만 이미지 삭제가 가능합니다");
+        }
+        if (!image.getPost().getId().equals(post.getId())) {
+            throw new IllegalArgumentException("해당 게시글의 이미지가 아닙니다.");
         }
 
         post.deleteImage(image);
