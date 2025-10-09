@@ -8,6 +8,7 @@ import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.entity.recycling.Category;
 import com.sch.rezero.entity.recycling.RecyclingImage;
 import com.sch.rezero.entity.recycling.RecyclingPost;
+import com.sch.rezero.entity.user.Role;
 import com.sch.rezero.entity.user.User;
 import com.sch.rezero.mapper.recycling.RecyclingPostMapper;
 import com.sch.rezero.repository.recycling.CategoryRepository;
@@ -88,9 +89,6 @@ public class RecyclingPostService {
         if (!user.getId().equals(recyclingPost.getUser().getId())) {
             throw new IllegalArgumentException("본인이 작성한 게시물만 수정 가능합니다");
         }
-
-        recyclingPost.update(
-        recyclingPostUpdateRequest.title(),
 
         recyclingPost.update(recyclingPostUpdateRequest.title(),
                 recyclingPostUpdateRequest.description(),
