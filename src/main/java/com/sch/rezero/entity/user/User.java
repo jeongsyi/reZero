@@ -57,7 +57,7 @@ public class User {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.role = (role != null) ? role : Role.USER;
         this.profileUrl = profileUrl;
         this.birth = birth;
         this.region = region;
