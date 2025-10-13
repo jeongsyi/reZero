@@ -28,7 +28,7 @@ public class ScrapQueryRepositoryImpl implements ScrapQueryRepository {
                         query.userId() != null ? scrap.user.id.eq(query.userId()) : null,
                         buildCursorCondition(query)
                 )
-                .orderBy(sortResolve(query.sortField(), query.sortDirection()))
+                .orderBy(sortResolve(query.sortDirection()))
                 .limit(query.size() + 1)
                 .fetch();
 
@@ -56,23 +56,16 @@ public class ScrapQueryRepositoryImpl implements ScrapQueryRepository {
 
         boolean isDesc = "desc".equalsIgnoreCase(query.sortDirection());
 
-        return switch (query.sortField()) {
-            case "createdAt" -> {
-                LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
-                yield isDesc ? scrap.createdAt.lt(cursorTime).or(scrap.createdAt.eq(cursorTime).and(scrap.id.lt(query.idAfter())))
-                        : scrap.createdAt.gt(cursorTime).or(scrap.createdAt.eq(cursorTime).and(scrap.id.gt(query.idAfter())));
-            }
-            default -> isDesc ? scrap.id.lt(query.idAfter()) : scrap.id.gt(query.idAfter());
-        };
+        LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
+        return isDesc ? scrap.createdAt.lt(cursorTime).or(scrap.createdAt.eq(cursorTime).and(scrap.id.lt(query.idAfter())))
+                : scrap.createdAt.gt(cursorTime).or(scrap.createdAt.eq(cursorTime).and(scrap.id.gt(query.idAfter())));
     }
 
-    private OrderSpecifier<?>[] sortResolve(String sortField, String sortDirection) {
+
+    private OrderSpecifier<?>[] sortResolve(String sortDirection) {
         Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
-        return switch (sortField) {
-            case "createdAt" -> new OrderSpecifier[]{new OrderSpecifier<>(order, scrap.createdAt),
-                    new OrderSpecifier<>(order, scrap.id)};
-            default -> new OrderSpecifier[]{new OrderSpecifier<>(order, scrap.id)};
-        };
+        return new OrderSpecifier[]{new OrderSpecifier<>(order, scrap.createdAt),
+                new OrderSpecifier<>(order, scrap.id)};
     }
 }

@@ -29,7 +29,7 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
                         qnaComment.parent.isNull(),
                         buildCursorCondition(query)
                 )
-                .orderBy(sortResolve(query.sortField(), query.sortDirection()))
+                .orderBy(sortResolve(query.sortDirection()))
                 .limit(query.size() + 1)
                 .fetch();
 
@@ -64,23 +64,15 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
 
         boolean isDesc = "desc".equalsIgnoreCase(query.sortDirection());
 
-        return switch (query.sortField()) {
-            case "createdAt" -> {
-                LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
-                yield isDesc ? qnaComment.createdAt.lt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.lt(query.idAfter())))
-                        : qnaComment.createdAt.gt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.gt(query.idAfter())));
-            }
-            default -> isDesc ? qnaComment.id.lt(query.idAfter()) : qnaComment.id.gt(query.idAfter());
-        };
+        LocalDateTime cursorTime = LocalDateTime.parse(query.cursor());
+        return isDesc ? qnaComment.createdAt.lt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.lt(query.idAfter())))
+                : qnaComment.createdAt.gt(cursorTime).or(qnaComment.createdAt.eq(cursorTime).and(qnaComment.id.gt(query.idAfter())));
     }
 
-    private OrderSpecifier<?>[] sortResolve(String sortField, String sortDirection) {
+    private OrderSpecifier<?>[] sortResolve(String sortDirection) {
         Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
-        return switch (sortField) {
-            case "createdAt" -> new OrderSpecifier[]{new OrderSpecifier<>(order, qnaComment.createdAt),
-                    new OrderSpecifier<>(order, qnaComment.id)};
-            default -> new OrderSpecifier[]{new OrderSpecifier<>(order, qnaComment.id)};
-        };
+        return new OrderSpecifier[]{new OrderSpecifier<>(order, qnaComment.createdAt),
+                new OrderSpecifier<>(order, qnaComment.id)};
     }
 }

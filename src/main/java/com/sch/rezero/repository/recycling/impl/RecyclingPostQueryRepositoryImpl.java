@@ -68,32 +68,28 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
 
         boolean isDesc = ("desc").equalsIgnoreCase(query.sortDirection());
 
-        return switch (query.sortField()) {
-            case "title" ->
-                    isDesc ? recyclingPost.title.lt(query.cursor()).or(recyclingPost.title.eq(query.cursor()).and(recyclingPost.id.lt(query.idAfter())))
-                            : recyclingPost.title.gt(query.cursor()).or(recyclingPost.title.eq(query.cursor()).and(recyclingPost.id.gt(query.idAfter())));
-            case "scrap" -> {
-                var expr = scrapCountExpr();
-                Long cursorValue = Long.valueOf(query.cursor());
-
-                yield isDesc ? expr.lt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.lt(query.idAfter())))
-                        : expr.gt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.gt(query.idAfter())));
-            }
-            default -> isDesc ? recyclingPost.id.lt(query.idAfter()) : recyclingPost.id.gt(query.idAfter());
-        };
+        if (query.sortField().equalsIgnoreCase("scrap")) {
+            var expr = scrapCountExpr();
+            Long cursorValue = Long.valueOf(query.cursor());
+            return isDesc ? expr.lt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.lt(query.idAfter())))
+                    : expr.gt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.gt(query.idAfter())));
+        } else {
+            return isDesc ? recyclingPost.id.lt(query.idAfter()) : recyclingPost.id.gt(query.idAfter());
+        }
     }
 
     private OrderSpecifier<?>[] sortResolve(String sortField, String sortDirection) {
         Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
-        return switch (sortField) {
-            case "title" -> new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.title),
+
+        if (sortField.equalsIgnoreCase("scrap")) {
+            return new OrderSpecifier[]{new OrderSpecifier<>(order, scrapCountExpr()),
                     new OrderSpecifier<>(order, recyclingPost.id)};
-            case "scrap" -> new OrderSpecifier[]{new OrderSpecifier<>(order, scrapCountExpr()),
-                    new OrderSpecifier<>(order, recyclingPost.id)};
-            default -> new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.id)};
-        };
+        } else {
+            return new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.id)};
+        }
     }
+
 
     private NumberExpression<Long> scrapCountExpr() {
         return Expressions.asNumber(JPAExpressions

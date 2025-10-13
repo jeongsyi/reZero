@@ -13,7 +13,7 @@ public record ScrapQuery(
             size = 20;
         }
         if (sortField == null) {
-            sortField = "id";
+            sortField = "createdAt";
         }
         if (sortDirection == null) {
             sortDirection = "desc";
