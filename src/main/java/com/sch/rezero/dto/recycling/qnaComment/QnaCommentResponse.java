@@ -1,6 +1,8 @@
 package com.sch.rezero.dto.recycling.qnaComment;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 public record QnaCommentResponse(
         Long id,
@@ -8,6 +10,7 @@ public record QnaCommentResponse(
         String content,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String userName
+        String userName,
+        List<QnaCommentResponse> children
 ) {
 }

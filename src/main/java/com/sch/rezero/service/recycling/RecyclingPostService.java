@@ -1,8 +1,10 @@
 package com.sch.rezero.service.recycling;
 
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostCreateRequest;
+import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostQuery;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostResponse;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostUpdateRequest;
+import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.entity.recycling.Category;
 import com.sch.rezero.entity.recycling.RecyclingImage;
 import com.sch.rezero.entity.recycling.RecyclingPost;
@@ -65,17 +67,17 @@ public class RecyclingPostService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecyclingPostResponse> findAll() {
-        return recyclingPostRepository.findAll().stream()
-                .map(recyclingPostMapper::toRecyclingResponse)
-                .toList();
-    }
+    public CursorPageResponse<RecyclingPostResponse> findAll(RecyclingPostQuery query) {
+        CursorPageResponse<RecyclingPost> result = recyclingPostRepository.findAll(query);
+        List<RecyclingPostResponse> contents = result.content().stream().map(recyclingPostMapper::toRecyclingResponse).toList();
 
-    @Transactional(readOnly = true)
-    public List<RecyclingPostResponse> findAllByUserId(Long userId) {
-        return recyclingPostRepository.findAllByUserId(userId).stream()
-                .map(recyclingPostMapper::toRecyclingResponse)
-                .toList();
+        return new CursorPageResponse<>(
+                contents,
+                result.nextCursor(),
+                result.nextIdAfter(),
+                result.size(),
+                result.hasNext()
+        );
     }
 
     @Transactional
@@ -91,7 +93,8 @@ public class RecyclingPostService {
         recyclingPost.update(recyclingPostUpdateRequest.title(),
                 recyclingPostUpdateRequest.description(),
                 recyclingPostUpdateRequest.thumbNailImage(),
-                category);
+                category
+        );
         return recyclingPostMapper.toRecyclingResponse(recyclingPost);
     }
 

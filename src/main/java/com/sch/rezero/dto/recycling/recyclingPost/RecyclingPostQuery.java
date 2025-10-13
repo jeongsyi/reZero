@@ -1,0 +1,24 @@
+package com.sch.rezero.dto.recycling.recyclingPost;
+
+public record RecyclingPostQuery(
+        String title,
+        String description,
+        String userName,
+        Long idAfter,
+        String cursor,
+        Integer size,
+        String sortField,
+        String sortDirection
+) {
+    public RecyclingPostQuery {
+        if (size == null) {
+            size = 20;
+        }
+        if (sortField == null) {
+            sortField = "createdAt";
+        }
+        if (sortDirection == null) {
+            sortDirection = "desc";
+        }
+    }
+}
