@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LikeRepository extends JpaRepository<Like, Long> {
-  boolean existsByUserAndCommunityPost(User user, CommunityPost communityPost);
-  void deleteByUserAndCommunityPost(User user, CommunityPost communityPost);
+public interface LikeRepository extends JpaRepository<Like, Long>, LikeQueryRepository {
+    boolean existsByUserAndCommunityPost(User user, CommunityPost communityPost);
+    void deleteByUserAndCommunityPost(User user, CommunityPost communityPost);
 }
