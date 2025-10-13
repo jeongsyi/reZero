@@ -19,10 +19,10 @@ public class LoginService {
   @Transactional(readOnly = true)
   public LoginResponse login(LoginRequest loginRequest) {
 
-    String userId = loginRequest.userId();
+    String loginId = loginRequest.loginId();
     String password = loginRequest.password();
 
-    User user = userRepository.findByLoginId(userId)
+    User user = userRepository.findByLoginId(loginId)
         .orElseThrow(() -> new IllegalArgumentException("Invalid loginId"));
 
     if(!user.getPassword().equals(password)) {

@@ -4,3 +4,8 @@ spring:
     username: rezero_user
     password: reZero1234
     driver-class-name: org.postgresql.Driver
+
+server:
+  servlet:
+    session:
+      timeout: 30m
