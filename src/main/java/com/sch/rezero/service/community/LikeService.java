@@ -1,6 +1,6 @@
 package com.sch.rezero.service.community;
 
-import com.sch.rezero.dto.community.likes.LikeResponse;
+import com.sch.rezero.dto.community.like.LikeResponse;
 import com.sch.rezero.entity.community.CommunityPost;
 import com.sch.rezero.entity.community.Like;
 import com.sch.rezero.entity.user.User;

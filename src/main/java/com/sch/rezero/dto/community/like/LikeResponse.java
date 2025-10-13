@@ -1,4 +1,4 @@
-package com.sch.rezero.dto.community.likes;
+package com.sch.rezero.dto.community.like;
 
 import java.time.LocalDateTime;
 
