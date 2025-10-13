@@ -4,6 +4,8 @@ import com.sch.rezero.dto.user.auth.LoginRequest;
 import com.sch.rezero.dto.user.auth.LoginResponse;
 import com.sch.rezero.dto.user.profile.ProfileCreateRequest;
 import com.sch.rezero.dto.user.profile.ProfileResponse;
+import com.sch.rezero.entity.user.User;
+import com.sch.rezero.mapper.user.UserMapper;
 import com.sch.rezero.service.user.LoginService;
 import com.sch.rezero.service.user.ProfileService;
 import jakarta.servlet.http.HttpSession;
@@ -23,15 +25,19 @@ public class LoginController {
 
   private final LoginService loginService;
   private final ProfileService profileService;
+  private final UserMapper userMapper;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
       @RequestBody @Valid LoginRequest loginRequest,
       HttpSession session) {
 
-    LoginResponse user = loginService.login(loginRequest);
+    User user = loginService.login(loginRequest);
     session.setAttribute("user", user);
-    return ResponseEntity.ok(user);
+
+    LoginResponse login = userMapper.toLoginResponse(user);
+
+    return ResponseEntity.status(HttpStatus.OK).body(login);
   }
 
   @PostMapping("/logout")

@@ -17,7 +17,7 @@ public class LoginService {
   private final UserMapper userMapper;
 
   @Transactional(readOnly = true)
-  public LoginResponse login(LoginRequest loginRequest) {
+  public User login(LoginRequest loginRequest) {
 
     String loginId = loginRequest.loginId();
     String password = loginRequest.password();
@@ -29,7 +29,7 @@ public class LoginService {
       throw new IllegalArgumentException("Invalid password");
     }
 
-    return userMapper.toLoginResponse(user);
+    return user;
   }
 
 }
