@@ -74,14 +74,20 @@ public class User {
         if (this.name != null && !this.name.equals(name)) {
             this.name = name;
         }
-        if (!this.profileUrl.equals(profileUrl)) {
-            this.profileUrl = profileUrl;
+        if (profileUrl != null) {
+            if (this.profileUrl == null || !this.profileUrl.equals(profileUrl)) {
+                this.profileUrl = profileUrl;
+            }
         }
-        if (!this.birth.equals(birth)) {
-            this.birth = birth;
+        if (birth != null) {
+            if (this.birth == null || !this.birth.equals(birth)) {
+                this.birth = birth;
+            }
         }
-        if (!this.region.equals(region)) {
-            this.region = region;
+        if (region != null) {
+            if (this.region == null || !this.region.equals(region)) {
+                this.region = region;
+            }
         }
     }
 }

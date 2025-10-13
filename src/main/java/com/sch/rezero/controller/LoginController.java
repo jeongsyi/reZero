@@ -47,11 +47,11 @@ public class LoginController {
 
   @PostMapping("/signup")
   public ResponseEntity<ProfileResponse> signup(@RequestBody @Valid ProfileCreateRequest profileCreateRequest) {
-    ProfileResponse profile = profileService.create(profileCreateRequest);
+    ProfileResponse created = profileService.create(profileCreateRequest);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(profile);
+        .body(created);
   }
 
 }
