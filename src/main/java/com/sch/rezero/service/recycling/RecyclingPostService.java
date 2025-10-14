@@ -15,6 +15,7 @@ import com.sch.rezero.repository.recycling.CategoryRepository;
 import com.sch.rezero.repository.recycling.RecyclingImageRepository;
 import com.sch.rezero.repository.recycling.RecyclingPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,9 @@ public class RecyclingPostService {
     private final RecyclingImageRepository recyclingImageRepository;
 
     @Transactional
-    public RecyclingPostResponse create(Long userId, RecyclingPostCreateRequest recyclingPostCreateRequest, List<MultipartFile> recyclingImage) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+    public RecyclingPostResponse create(HttpSession session, RecyclingPostCreateRequest recyclingPostCreateRequest, List<MultipartFile> recyclingImage) {
+        User loginUser = (User) session.getAttribute("user");
+        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
         if (!(user.getRole() == Role.ADMIN)) {
             throw new IllegalStateException("관리자만 재활용법 게시물 작성이 가능합니다.");
         }
@@ -81,8 +83,9 @@ public class RecyclingPostService {
     }
 
     @Transactional
-    public RecyclingPostResponse update(Long userId, Long postId, RecyclingPostUpdateRequest recyclingPostUpdateRequest) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+    public RecyclingPostResponse update(HttpSession session, Long postId, RecyclingPostUpdateRequest recyclingPostUpdateRequest) {
+        User loginUser = (User) session.getAttribute("user");
+        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         Category category = categoryRepository.findById(recyclingPostUpdateRequest.categoryId()).orElseThrow(NoSuchElementException::new);
 
@@ -99,8 +102,9 @@ public class RecyclingPostService {
     }
 
     @Transactional
-    public void delete(Long userId, Long postId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+    public void delete(HttpSession session, Long postId) {
+        User loginUser = (User) session.getAttribute("user");
+        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
         RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
 
         if (!user.getId().equals(post.getUser().getId())) {
@@ -111,8 +115,9 @@ public class RecyclingPostService {
     }
 
     @Transactional
-    public void deleteImage(Long userId, Long postId, Long imageId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+    public void deleteImage(HttpSession session, Long postId, Long imageId) {
+        User loginUser = (User) session.getAttribute("user");
+        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
         RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
 
