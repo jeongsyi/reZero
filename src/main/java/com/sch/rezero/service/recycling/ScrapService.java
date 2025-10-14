@@ -1,6 +1,5 @@
 package com.sch.rezero.service.recycling;
 
-import com.sch.rezero.dto.recycling.scrap.ScrapCreateRequest;
 import com.sch.rezero.dto.recycling.scrap.ScrapQuery;
 import com.sch.rezero.dto.recycling.scrap.ScrapResponse;
 import com.sch.rezero.dto.response.CursorPageResponse;
@@ -27,11 +26,9 @@ public class ScrapService {
     private final ScrapMapper scrapMapper;
 
     @Transactional
-    public ScrapResponse create(ScrapCreateRequest scrapCreateRequest) {
-        RecyclingPost post = recyclingPostRepository.findById(scrapCreateRequest.postId())
-                .orElseThrow(NoSuchElementException::new);
-        User user = userRepository.findById(scrapCreateRequest.userId())
-                .orElseThrow(NoSuchElementException::new);
+    public ScrapResponse create(Long userId, Long postId) {
+        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
         if (scrapRepository.existsByPostIdAndUserId(post.getId(), user.getId())) {
             throw new IllegalStateException("이미 존재하는 스크랩입니다");
