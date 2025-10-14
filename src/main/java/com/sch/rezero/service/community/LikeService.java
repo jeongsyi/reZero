@@ -1,6 +1,8 @@
 package com.sch.rezero.service.community;
 
-import com.sch.rezero.dto.community.likes.LikeResponse;
+import com.sch.rezero.dto.community.like.LikeQuery;
+import com.sch.rezero.dto.community.like.LikeResponse;
+import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.entity.community.CommunityPost;
 import com.sch.rezero.entity.community.Like;
 import com.sch.rezero.entity.user.User;
@@ -8,43 +10,59 @@ import com.sch.rezero.mapper.community.LikeMapper;
 import com.sch.rezero.repository.community.CommunityPostRepository;
 import com.sch.rezero.repository.community.LikeRepository;
 import com.sch.rezero.repository.user.UserRepository;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class LikeService {
 
-  private final LikeRepository likeRepository;
-  private final UserRepository userRepository;
-  private final CommunityPostRepository communityPostRepository;
-  private final LikeMapper likeMapper;
+    private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
+    private final CommunityPostRepository communityPostRepository;
+    private final LikeMapper likeMapper;
 
-  @Transactional
-  public LikeResponse createLike(Long userId, Long communityPostId) {
-    User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-    CommunityPost communityPost = communityPostRepository.findById(communityPostId)
-        .orElseThrow(NoSuchElementException::new);
+    @Transactional
+    public LikeResponse createLike(Long userId, Long communityPostId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId)
+                .orElseThrow(NoSuchElementException::new);
 
-    if (likeRepository.existsByUserAndCommunityPost(user, communityPost)) {
-      throw new IllegalArgumentException("User and Community Post already exist");
+        if (likeRepository.existsByUserAndCommunityPost(user, communityPost)) {
+            throw new IllegalArgumentException("User and Community Post already exist");
+        }
+
+        Like like = new Like(communityPost, user);
+        likeRepository.save(like);
+
+        return likeMapper.toLikeResponse(like);
     }
 
-    Like like = new Like(communityPost, user);
-    likeRepository.save(like);
+    @Transactional(readOnly = true)
+    public CursorPageResponse<LikeResponse> findAllByUserId(LikeQuery query) {
+        CursorPageResponse<Like> result = likeRepository.findAllByUserId(query);
+        List<LikeResponse> contents = result.content().stream().map(likeMapper::toLikeResponse).toList();
 
-    return likeMapper.toLikeResponse(like);
-  }
+        return new CursorPageResponse<>(
+                contents,
+                result.nextCursor(),
+                result.nextIdAfter(),
+                result.size(),
+                result.hasNext()
+        );
+    }
 
-  @Transactional
-  public void delete(Long userId, Long communityPostId) {
-    User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-    CommunityPost communityPost = communityPostRepository.findById(communityPostId)
-        .orElseThrow(NoSuchElementException::new);
+    @Transactional
+    public void delete(Long userId, Long communityPostId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId)
+                .orElseThrow(NoSuchElementException::new);
 
-    likeRepository.deleteByUserAndCommunityPost(user, communityPost);
-  }
+        likeRepository.deleteByUserAndCommunityPost(user, communityPost);
+    }
 
 }

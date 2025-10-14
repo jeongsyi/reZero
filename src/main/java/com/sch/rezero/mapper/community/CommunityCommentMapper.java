@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CommunityCommentMapper {
-
+  @Mapping(source = "parent.id", target = "parentId")
   @Mapping(target = "userName", source = "user.name")
   CommunityCommentResponse toCommunityCommentResponse(CommunityComment comment);
 }
