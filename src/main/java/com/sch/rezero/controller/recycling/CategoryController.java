@@ -18,6 +18,11 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> find(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.find(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> findAll() {
         List<CategoryResponse> categories = categoryService.findAll();
