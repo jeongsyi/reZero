@@ -63,7 +63,7 @@ public class ScrapQueryRepositoryImpl implements ScrapQueryRepository {
 
 
     private OrderSpecifier<?>[] sortResolve(String sortDirection) {
-        Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
+        Order order = "desc".equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
         return new OrderSpecifier[]{new OrderSpecifier<>(order, scrap.createdAt),
                 new OrderSpecifier<>(order, scrap.id)};

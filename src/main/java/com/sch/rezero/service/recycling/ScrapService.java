@@ -1,7 +1,9 @@
 package com.sch.rezero.service.recycling;
 
 import com.sch.rezero.dto.recycling.scrap.ScrapCreateRequest;
+import com.sch.rezero.dto.recycling.scrap.ScrapQuery;
 import com.sch.rezero.dto.recycling.scrap.ScrapResponse;
+import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.entity.recycling.RecyclingPost;
 import com.sch.rezero.entity.recycling.Scrap;
 import com.sch.rezero.entity.user.User;
@@ -40,10 +42,17 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScrapResponse> findAllByPostId(Long postId) {
-        return scrapRepository.findAllByPostId(postId).stream()
-                .map(scrapMapper::toResponse)
-                .toList();
+    public CursorPageResponse<ScrapResponse> findAllByUserId(ScrapQuery query) {
+        CursorPageResponse<Scrap> result = scrapRepository.findAllByUserId(query);
+        List<ScrapResponse> contents = result.content().stream().map(scrapMapper::toResponse).toList();
+
+        return new CursorPageResponse<>(
+                contents,
+                result.nextCursor(),
+                result.nextIdAfter(),
+                result.size(),
+                result.hasNext()
+        );
     }
 
     @Transactional

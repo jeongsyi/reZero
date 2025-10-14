@@ -70,7 +70,7 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
     }
 
     private OrderSpecifier<?>[] sortResolve(String sortDirection) {
-        Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
+        Order order = "desc".equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
         return new OrderSpecifier[]{new OrderSpecifier<>(order, qnaComment.createdAt),
                 new OrderSpecifier<>(order, qnaComment.id)};
