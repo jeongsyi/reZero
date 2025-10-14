@@ -41,8 +41,8 @@ public class QnaCommentService {
     }
 
     @Transactional(readOnly = true)
-    public CursorPageResponse<QnaCommentResponse> findAllByPost(QnaCommentQuery query) {
-        if (recyclingPostRepository.existsById(query.postId())) {
+    public CursorPageResponse<QnaCommentResponse> findAllByPostId(QnaCommentQuery query) {
+        if (!recyclingPostRepository.existsById(query.postId())) {
             throw new NoSuchElementException("해당 게시글을 찾을 수 없습니다");
         }
 
