@@ -1,5 +1,6 @@
 package com.sch.rezero.mapper.user;
 
+import com.sch.rezero.dto.user.auth.LoginResponse;
 import com.sch.rezero.dto.user.profile.ProfileResponse;
 import com.sch.rezero.dto.user.profile.UserResponse;
 import com.sch.rezero.entity.user.User;
@@ -14,4 +15,7 @@ public interface UserMapper {
 
   @Mapping(target = "userId", source = "user.loginId")
   ProfileResponse toProfileResponse(User user, Integer followerCount, Integer followingCount);
+
+  @Mapping(target = "userId", source = "user.loginId")
+  LoginResponse toLoginResponse(User user);
 }

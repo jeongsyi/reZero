@@ -36,6 +36,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
@@ -56,7 +57,7 @@ public class User {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.role = (role != null) ? role : Role.USER;
         this.profileUrl = profileUrl;
         this.birth = birth;
         this.region = region;
@@ -73,14 +74,20 @@ public class User {
         if (this.name != null && !this.name.equals(name)) {
             this.name = name;
         }
-        if (!this.profileUrl.equals(profileUrl)) {
-            this.profileUrl = profileUrl;
+        if (profileUrl != null) {
+            if (this.profileUrl == null || !this.profileUrl.equals(profileUrl)) {
+                this.profileUrl = profileUrl;
+            }
         }
-        if (!this.birth.equals(birth)) {
-            this.birth = birth;
+        if (birth != null) {
+            if (this.birth == null || !this.birth.equals(birth)) {
+                this.birth = birth;
+            }
         }
-        if (!this.region.equals(region)) {
-            this.region = region;
+        if (region != null) {
+            if (this.region == null || !this.region.equals(region)) {
+                this.region = region;
+            }
         }
     }
 }

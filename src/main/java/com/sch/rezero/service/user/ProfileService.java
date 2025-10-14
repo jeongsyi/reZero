@@ -36,7 +36,7 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileResponse findById(long id) {
+    public ProfileResponse find(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
