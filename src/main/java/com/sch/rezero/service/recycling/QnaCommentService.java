@@ -41,13 +41,13 @@ public class QnaCommentService {
     }
 
     @Transactional(readOnly = true)
-    public CursorPageResponse<QnaCommentResponse> findAllByPostId(QnaCommentQuery query) {
-        if (!recyclingPostRepository.existsById(query.postId())) {
+    public CursorPageResponse<QnaCommentResponse> findAllByPostId(Long postId, QnaCommentQuery query) {
+        if (!recyclingPostRepository.existsById(postId)) {
             throw new NoSuchElementException("해당 게시글을 찾을 수 없습니다");
         }
 
         //부모 댓글 조회
-        CursorPageResponse<QnaComment> parentComments = qnaCommentRepository.findAll(query);
+        CursorPageResponse<QnaComment> parentComments = qnaCommentRepository.findAllByPostId(postId, query);
         List<Long> parentIds = parentComments.content().stream()
                 .map(QnaComment::getId)
                 .toList();
@@ -89,17 +89,14 @@ public class QnaCommentService {
     }
 
     @Transactional
-    public QnaCommentResponse update(Long userId, Long postId, Long commentId, QnaCommentUpdateRequest qnaCommentUpdateRequest) {
+    public QnaCommentResponse update(Long userId, Long commentId, QnaCommentUpdateRequest qnaCommentUpdateRequest) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         QnaComment qnaComment = qnaCommentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
 
-        if (!user.getId().equals(recyclingPost.getUser().getId())) {
+        if (!user.getId().equals(qnaComment.getUser().getId())) {
             throw new IllegalArgumentException("댓글을 작성한 사용자만 수정 가능합니다");
         }
-        if (!qnaComment.getPost().equals(recyclingPost)) {
-            throw new IllegalArgumentException("게시물에서 해당 댓글을 찾을 수 없습니다 ");
-        }
+
         qnaComment.update(qnaCommentUpdateRequest.content());
         return qnaCommentMapper.toQnaCommentResponse(qnaComment);
     }

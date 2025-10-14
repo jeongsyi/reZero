@@ -7,6 +7,6 @@ import com.sch.rezero.entity.recycling.QnaComment;
 import java.util.List;
 
 public interface QnaCommentQueryRepository {
-    CursorPageResponse<QnaComment> findAll(QnaCommentQuery qnaCommentQuery);
+    CursorPageResponse<QnaComment> findAllByPostId(Long postId,QnaCommentQuery qnaCommentQuery);
     List<QnaComment> findRepliesByParentIds(List<Long> parentIds);
 }

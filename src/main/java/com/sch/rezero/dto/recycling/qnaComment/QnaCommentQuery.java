@@ -1,7 +1,6 @@
 package com.sch.rezero.dto.recycling.qnaComment;
 
 public record QnaCommentQuery(
-        Long postId,
         Long idAfter,
         String cursor,
         Integer size,

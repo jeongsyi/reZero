@@ -22,10 +22,10 @@ public class QnaCommentQueryRepositoryImpl implements QnaCommentQueryRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public CursorPageResponse<QnaComment> findAll(QnaCommentQuery query) {
+    public CursorPageResponse<QnaComment> findAllByPostId(Long postId, QnaCommentQuery query) {
         List<QnaComment> parentComments = queryFactory.selectFrom(qnaComment)
                 .where(
-                        query.postId() != null ? qnaComment.post.id.eq(query.postId()) : null,
+                        postId != null ? qnaComment.post.id.eq(postId) : null,
                         qnaComment.parent.isNull(),
                         buildCursorCondition(query)
                 )
