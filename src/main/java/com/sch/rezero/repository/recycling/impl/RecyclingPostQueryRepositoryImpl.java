@@ -50,11 +50,8 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
 
         if (!posts.isEmpty()) {
             RecyclingPost last = posts.get(posts.size() - 1);
-            nextCursor = switch (query.sortField()) {
-                case "title" -> last.getTitle();
-                case "scrap" -> String.valueOf(last.getScraps().size());
-                default -> String.valueOf(last.getId());
-            };
+            nextCursor = "createdAt".equalsIgnoreCase(query.sortField())
+                    ? last.getCreatedAt().toString() : String.valueOf(last.getScraps().size());
             nextIdAfter = last.getId();
         }
 
@@ -66,9 +63,9 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
             return null;
         }
 
-        boolean isDesc = ("desc").equalsIgnoreCase(query.sortDirection());
+        boolean isDesc = "desc".equalsIgnoreCase(query.sortDirection());
 
-        if (query.sortField().equalsIgnoreCase("scrap")) {
+        if ("scrap".equalsIgnoreCase(query.sortField())) {
             var expr = scrapCountExpr();
             Long cursorValue = Long.valueOf(query.cursor());
             return isDesc ? expr.lt(cursorValue).or(expr.eq(cursorValue).and(recyclingPost.id.lt(query.idAfter())))
@@ -79,17 +76,16 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
     }
 
     private OrderSpecifier<?>[] sortResolve(String sortField, String sortDirection) {
-        Order order = ("desc").equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
+        Order order = "desc".equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
 
-        if (sortField.equalsIgnoreCase("scrap")) {
+        if ("like".equalsIgnoreCase(sortField)) {
             return new OrderSpecifier[]{new OrderSpecifier<>(order, scrapCountExpr()),
                     new OrderSpecifier<>(order, recyclingPost.id)};
         } else {
             return new OrderSpecifier[]{new OrderSpecifier<>(order, recyclingPost.id)};
         }
     }
-
 
     private NumberExpression<Long> scrapCountExpr() {
         return Expressions.asNumber(JPAExpressions
