@@ -1,10 +1,10 @@
-package com.sch.rezero.controller;
+package com.sch.rezero.controller.environment;
 
+import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.environment.userAnswer.UserAnswerRequest;
 import com.sch.rezero.dto.environment.userAnswer.UserAnswerResponse;
 import com.sch.rezero.entity.user.User;
 import com.sch.rezero.service.environment.UserAnswerService;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,38 +20,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class EnvironmentController {
 
   private final UserAnswerService userAnswerService;
+  private final UserContext userContext;
 
   @PostMapping
-  public ResponseEntity<UserAnswerResponse> create(
-      @RequestBody List<UserAnswerRequest> userAnswerRequests,
-      HttpSession session
-  ) {
-    User user = (User) session.getAttribute("user");
-    Long userId = (user != null) ? user.getId() : null;
+  public ResponseEntity<UserAnswerResponse> create(@RequestBody List<UserAnswerRequest> userAnswerRequests) {
+    User user = userContext.getCurrentUserOrNull();
 
-    if (userId == null) {
+    if (user == null) {
       UserAnswerResponse answer = userAnswerService.createWithoutSaving(userAnswerRequests);
       return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
-    UserAnswerResponse answer = userAnswerService.create(userId, userAnswerRequests);
+    UserAnswerResponse answer = userAnswerService.create(userContext.getCurrentUserId(), userAnswerRequests);
+
     return ResponseEntity.status(HttpStatus.OK).body(answer);
   }
 
   @PostMapping("/redo")
-  public ResponseEntity<UserAnswerResponse> update(
-      @RequestBody List<UserAnswerRequest> userAnswerRequests,
-      HttpSession session
-  ) {
-    User user = (User) session.getAttribute("user");
+  public ResponseEntity<UserAnswerResponse> update(@RequestBody List<UserAnswerRequest> userAnswerRequests) {
+    userContext.getCurrentUser();
+    UserAnswerResponse answer = userAnswerService.create(userContext.getCurrentUserId(), userAnswerRequests);
 
-    if (user == null) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
-
-    Long userId = user.getId();
-
-    UserAnswerResponse answer = userAnswerService.create(userId, userAnswerRequests);
     return ResponseEntity.status(HttpStatus.OK).body(answer);
   }
 }
