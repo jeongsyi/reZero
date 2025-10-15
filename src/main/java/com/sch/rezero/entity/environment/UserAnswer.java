@@ -33,4 +33,8 @@ public class UserAnswer {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  public UserAnswer(Answer answer, User user) {
+    this.answer = answer;
+    this.user = user;
+  }
 }
