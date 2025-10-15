@@ -49,6 +49,24 @@ public class UserAnswerService {
     return userAnswerMapper.toUserAnswerResponse(level, totalScore);
   }
 
+  @Transactional
+  public UserAnswerResponse createWithoutSaving(List<UserAnswerRequest> userAnswerRequest) {
+    int totalScore = 0;
+
+    for (UserAnswerRequest req : userAnswerRequest) {
+      Answer answer = answerRepository.findById(req.answerId())
+          .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
+
+      totalScore += answer.getScore();
+    }
+
+    String level = levelRepository.findLevelByScore(totalScore)
+        .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
+
+    return userAnswerMapper.toUserAnswerResponse(level, totalScore);
+  }
+
+
   private User validateUserId(Long userId) {
     return userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
   }

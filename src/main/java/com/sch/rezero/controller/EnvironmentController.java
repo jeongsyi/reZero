@@ -30,7 +30,8 @@ public class EnvironmentController {
     Long userId = (user != null) ? user.getId() : null;
 
     if (userId == null) {
-
+      UserAnswerResponse answer = userAnswerService.createWithoutSaving(userAnswerRequests);
+      return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
     UserAnswerResponse answer = userAnswerService.create(userId, userAnswerRequests);
