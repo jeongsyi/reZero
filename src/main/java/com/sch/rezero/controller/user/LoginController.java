@@ -1,4 +1,4 @@
-package com.sch.rezero.controller;
+package com.sch.rezero.controller.user;
 
 import com.sch.rezero.dto.user.auth.LoginRequest;
 import com.sch.rezero.dto.user.auth.LoginResponse;
