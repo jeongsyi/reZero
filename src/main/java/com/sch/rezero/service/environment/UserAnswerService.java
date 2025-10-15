@@ -13,7 +13,6 @@ import com.sch.rezero.repository.environment.UserAnswerRepository;
 import com.sch.rezero.repository.user.UserRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
