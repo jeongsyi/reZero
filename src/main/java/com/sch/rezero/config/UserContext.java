@@ -18,6 +18,11 @@ public class UserContext {
         return user;
     }
 
+    public User getCurrentUserOrNull() {
+        User user = (User) session.getAttribute("user");
+        return user;
+    }
+
     public Long getCurrentUserId() {
         return getCurrentUser().getId();
     }
