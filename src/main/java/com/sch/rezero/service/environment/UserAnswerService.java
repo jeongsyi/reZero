@@ -28,12 +28,12 @@ public class UserAnswerService {
   private final UserAnswerMapper userAnswerMapper;
 
   @Transactional
-  public UserAnswerResponse create(Long userId, List<UserAnswerRequest> userAnswerRequest) {
+  public UserAnswerResponse create(Long userId, List<UserAnswerRequest> userAnswerRequests) {
     User user = validateUserId(userId);
 
     int totalScore = 0;
 
-    for (UserAnswerRequest req : userAnswerRequest) {
+    for (UserAnswerRequest req : userAnswerRequests) {
       Answer answer = answerRepository.findById(req.answerId())
           .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
 
@@ -50,12 +50,37 @@ public class UserAnswerService {
   }
 
   @Transactional
-  public UserAnswerResponse createWithoutSaving(List<UserAnswerRequest> userAnswerRequest) {
+  public UserAnswerResponse createWithoutSaving(List<UserAnswerRequest> userAnswerRequests) {
     int totalScore = 0;
 
-    for (UserAnswerRequest req : userAnswerRequest) {
+    for (UserAnswerRequest req : userAnswerRequests) {
       Answer answer = answerRepository.findById(req.answerId())
           .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
+
+      totalScore += answer.getScore();
+    }
+
+    String level = levelRepository.findLevelByScore(totalScore)
+        .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
+
+    return userAnswerMapper.toUserAnswerResponse(level, totalScore);
+  }
+
+  @Transactional
+  public UserAnswerResponse update(Long userId, List<UserAnswerRequest> userAnswerRequests) {
+    User user = validateUserId(userId);
+
+    userAnswerRepository.deleteAllByUserId(user.getId());
+
+    int totalScore = 0;
+
+    for (UserAnswerRequest req : userAnswerRequests) {
+      Answer answer = answerRepository.findById(req.answerId())
+          .orElseThrow(
+              () -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
+
+      UserAnswer userAnswer = new UserAnswer(answer, user);
+      userAnswerRepository.save(userAnswer);
 
       totalScore += answer.getScore();
     }

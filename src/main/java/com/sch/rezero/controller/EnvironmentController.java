@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/environment")
+@RequestMapping("/api/environment")
 public class EnvironmentController {
 
   private final UserAnswerService userAnswerService;
@@ -33,6 +33,23 @@ public class EnvironmentController {
       UserAnswerResponse answer = userAnswerService.createWithoutSaving(userAnswerRequests);
       return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
+
+    UserAnswerResponse answer = userAnswerService.create(userId, userAnswerRequests);
+    return ResponseEntity.status(HttpStatus.OK).body(answer);
+  }
+
+  @PostMapping("/redo")
+  public ResponseEntity<UserAnswerResponse> update(
+      @RequestBody List<UserAnswerRequest> userAnswerRequests,
+      HttpSession session
+  ) {
+    User user = (User) session.getAttribute("user");
+
+    if (user == null) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    Long userId = user.getId();
 
     UserAnswerResponse answer = userAnswerService.create(userId, userAnswerRequests);
     return ResponseEntity.status(HttpStatus.OK).body(answer);
