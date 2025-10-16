@@ -27,7 +27,7 @@ public class LikeService {
     private final LikeMapper likeMapper;
 
     @Transactional
-    public LikeResponse createLike(Long userId, Long communityPostId) {
+    public LikeResponse create(Long userId, Long communityPostId) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         CommunityPost communityPost = communityPostRepository.findById(communityPostId)
                 .orElseThrow(NoSuchElementException::new);
