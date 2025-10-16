@@ -1,5 +1,6 @@
 package com.sch.rezero.service.community;
 
+import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.community.like.LikeQuery;
 import com.sch.rezero.dto.community.like.LikeResponse;
 import com.sch.rezero.dto.response.CursorPageResponse;
