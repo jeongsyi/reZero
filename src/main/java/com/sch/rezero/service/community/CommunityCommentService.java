@@ -96,7 +96,7 @@ public class CommunityCommentService {
 
     }
 
-    public CommunityCommentResponse update(Long userId, Long id,
+    public CommunityCommentResponse update(Long id, Long userId,
                                            CommunityCommentUpdateRequest communityCommentUpdateRequest) {
 
         CommunityComment comment = communityCommentRepository.findById(id)

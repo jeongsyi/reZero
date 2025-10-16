@@ -3,11 +3,13 @@ package com.sch.rezero.controller.community;
 import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentCreateRequest;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentResponse;
+import com.sch.rezero.dto.community.communityComment.CommunityCommentUpdateRequest;
 import com.sch.rezero.entity.community.CommunityComment;
 import com.sch.rezero.service.community.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,5 +34,18 @@ public class CommunityCommentController {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(created);
   }
+
+  @PatchMapping("{id}")
+  public ResponseEntity<CommunityCommentResponse> update(
+      @PathVariable Long id,
+      @RequestBody CommunityCommentUpdateRequest request
+  ) {
+    Long userId = userContext.getCurrentUserId();
+    CommunityCommentResponse updated = communityCommentService.update(id, userId, request);
+
+    return ResponseEntity.status(HttpStatus.OK).body(updated);
+  }
+
+
 
 }
