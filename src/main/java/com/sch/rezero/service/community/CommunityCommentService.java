@@ -38,7 +38,13 @@ public class CommunityCommentService {
 
         CommunityPost communityPost = validateCommunityPostId(communityPostId);
 
-        CommunityComment parent = communityCommentRepository.findById(communityCommentCreateRequest.parentId()).orElse(null);
+        CommunityComment parent = null;
+        Long parentId = communityCommentCreateRequest.parentId();
+
+        if (parentId != null) {
+            parent = communityCommentRepository.findById(parentId)
+                .orElseThrow(() -> new EntityNotFoundException("Parent comment not found"));
+        }
 
         CommunityComment communityComment = new CommunityComment(
                 user,
