@@ -9,6 +9,7 @@ import com.sch.rezero.service.community.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,11 @@ public class CommunityCommentController {
     return ResponseEntity.status(HttpStatus.OK).body(updated);
   }
 
+  @DeleteMapping("{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    Long userId = userContext.getCurrentUserId();
+    communityCommentService.delete(id, userId);
 
-
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }

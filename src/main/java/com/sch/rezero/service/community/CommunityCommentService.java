@@ -110,8 +110,7 @@ public class CommunityCommentService {
         return communityCommentMapper.toCommunityCommentResponse(comment);
     }
 
-    public void delete(Long userId, Long communityPostId, Long communityCommentId) {
-        CommunityPost communityPost = validateCommunityPostId(communityPostId);
+    public void delete(Long userId, Long communityCommentId) {
         CommunityComment communityComment = validateCommunityCommentId(communityCommentId);
 
         if (!communityComment.getUser().getId().equals(userId)) {
