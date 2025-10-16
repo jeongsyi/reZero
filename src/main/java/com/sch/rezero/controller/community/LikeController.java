@@ -33,11 +33,11 @@ public class LikeController {
     return ResponseEntity.status(HttpStatus.CREATED).body(like);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Void> delete(@PathVariable Long postId) {
+  @DeleteMapping("/{likeId}")
+  public ResponseEntity<Void> delete(@PathVariable Long likeId) {
     userContext.getCurrentUser();
 
-    likeService.delete(userContext.getCurrentUserId(), postId);
+    likeService.delete(userContext.getCurrentUserId(), likeId);
 
     return ResponseEntity.status(HttpStatus.OK).build();
   }

@@ -57,12 +57,15 @@ public class LikeService {
     }
 
     @Transactional
-    public void delete(Long userId, Long communityPostId) {
+    public void delete(Long userId, Long likeId) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        CommunityPost communityPost = communityPostRepository.findById(communityPostId)
-                .orElseThrow(NoSuchElementException::new);
+        Like like = likeRepository.findById(likeId).orElseThrow(NoSuchElementException::new);
 
-        likeRepository.deleteByUserAndCommunityPost(user, communityPost);
+        if (!like.getUser().equals(user)) {
+            throw new IllegalArgumentException("User and Community Post already exist");
+        }
+
+        likeRepository.deleteById(likeId);
     }
 
 }
