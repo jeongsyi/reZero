@@ -22,8 +22,8 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        Integer followerCount = followRepository.countByFollower(user);
-        Integer followingCount = followRepository.countByFollowing(user);
+        Integer followerCount = followRepository.countByFollowing(user);
+        Integer followingCount = followRepository.countByFollower(user);
 
         return userMapper.toUserResponse(user, followerCount, followingCount);
     }
