@@ -65,14 +65,14 @@ public class CommunityPostService {
     }
 
     @Transactional
-    public CommunityPostResponse update(Long userId, Long postId, CommunityPostUpdateRequest communityUpdateCreate) {
+    public CommunityPostResponse update(Long userId, Long postId, CommunityPostUpdateRequest communityUpdateRequest) {
         CommunityPost communityPost = validateCommunityPostId(postId);
 
         if (!communityPost.getUser().getId().equals(userId)) {
             throw new EntityNotFoundException("요청한 ID와 실제 ID가 다릅니다.");
         }
 
-        communityPost.update(communityUpdateCreate.title(), communityUpdateCreate.description());
+        communityPost.update(communityUpdateRequest.title(), communityUpdateRequest.description());
         return communityPostMapper.toCommunityPostResponse(communityPost);
     }
 

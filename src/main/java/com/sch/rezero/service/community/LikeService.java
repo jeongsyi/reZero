@@ -1,5 +1,6 @@
 package com.sch.rezero.service.community;
 
+import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.community.like.LikeQuery;
 import com.sch.rezero.dto.community.like.LikeResponse;
 import com.sch.rezero.dto.response.CursorPageResponse;
@@ -27,7 +28,7 @@ public class LikeService {
     private final LikeMapper likeMapper;
 
     @Transactional
-    public LikeResponse createLike(Long userId, Long communityPostId) {
+    public LikeResponse create(Long userId, Long communityPostId) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         CommunityPost communityPost = communityPostRepository.findById(communityPostId)
                 .orElseThrow(NoSuchElementException::new);
@@ -57,12 +58,15 @@ public class LikeService {
     }
 
     @Transactional
-    public void delete(Long userId, Long communityPostId) {
+    public void delete(Long userId, Long likeId) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        CommunityPost communityPost = communityPostRepository.findById(communityPostId)
-                .orElseThrow(NoSuchElementException::new);
+        Like like = likeRepository.findById(likeId).orElseThrow(NoSuchElementException::new);
 
-        likeRepository.deleteByUserAndCommunityPost(user, communityPost);
+        if (!like.getUser().equals(user)) {
+            throw new IllegalArgumentException("User and Community Post already exist");
+        }
+
+        likeRepository.deleteById(likeId);
     }
 
 }

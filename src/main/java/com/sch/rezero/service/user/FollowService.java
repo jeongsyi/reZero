@@ -1,5 +1,6 @@
 package com.sch.rezero.service.user;
 
+import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.user.follow.FollowCreateRequest;
 import com.sch.rezero.dto.user.follow.FollowResponse;
 import com.sch.rezero.entity.user.Follow;
@@ -8,6 +9,7 @@ import com.sch.rezero.mapper.user.FollowMapper;
 import com.sch.rezero.repository.user.FollowRepository;
 import com.sch.rezero.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,18 +45,14 @@ public class FollowService {
         return followMapper.toFollowResponse(follow);
     }
 
-    public void delete(Long followerId, Long followingId) {
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public void delete(Long userId, Long followId) {
+        Follow follow = followRepository.findById(followId).orElseThrow(() -> new EntityNotFoundException("Follow not found"));
 
-        User following = userRepository.findById(followingId)
-                .orElseThrow(() -> new EntityNotFoundException("Following not found"));
-
-        if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
-            throw new IllegalArgumentException("Follower and following are not the same");
+        if (!follow.getFollower().getId().equals(userId)) {
+            throw new IllegalArgumentException("Follower and following are the same");
         }
 
-        followRepository.deleteByFollowerAndFollowing(follower, following);
+        followRepository.delete(follow);
     }
 
 }
