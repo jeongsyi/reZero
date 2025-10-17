@@ -18,8 +18,8 @@ public class ScrapController {
     private final UserContext userContext;
 
     @GetMapping
-    public ResponseEntity<CursorPageResponse<ScrapResponse>> findAll(ScrapQuery query) {
-        var scraps = scrapService.findAllByUserId(query);
+    public ResponseEntity<CursorPageResponse<ScrapResponse>> findAll(@ModelAttribute ScrapQuery query) {
+        var scraps = scrapService.findAllByUserId(userContext.getCurrentUserId(),query);
         return ResponseEntity.status(HttpStatus.OK).body(scraps);
     }
 
