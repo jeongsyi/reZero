@@ -38,7 +38,13 @@ public class CommunityCommentService {
 
         CommunityPost communityPost = validateCommunityPostId(communityPostId);
 
-        CommunityComment parent = communityCommentRepository.findById(communityCommentCreateRequest.parentId()).orElse(null);
+        CommunityComment parent = null;
+        Long parentId = communityCommentCreateRequest.parentId();
+
+        if (parentId != null) {
+            parent = communityCommentRepository.findById(parentId)
+                .orElseThrow(() -> new EntityNotFoundException("Parent comment not found"));
+        }
 
         CommunityComment communityComment = new CommunityComment(
                 user,
@@ -96,22 +102,21 @@ public class CommunityCommentService {
 
     }
 
-    public CommunityCommentResponse update(Long userId, Long communityPostId, Long communityCommentId,
+    public CommunityCommentResponse update(Long id, Long userId,
                                            CommunityCommentUpdateRequest communityCommentUpdateRequest) {
 
-        CommunityPost communityPost = validateCommunityPostId(communityPostId);
-        CommunityComment communityComment = validateCommunityCommentId(communityCommentId);
+        CommunityComment comment = communityCommentRepository.findById(id)
+            .orElseThrow(EntityNotFoundException::new);
 
-        if (!communityComment.getUser().getId().equals(userId)) {
+        if (!comment.getUser().getId().equals(userId)) {
             throw new EntityNotFoundException("요청한 ID와 실제 댓글 ID가 다릅니다.");
         }
 
-        communityComment.update(communityCommentUpdateRequest.content());
-        return communityCommentMapper.toCommunityCommentResponse(communityComment);
+        comment.update(communityCommentUpdateRequest.content());
+        return communityCommentMapper.toCommunityCommentResponse(comment);
     }
 
-    public void delete(Long userId, Long communityPostId, Long communityCommentId) {
-        CommunityPost communityPost = validateCommunityPostId(communityPostId);
+    public void delete(Long userId, Long communityCommentId) {
         CommunityComment communityComment = validateCommunityCommentId(communityCommentId);
 
         if (!communityComment.getUser().getId().equals(userId)) {
