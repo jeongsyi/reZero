@@ -12,6 +12,7 @@ import com.sch.rezero.mapper.recycling.QnaCommentMapper;
 import com.sch.rezero.repository.recycling.QnaCommentRepository;
 import com.sch.rezero.repository.recycling.RecyclingPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,14 @@ public class QnaCommentService {
     public QnaCommentResponse create(Long userId, Long postId, QnaCommentCreateRequest qnaCommentCreateRequest) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-        QnaComment parent = qnaCommentRepository.findById(qnaCommentCreateRequest.parentId()).orElse(null);
+
+        QnaComment parent = null;
+        Long parentId = qnaCommentCreateRequest.parentId();
+
+        if (parentId != null) {
+            parent = qnaCommentRepository.findById(parentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Parent comment not found"));
+        }
 
         QnaComment qnaComment = new QnaComment(recyclingPost, user, parent, qnaCommentCreateRequest.content());
 

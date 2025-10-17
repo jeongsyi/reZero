@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface CommunityCommentMapper {
   @Mapping(source = "parent.id", target = "parentId")
   @Mapping(target = "userName", source = "user.name")
+  @Mapping(target = "children", ignore = true)
   CommunityCommentResponse toCommunityCommentResponse(CommunityComment comment);
 }

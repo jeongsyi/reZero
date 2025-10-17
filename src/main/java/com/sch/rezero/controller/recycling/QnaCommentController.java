@@ -21,7 +21,8 @@ public class QnaCommentController {
     private final UserContext userContext;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<CursorPageResponse<QnaCommentResponse>> findAllByPostId(@PathVariable Long postId, QnaCommentQuery query) {
+    public ResponseEntity<CursorPageResponse<QnaCommentResponse>> findAllByPostId(@PathVariable Long postId,
+                                                                                  @ModelAttribute QnaCommentQuery query) {
         var comment = qnaCommentService.findAllByPostId(postId, query);
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }

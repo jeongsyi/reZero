@@ -22,10 +22,10 @@ public class ScrapQueryRepositoryImpl implements ScrapQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public CursorPageResponse<Scrap> findAllByUserId(ScrapQuery query) {
+    public CursorPageResponse<Scrap> findAllByUserId(Long userId,ScrapQuery query) {
         List<Scrap> scraps = queryFactory.selectFrom(scrap)
                 .where(
-                        query.userId() != null ? scrap.user.id.eq(query.userId()) : null,
+                        scrap.user.id.eq(userId),
                         buildCursorCondition(query)
                 )
                 .orderBy(sortResolve(query.sortDirection()))

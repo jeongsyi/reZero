@@ -39,8 +39,8 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public CursorPageResponse<ScrapResponse> findAllByUserId(ScrapQuery query) {
-        CursorPageResponse<Scrap> result = scrapRepository.findAllByUserId(query);
+    public CursorPageResponse<ScrapResponse> findAllByUserId(Long userId, ScrapQuery query) {
+        CursorPageResponse<Scrap> result = scrapRepository.findAllByUserId(userId, query);
         List<ScrapResponse> contents = result.content().stream().map(scrapMapper::toResponse).toList();
 
         return new CursorPageResponse<>(
@@ -53,8 +53,8 @@ public class ScrapService {
     }
 
     @Transactional
-    public void delete(Long userId, Long scrapId) {
-        Scrap scrap = scrapRepository.findById(scrapId).orElseThrow(NoSuchElementException::new);
+    public void delete(Long userId, Long postId) {
+        Scrap scrap = scrapRepository.findByPostId(postId).orElseThrow(NoSuchElementException::new);
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
         if (!scrap.getUser().getId().equals(user.getId())) {
