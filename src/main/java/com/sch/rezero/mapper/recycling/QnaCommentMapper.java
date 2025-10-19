@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface QnaCommentMapper {
     @Mapping(source = "parent.id", target = "parentId")
     @Mapping(source = "user.name", target = "userName")
+    @Mapping(target = "children", ignore = true)
     QnaCommentResponse toQnaCommentResponse(QnaComment qnaComment);
 }

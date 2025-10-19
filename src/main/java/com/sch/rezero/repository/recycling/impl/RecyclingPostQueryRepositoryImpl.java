@@ -50,8 +50,8 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
 
         if (!posts.isEmpty()) {
             RecyclingPost last = posts.get(posts.size() - 1);
-            nextCursor = "createdAt".equalsIgnoreCase(query.sortField())
-                    ? last.getCreatedAt().toString() : String.valueOf(last.getScraps().size());
+            nextCursor = "scrap".equalsIgnoreCase(query.sortField())
+                    ? String.valueOf(last.getScraps().size()) : last.getCreatedAt().toString();
             nextIdAfter = last.getId();
         }
 
@@ -78,8 +78,7 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
     private OrderSpecifier<?>[] sortResolve(String sortField, String sortDirection) {
         Order order = "desc".equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
-
-        if ("like".equalsIgnoreCase(sortField)) {
+        if ("scrap".equalsIgnoreCase(sortField)) {
             return new OrderSpecifier[]{new OrderSpecifier<>(order, scrapCountExpr()),
                     new OrderSpecifier<>(order, recyclingPost.id)};
         } else {

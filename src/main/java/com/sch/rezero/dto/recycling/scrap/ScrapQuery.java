@@ -1,7 +1,6 @@
 package com.sch.rezero.dto.recycling.scrap;
 
 public record ScrapQuery(
-        Long userId,
         Long idAfter,
         String cursor,
         Integer size,

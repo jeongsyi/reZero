@@ -85,7 +85,13 @@ public class RecyclingPostService {
     public RecyclingPostResponse update(Long userId, Long postId, RecyclingPostUpdateRequest recyclingPostUpdateRequest) {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         RecyclingPost recyclingPost = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-        Category category = categoryRepository.findById(recyclingPostUpdateRequest.categoryId()).orElseThrow(NoSuchElementException::new);
+        Category category;
+
+        if (recyclingPostUpdateRequest.categoryId() != null) {
+            category = categoryRepository.findById(recyclingPostUpdateRequest.categoryId()).orElseGet(() -> categoryRepository.findByCategory("기타"));
+        } else {
+            category = recyclingPostRepository.findById(postId).get().getCategory();
+        }
 
         if (!user.getId().equals(recyclingPost.getUser().getId())) {
             throw new IllegalArgumentException("본인이 작성한 게시물만 수정 가능합니다");
