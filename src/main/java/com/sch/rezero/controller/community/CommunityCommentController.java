@@ -4,7 +4,6 @@ import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentCreateRequest;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentResponse;
 import com.sch.rezero.dto.community.communityComment.CommunityCommentUpdateRequest;
-import com.sch.rezero.entity.community.CommunityComment;
 import com.sch.rezero.service.community.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
