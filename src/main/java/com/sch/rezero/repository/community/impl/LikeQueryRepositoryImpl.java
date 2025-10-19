@@ -22,10 +22,10 @@ public class LikeQueryRepositoryImpl implements LikeQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public CursorPageResponse<Like> findAllByUserId(LikeQuery query) {
+    public CursorPageResponse<Like> findAllByUserId(Long userId, LikeQuery query) {
         List<Like> likes = queryFactory.selectFrom(like)
                 .where(
-                        query.userId() != null ? like.user.id.eq(query.userId()) : null,
+                        like.user.id.eq(userId),
                         buildCursorCondition(query)
                 )
                 .orderBy(sortResolve(query.sortDirection()))

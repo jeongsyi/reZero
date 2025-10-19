@@ -34,7 +34,7 @@ public class LikeController {
 
   @GetMapping
   public ResponseEntity<CursorPageResponse<LikeResponse>> findByUser(@ModelAttribute LikeQuery query) {
-    CursorPageResponse<LikeResponse> allByUserId = likeService.findAllByUserId(query);
+    CursorPageResponse<LikeResponse> allByUserId = likeService.findAllByUserId(userContext.getCurrentUserId(), query);
     return ResponseEntity.status(HttpStatus.OK).body(allByUserId);
   }
 
