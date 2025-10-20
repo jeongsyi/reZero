@@ -11,6 +11,7 @@ import com.sch.rezero.repository.environment.AnswerRepository;
 import com.sch.rezero.repository.environment.LevelRepository;
 import com.sch.rezero.repository.environment.UserAnswerRepository;
 import com.sch.rezero.repository.user.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,17 @@ public class UserAnswerService {
     User user = validateUserId(userId);
 
     int totalScore = 0;
+    List<UserAnswer> userAnswers = new ArrayList<>();
 
     for (UserAnswerRequest req : userAnswerRequests) {
       Answer answer = answerRepository.findById(req.answerId())
           .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
 
-      UserAnswer userAnswer = new UserAnswer(answer, user);
-      userAnswerRepository.save(userAnswer);
-
+      userAnswers.add(new UserAnswer(answer, user));
       totalScore += answer.getScore();
     }
+
+    userAnswerRepository.saveAll(userAnswers);
 
     String level = levelRepository.findLevelByScore(totalScore)
         .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
