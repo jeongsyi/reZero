@@ -5,5 +5,5 @@ import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.entity.community.Like;
 
 public interface LikeQueryRepository {
-    CursorPageResponse<Like> findAllByUserId(LikeQuery likeQuery);
+    CursorPageResponse<Like> findAllByUserId(Long userId, LikeQuery likeQuery);
 }

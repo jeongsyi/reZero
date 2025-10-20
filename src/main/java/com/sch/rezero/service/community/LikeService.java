@@ -44,8 +44,8 @@ public class LikeService {
     }
 
     @Transactional(readOnly = true)
-    public CursorPageResponse<LikeResponse> findAllByUserId(LikeQuery query) {
-        CursorPageResponse<Like> result = likeRepository.findAllByUserId(query);
+    public CursorPageResponse<LikeResponse> findAllByUserId(Long userId, LikeQuery query) {
+        CursorPageResponse<Like> result = likeRepository.findAllByUserId(userId, query);
         List<LikeResponse> contents = result.content().stream().map(likeMapper::toLikeResponse).toList();
 
         return new CursorPageResponse<>(
