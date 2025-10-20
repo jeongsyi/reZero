@@ -44,6 +44,7 @@ public class UserAnswerService {
     }
 
     userAnswerRepository.saveAll(userAnswers);
+    userAnswerRepository.flush();
 
     String level = levelRepository.findLevelByScore(totalScore)
         .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
