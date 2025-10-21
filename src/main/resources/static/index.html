@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>reZero - 제로웨이스트 커뮤니티</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div id="header-placeholder"></div>
+
+<section class="hero" id="hero">
+    <div class="hero-content">
+        <h1>햇살 아래의 작은 실천</h1>
+        <p>나뭇잎 그림자 사이로 스며드는 따뜻한 빛처럼,<br>
+            reZero와 함께 지속 가능한 일상을 만들어가요.</p>
+        <button onclick="scrollToStats()">♻️ 생활 속 재활용법 보러가기</button>
+    </div>
+</section>
+
+<section class="stats-section" id="stats">
+    <h2>회원 통계</h2>
+    <div class="charts-container">
+        <div class="chart-box">
+            <h3>지역별 통계</h3>
+            <canvas id="regionChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3>나이대별 통계</h3>
+            <canvas id="ageChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/common.js"></script>
+
+<script>
+    function scrollToStats() {
+        document.getElementById("stats").scrollIntoView({behavior: "smooth"});
+    }
+
+    let regionChartInstance = null;
+    let ageChartInstance = null;
+
+    async function fetchStats() {
+        const regionRes = await fetch("/api/stats/region");
+        const ageRes = await fetch("/api/stats/age");
+
+        const regionData = await regionRes.json();
+        const ageData = await ageRes.json();
+
+        createDonutChart("regionChart", regionData, "지역별 비율", "regionChartInstance");
+        createDonutChart("ageChart", ageData, "연령대 비율", "ageChartInstance");
+    }
+
+    function createDonutChart(canvasId, data, label, chartName) {
+        const ctx = document.getElementById(canvasId);
+
+        if (window[chartName]) window[chartName].destroy();
+
+        window[chartName] = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    label: label,
+                    data: Object.values(data),
+                    backgroundColor: [
+                        '#7fb77e', '#a9d08e', '#cfe8a9', '#e2f0cb',
+                        '#91c788', '#c2e7b0', '#e5f4ce', '#b0d89a'
+                    ],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {color: '#2a3d2b', font: {size: 14}}
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+    }
+
+    // 화면 내려갈 때 통계 애니메이션 표시
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) fetchStats();
+        });
+    }, {threshold: 0.3});
+
+    observer.observe(document.getElementById("stats"));
+</script>
+</body>
+</html>
