@@ -21,4 +21,17 @@ public record RecyclingPostQuery(
             sortDirection = "desc";
         }
     }
+
+    //UserId로 검색할 때만 사용함
+    public RecyclingPostQuery updateUserName(String userName) {
+        return new RecyclingPostQuery(
+                null,
+                null,
+                userName,
+                idAfter,
+                cursor,
+                size,
+                sortField,
+                sortDirection);
+    }
 }

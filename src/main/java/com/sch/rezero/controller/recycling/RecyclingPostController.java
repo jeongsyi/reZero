@@ -7,6 +7,7 @@ import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostResponse;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostUpdateRequest;
 import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.service.recycling.RecyclingPostService;
+import com.sch.rezero.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 public class RecyclingPostController {
     private final RecyclingPostService recyclingPostService;
     private final UserContext userContext;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<CursorPageResponse<RecyclingPostResponse>> findAll(RecyclingPostQuery query) {
@@ -33,6 +35,13 @@ public class RecyclingPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<RecyclingPostResponse> findByPostId(@PathVariable Long postId) {
         RecyclingPostResponse post = recyclingPostService.find(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @GetMapping("/page/{userId}")
+    public ResponseEntity<CursorPageResponse<RecyclingPostResponse>> findByUserId(RecyclingPostQuery query, @PathVariable Long userId) {
+        RecyclingPostQuery newQuery = query.updateUserName(userService.findById(userId).name());
+        CursorPageResponse<RecyclingPostResponse> post = recyclingPostService.findAll(newQuery);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
