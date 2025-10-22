@@ -71,3 +71,26 @@ function renderRecyclingPosts(posts) {
 
 loadMoreBtn.addEventListener("click", loadRecyclingPosts);
 window.addEventListener("DOMContentLoaded", loadRecyclingPosts);
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    // header/footer 먼저 로드
+    loadLayout().then(() => {
+        controlWriteButtonVisibility();
+    });
+});
+
+function controlWriteButtonVisibility() {
+    const writeBtn = document.querySelector(".btn.write");
+    if (!writeBtn) return;
+
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const userRole = localStorage.getItem("role");
+
+    // 로그인하지 않았거나, 관리자(admin)가 아니면 글쓰기 버튼 숨김
+    if (!isLoggedIn || userRole !== "ADMIN") {
+        writeBtn.style.display = "none";
+    } else {
+        writeBtn.style.display = "inline-block";
+    }
+}
