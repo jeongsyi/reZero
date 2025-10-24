@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -22,13 +23,13 @@ public class ProfileService {
     private final UserMapper userMapper;
 
     @Transactional
-    public ProfileResponse create(ProfileCreateRequest userCreateRequest) {
+    public ProfileResponse create(ProfileCreateRequest userCreateRequest, String profileUrl) {
         if (userRepository.existsByLoginId(userCreateRequest.userId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "LoginId already exists");
         }
 
         User user = new User(userCreateRequest.userId(), userCreateRequest.password(), userCreateRequest.name(),
-                userCreateRequest.role(), userCreateRequest.profileUrl(), userCreateRequest.birth(), userCreateRequest.region());
+                userCreateRequest.role(), profileUrl, userCreateRequest.birth(), userCreateRequest.region());
 
         userRepository.save(user);
 

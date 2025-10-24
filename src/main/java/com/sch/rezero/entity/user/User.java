@@ -29,7 +29,6 @@ public class User {
     @Column(name = "login_id", nullable = false)
     private String loginId;
 
-
     @Column(nullable = false)
     private String password;
 
@@ -52,8 +51,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> comments = new ArrayList<>();
 
-    public User(String loginId, String password, String name, Role role, String profileUrl,
-        LocalDate birth, String region) {
+    public User(String loginId, String password, String name, Role role,
+        String profileUrl, LocalDate birth, String region) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
