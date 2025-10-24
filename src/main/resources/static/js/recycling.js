@@ -8,7 +8,6 @@ window.addEventListener("DOMContentLoaded", () => {
         controlWriteButtonVisibility();
     });
 
-    // ✅ 스크롤 시 자동 로딩
     window.addEventListener("scroll", handleScroll);
 });
 
@@ -16,7 +15,6 @@ async function handleScroll() {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollBottom = window.innerHeight + window.scrollY;
 
-    // 스크롤이 바닥 근처 도달 시 다음 페이지 로드
     if (scrollBottom >= documentHeight - 200 && !isLoading && nextCursor) {
         await loadPosts();
     }
@@ -27,9 +25,8 @@ async function loadPosts() {
     isLoading = true;
 
     const postList = document.getElementById("post-list");
-    const size = 20; // ✅ 한 번에 20개씩 가져오기
+    const size = 20;
 
-    // ✅ 커서와 idAfter 모두 전송해야 다음 페이지 로드됨
     const url = nextCursor
         ? `/api/recycling-posts?size=${size}&cursor=${encodeURIComponent(nextCursor)}&idAfter=${nextIdAfter}`
         : `/api/recycling-posts?size=${size}`;
@@ -66,11 +63,9 @@ async function loadPosts() {
             postList.appendChild(card);
         });
 
-        // ✅ 다음 커서 및 다음 idAfter 갱신
         nextCursor = data.nextCursor ?? null;
         nextIdAfter = data.nextIdAfter ?? null;
 
-        // 더 이상 불러올 게시글이 없을 때 스크롤 이벤트 제거
         if (!data.hasNext && !Array.isArray(data)) {
             window.removeEventListener("scroll", handleScroll);
         }
@@ -89,4 +84,16 @@ function formatDate(dateStr) {
     if (!dateStr) return "";
     const d = new Date(dateStr);
     return d.toLocaleDateString("ko-KR", { year: "numeric", month: "short", day: "numeric" });
+}
+
+function controlWriteButtonVisibility() {
+    const writeButton = document.querySelector(".btn.board-write");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const role = localStorage.getItem("role");
+
+    if (isLoggedIn && role === "ADMIN") {
+        writeButton.style.display = "inline-block";
+    } else {
+        writeButton.style.display = "none";
+    }
 }

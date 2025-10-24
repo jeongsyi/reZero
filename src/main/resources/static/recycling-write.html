@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>재활용 게시글 작성 - reZero</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+<div id="header-placeholder"></div>
+
+<main class="write-container">
+    <h1>✏️ 재활용법 게시글 작성</h1>
+
+    <form id="recyclingForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required />
+        </div>
+
+        <div class="form-group">
+            <label for="category">카테고리</label>
+            <select id="category" name="categoryId" required>
+                <option value="">카테고리를 선택하세요</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">내용</label>
+            <textarea id="description" name="description" rows="8" placeholder="내용을 입력하세요" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="thumbNailImage">썸네일 이미지</label>
+            <input type="file" id="thumbNailImage" name="thumbNailImage" accept="image/*" required />
+            <img id="thumbnailPreview" class="preview-img" style="display:none;" />
+        </div>
+
+        <div class="form-group">
+            <label for="images">추가 이미지 (선택)</label>
+            <input type="file" id="images" name="images" accept="image/*" multiple />
+            <div id="imagePreviewContainer" class="multi-preview"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn write">등록</button>
+            <button type="button" class="btn cancel" onclick="window.location.href='/recycling-list.html'">취소</button>
+        </div>
+    </form>
+
+    <p class="error-message" id="errorMsg"></p>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/common.js" defer></script>
+<script src="/js/recycling-write.js" defer></script>
+</body>
+</html>
