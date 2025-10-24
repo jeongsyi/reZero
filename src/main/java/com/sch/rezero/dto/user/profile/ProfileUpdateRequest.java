@@ -21,10 +21,7 @@ public record ProfileUpdateRequest(
     LocalDate birth,
 
     @Size(max = 100)
-    String region,
-
-    @Size(max = 255)
-    String profileUrl
+    String region
 ) {
 
 }

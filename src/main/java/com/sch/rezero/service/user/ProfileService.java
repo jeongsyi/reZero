@@ -48,16 +48,17 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponse update(Long id, ProfileUpdateRequest profileUpdateRequest) {
+    public ProfileResponse update(Long id, ProfileUpdateRequest profileUpdateRequest, String profileUrl) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        if (userRepository.existsByLoginId(profileUpdateRequest.userId())) {
+        if (userRepository.existsByLoginId(profileUpdateRequest.userId())
+            && !user.getLoginId().equals(profileUpdateRequest.userId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "LoginId already exists");
         }
         user.update(profileUpdateRequest.userId(), profileUpdateRequest.password(),
                 profileUpdateRequest.name(),
-                profileUpdateRequest.profileUrl(), profileUpdateRequest.birth(),
+                profileUrl, profileUpdateRequest.birth(),
                 profileUpdateRequest.region());
 
         Integer followerCount = followRepository.countByFollower(user);

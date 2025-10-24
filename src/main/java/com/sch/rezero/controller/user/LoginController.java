@@ -1,5 +1,6 @@
 package com.sch.rezero.controller.user;
 
+import com.sch.rezero.config.S3Folder;
 import com.sch.rezero.config.S3Service;
 import com.sch.rezero.dto.user.auth.LoginRequest;
 import com.sch.rezero.dto.user.auth.LoginResponse;
@@ -60,7 +61,7 @@ public class LoginController {
     String imageUrl = null;
 
     if (profileImage != null && !profileImage.isEmpty()) {
-      imageUrl = s3Service.uploadFile(profileImage);  // ✅ S3 업로드 후 URL 생성
+      imageUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
     }
 
     ProfileResponse created = profileService.create(profileCreateRequest, imageUrl);
@@ -69,5 +70,4 @@ public class LoginController {
         .status(HttpStatus.CREATED)
         .body(created);
   }
-
 }
