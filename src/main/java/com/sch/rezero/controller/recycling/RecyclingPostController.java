@@ -1,5 +1,6 @@
 package com.sch.rezero.controller.recycling;
 
+import com.sch.rezero.config.S3Service;
 import com.sch.rezero.config.UserContext;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostCreateRequest;
 import com.sch.rezero.dto.recycling.recyclingPost.RecyclingPostQuery;
@@ -9,6 +10,7 @@ import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.service.recycling.RecyclingPostService;
 import com.sch.rezero.service.user.UserService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,15 +49,20 @@ public class RecyclingPostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RecyclingPostResponse> create(@RequestPart("request") @Valid RecyclingPostCreateRequest request,
-                                                        @RequestPart(value = "images", required = false) List<MultipartFile> recyclingImage) {
-        RecyclingPostResponse post = recyclingPostService.create(userContext.getCurrentUserId(), request, recyclingImage);
+                                                        @RequestPart("thumbsNailImage")  MultipartFile thumbsNailImage,
+                                                        @RequestPart(value = "images", required = false) List<MultipartFile> recyclingImage)
+        throws IOException {
+        RecyclingPostResponse post = recyclingPostService.create(userContext.getCurrentUserId(), request, thumbsNailImage, recyclingImage);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
     @PatchMapping("/{postId}")
     public ResponseEntity<RecyclingPostResponse> update(@PathVariable Long postId,
-                                                        @RequestBody RecyclingPostUpdateRequest request) {
-        RecyclingPostResponse post = recyclingPostService.update(userContext.getCurrentUserId(), postId, request);
+                                                        @RequestPart("request") RecyclingPostUpdateRequest request,
+                                                        @RequestPart(value = "thumbsNailImage", required = false)  MultipartFile thumbsNailImage,
+                                                        @RequestPart(value = "images", required = false) List<MultipartFile> recyclingImages)
+        throws IOException {
+        RecyclingPostResponse post = recyclingPostService.update(userContext.getCurrentUserId(), postId, request, thumbsNailImage, recyclingImages);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 

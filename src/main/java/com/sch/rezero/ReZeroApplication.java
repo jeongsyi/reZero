@@ -8,6 +8,7 @@ public class ReZeroApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(ReZeroApplication.class, args);
+    System.out.println("http://localhost:8080");
   }
 
 }
