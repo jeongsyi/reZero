@@ -49,25 +49,20 @@ public class UserController {
       @RequestPart("request") @Valid ProfileUpdateRequest profileUpdateRequest,
       @RequestPart(name = "profileImage", required = false) MultipartFile profileImage)
       throws IOException {
+    Long userId = userContext.getCurrentUserId();
 
-    User user = userContext.getCurrentUser();
-    String imageUrl = user.getProfileUrl();
+    User currentUser = userContext.getCurrentUser();
+    String profileUrl = currentUser.getProfileUrl();
 
     if (profileImage != null && !profileImage.isEmpty()) {
-      // 새 이미지가 들어오면: 기존 파일 삭제 후 새로 업로드
-      if (imageUrl != null) {
-        s3Service.deleteFile(imageUrl);
+      if (profileUrl != null && !profileUrl.isEmpty()) {
+        s3Service.deleteFile(profileUrl);
       }
-      imageUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
-    } else {
-      // 새 이미지가 없으면: 기존 파일 삭제 후 null로 초기화
-      if (imageUrl != null) {
-        s3Service.deleteFile(imageUrl);
-      }
-      imageUrl = null;
+
+      profileUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
     }
 
-    ProfileResponse updated = profileService.update(userContext.getCurrentUserId(), profileUpdateRequest, imageUrl);
+    ProfileResponse updated = profileService.update(userId, profileUpdateRequest, profileUrl);
 
     return ResponseEntity.status(HttpStatus.OK).body(updated);
   }
@@ -75,11 +70,11 @@ public class UserController {
   @DeleteMapping("/me")
   public ResponseEntity<Void> delete() {
     User user = userContext.getCurrentUser();
+    String profileUrl = user.getProfileUrl();
 
-    if (user.getProfileUrl() != null && !user.getProfileUrl().isEmpty()) {
-      s3Service.deleteFile(user.getProfileUrl());
+    if (profileUrl != null && !profileUrl.isEmpty()) {
+      s3Service.deleteFile(profileUrl);
     }
-
     profileService.delete(userContext.getCurrentUserId());
 
     return ResponseEntity.status(HttpStatus.OK).build();

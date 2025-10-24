@@ -45,26 +45,13 @@ public class S3Service {
   }
 
   public void deleteFile(String fileUrl) {
-    if (fileUrl == null || fileUrl.isEmpty()) return;
+    String key = fileUrl.substring(fileUrl.lastIndexOf(".amazonaws.com/") + 15);
 
-    try {
+    DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+        .bucket(bucket)
+        .key(key)
+        .build();
 
-      URI uri = new URI(fileUrl);
-      String key = uri.getPath().substring(1);
-
-      System.out.println("getHost: " + uri.getHost());
-      System.out.println("getPath: " + uri.getPath());
-      System.out.println("key: " + uri.getPath().substring(1));
-
-      DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-          .bucket(bucket)
-          .key(key)
-          .build();
-
-      s3Client.deleteObject(deleteObjectRequest);
-
-    } catch (Exception e) {
-      return;
-    }
+    s3Client.deleteObject(deleteObjectRequest);
   }
 }
