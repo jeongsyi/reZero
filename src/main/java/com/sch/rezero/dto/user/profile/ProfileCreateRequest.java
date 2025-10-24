@@ -27,9 +27,7 @@ public record ProfileCreateRequest(
 
     LocalDate birth,
 
-    String region,
-
-    String profileUrl
+    String region
 ) {
 
 }

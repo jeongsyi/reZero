@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 프로필 | reZero</title>
+
+  <!-- 스타일 -->
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- 스크립트 -->
+  <script defer src="/js/mypage.js"></script>
+</head>
+<body>
+<!-- 헤더 -->
+<div id="header-placeholder"></div>
+
+<!-- 메인 -->
+<main class="profile-container">
+  <section class="profile-box">
+    <h1>내 프로필</h1>
+
+    <!-- 프로필 정보 -->
+    <div class="profile-info">
+      <img id="profile-image" src="/img/default_profile.png" alt="프로필 이미지" />
+      <div class="details">
+        <h2 id="name"></h2>
+        <p><strong>ID:</strong> <span id="userId"></span></p>
+        <p><strong>역할:</strong> <span id="role"></span></p>
+        <p><strong>지역:</strong> <span id="region"></span></p>
+        <p><strong>생년월일:</strong> <span id="birth"></span></p>
+      </div>
+    </div>
+
+    <!-- 팔로우 정보 -->
+    <div class="follow-info">
+      <span>팔로워 <strong id="followerCount">0</strong></span> |
+      <span>팔로잉 <strong id="followingCount">0</strong></span>
+    </div>
+
+    <!-- 프로필 액션 -->
+    <div class="profile-actions">
+      <button id="edit-btn" class="btn">프로필 수정</button>
+      <button id="delete-btn" class="btn danger">계정 삭제</button>
+    </div>
+
+    <!-- ✨ 프로필 수정 폼 -->
+    <!-- ✨ 프로필 수정 폼 -->
+    <div id="edit-form" class="edit-form hidden">
+      <h3>프로필 수정</h3>
+
+      <input type="text" id="edit-userId" placeholder="아이디 (4~50자)" />
+      <input type="password" id="edit-password" placeholder="새 비밀번호 (8~20자, 숫자+문자+특수문자)" />
+      <input type="text" id="edit-name" placeholder="이름 (최대 100자)" />
+      <input type="date" id="edit-birth" placeholder="생년월일" />
+      <input type="text" id="edit-region" placeholder="지역 (최대 100자)" />
+      <input type="text" id="edit-profileUrl" placeholder="프로필 이미지 URL (최대 255자)" />
+
+      <div class="edit-buttons">
+        <button id="save-edit" class="btn">저장</button>
+        <button id="cancel-edit" class="btn gray">취소</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 푸터 -->
+<div id="footer-placeholder"></div>
+</body>
+</html>

@@ -489,6 +489,13 @@ footer {
     margin-top: 5px;
 }
 
+
+.profile-container {
+    margin-top: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
 /* ==============================================
    🌿 재활용 글쓰기 폼
    ============================================== */
@@ -589,4 +596,5 @@ footer {
 
 .btn.cancel:hover {
     background-color: #c5c5c5;
+
 }
