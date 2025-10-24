@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>재활용 게시판 - reZero</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 
 <body>
@@ -14,16 +14,9 @@
     <section class="recycling-header">
         <h1>♻️ 재활용 게시판</h1>
         <p>재활용 꿀팁, 분리배출 노하우, 제로웨이스트 실천 방법을 공유해요!</p>
-        <button class="btn write" onclick="location.href='recycling-write.html'">✏️ 글쓰기</button>
+        <button class="btn board-write" onclick="location.href='recycling-write.html'">✏️ 글쓰기</button>
     </section>
-
-    <section class="post-list" id="post-list">
-        <p class="loading">게시글을 불러오는 중입니다...</p>
-    </section>
-
-    <div class="pagination">
-        <button id="load-more" class="btn more">더보기</button>
-    </div>
+    <div id="post-list" class="post-list"></div>
 </main>
 
 <div id="footer-placeholder"></div>

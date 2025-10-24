@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>재활용 게시글 상세 - reZero</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<main class="recycling-detail-container">
+    <section class="recycling-detail">
+        <h1 id="post-title">로딩 중...</h1>
+        <div class="meta" id="post-meta"></div>
+        <img id="thumbnail" alt="썸네일" class="thumbnail" />
+        <p id="post-description" class="description"></p>
+
+        <div class="image-gallery" id="image-gallery"></div>
+
+        <div class="button-group">
+            <button class="btn" onclick="goBack()">← 목록으로</button>
+        </div>
+    </section>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/common.js"></script>
+<script src="/js/recycling-detail.js"></script>
+</body>
+</html>
