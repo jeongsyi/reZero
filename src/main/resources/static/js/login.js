@@ -25,6 +25,7 @@ async function handleLogin() {
         // 로그인 성공 → localStorage에 로그인 상태 저장
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("username", data.name);
+        localStorage.setItem("role", data.role);
 
         // alert 제거 — 바로 메인 페이지로 이동
         window.location.href = "index.html";
