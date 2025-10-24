@@ -496,105 +496,108 @@ footer {
     justify-content: center;
     align-items: flex-start;
 
-/* ==============================================
-   🌿 재활용 글쓰기 폼
-   ============================================== */
-.write-container {
-    max-width: 700px;
-    margin: 140px auto 80px;
-    background: #ffffff;
-    padding: 40px 50px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+    /* ==============================================
+       🌿 재활용 글쓰기 폼
+       ============================================== */
 
-.write-container h1 {
-    text-align: center;
-    color: #355c3a;
-    margin-bottom: 30px;
-    font-weight: 800;
-}
+    .write-container {
+        max-width: 700px;
+        margin: 140px auto 80px;
+        background: #ffffff;
+        padding: 40px 50px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-.form-group {
-    margin-bottom: 25px;
-}
+    .write-container h1 {
+        text-align: center;
+        color: #355c3a;
+        margin-bottom: 30px;
+        font-weight: 800;
+    }
 
-.form-group label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: #2a3d2b;
-}
+    .form-group {
+        margin-bottom: 25px;
+    }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 1rem;
-    color: #333;
-    background-color: #fff;
-    box-sizing: border-box;
-}
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #2a3d2b;
+    }
 
-.preview-img {
-    width: 200px;
-    margin-top: 10px;
-    border-radius: 10px;
-}
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #333;
+        background-color: #fff;
+        box-sizing: border-box;
+    }
 
-.multi-preview {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-}
+    .preview-img {
+        width: 200px;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
 
-.multi-preview img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
+    .multi-preview {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
 
-.button-group {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 20px;
-}
+    .multi-preview img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
 
-.btn {
-    width: 100px;
-    height: 40px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+    .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 20px;
+    }
 
-/* 등록 버튼 */
-.btn.write {
-    background-color: #5ca77f;
-    color: white;
-}
+    .btn {
+        width: 100px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-.btn.write:hover {
-    background-color: #4e916d;
-}
+    /* 등록 버튼 */
 
-/* 취소 버튼 */
-.btn.cancel {
-    background-color: #e0e0e0;
-    color: #333;
-}
+    .btn.write {
+        background-color: #5ca77f;
+        color: white;
+    }
 
-.btn.cancel:hover {
-    background-color: #c5c5c5;
+    .btn.write:hover {
+        background-color: #4e916d;
+    }
 
+    /* 취소 버튼 */
+
+    .btn.cancel {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    .btn.cancel:hover {
+        background-color: #c5c5c5;
+    }
 }
