@@ -1,96 +1,69 @@
-let cursor = null;
-let idAfter = null;
-let loading = false;
-const postList = document.getElementById("post-list");
-const loadMoreBtn = document.getElementById("load-more");
-
-async function loadRecyclingPosts() {
-    if (loading) return;
-    loading = true;
-    loadMoreBtn.disabled = true;
-    loadMoreBtn.innerText = "불러오는 중...";
-
-    const params = new URLSearchParams({
-        size: 10,
-        sortField: "createdAt",
-        sortDirection: "desc",
-    });
-
-    if (cursor && idAfter) {
-        params.append("cursor", cursor);
-        params.append("idAfter", idAfter);
-    }
-
-    try {
-        const res = await fetch(`/api/recycling-posts?${params.toString()}`);
-        if (!res.ok) throw new Error("API 요청 실패");
-        const data = await res.json();
-
-        if (!data.content || data.content.length === 0) {
-            if (!cursor) postList.innerHTML = "<p>등록된 게시글이 없습니다.</p>";
-            loadMoreBtn.style.display = "none";
-            return;
-        }
-
-        renderRecyclingPosts(data.content);
-
-        // 다음 커서 갱신
-        cursor = data.nextCursor;
-        idAfter = data.nextIdAfter;
-
-        if (!data.hasNext) loadMoreBtn.style.display = "none";
-    } catch (err) {
-        console.error("게시글 불러오기 실패:", err);
-        postList.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
-    } finally {
-        loading = false;
-        loadMoreBtn.disabled = false;
-        loadMoreBtn.innerText = "더보기";
-    }
-}
-
-function renderRecyclingPosts(posts) {
-    const html = posts
-        .map(
-            (p) => `
-      <article class="post-card" onclick="location.href='recycling-detail.html?id=${p.id}'">
-        <h2>${p.title}</h2>
-        <p class="desc">${p.description || "내용 없음"}</p>
-        <div class="meta">
-          <span>작성자: ${p.userName}</span>
-          <span>${new Date(p.createdAt).toLocaleDateString()}</span>
-        </div>
-      </article>
-    `
-        )
-        .join("");
-
-    if (cursor) postList.insertAdjacentHTML("beforeend", html);
-    else postList.innerHTML = html;
-}
-
-loadMoreBtn.addEventListener("click", loadRecyclingPosts);
-window.addEventListener("DOMContentLoaded", loadRecyclingPosts);
-
+let nextCursor = null;
+let isLoading = false;
 
 window.addEventListener("DOMContentLoaded", () => {
-    // header/footer 먼저 로드
     loadLayout().then(() => {
+        loadPosts();
         controlWriteButtonVisibility();
     });
+
+    document.getElementById("load-more").addEventListener("click", loadPosts);
 });
 
+async function loadPosts() {
+    if (isLoading) return;
+    isLoading = true;
+
+    const postList = document.getElementById("post-list");
+    const size = 9; // 한 번에 9개 (3x3)
+    const url = nextCursor
+        ? `/api/recycling-posts?size=${size}&cursor=${encodeURIComponent(nextCursor)}`
+        : `/api/recycling-posts?size=${size}`;
+
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("게시글 불러오기 실패");
+
+        const data = await res.json();
+        const posts = data.content;
+
+        posts.forEach(post => {
+            const card = document.createElement("div");
+            card.className = "post-card";
+            card.innerHTML = `
+                <img src="${post.thumbNailImageUrl || '/images/default-thumb.jpg'}" alt="${post.title}">
+                <div class="info">
+                    <div class="title">${post.title}</div>
+                    <div class="meta">${post.userName} · ${formatDate(post.createdAt)}</div>
+                </div>
+            `;
+            card.addEventListener("click", () => {
+                window.location.href = `/recycling/recycling-detail.html?id=${post.id}`;
+            });
+            postList.appendChild(card);
+        });
+
+        nextCursor = data.nextCursor;
+        document.getElementById("load-more").style.display = data.hasNext ? "block" : "none";
+    } catch (e) {
+        console.error(e);
+        postList.innerHTML = `<p>게시글을 불러오는 중 오류가 발생했습니다.</p>`;
+    } finally {
+        isLoading = false;
+    }
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("ko-KR", { year: "numeric", month: "short", day: "numeric" });
+}
+
+// 관리자 전용 글쓰기 버튼 표시
 function controlWriteButtonVisibility() {
     const writeBtn = document.querySelector(".btn.write");
     if (!writeBtn) return;
 
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    const userRole = localStorage.getItem("role");
-
-    // 로그인하지 않았거나, 관리자(admin)가 아니면 글쓰기 버튼 숨김
-    if (!isLoggedIn || userRole !== "ADMIN") {
-        writeBtn.style.display = "none";
-    } else {
-        writeBtn.style.display = "inline-block";
-    }
+    const role = localStorage.getItem("role");
+    writeBtn.style.display = (isLoggedIn && role === "ADMIN") ? "inline-block" : "none";
 }
