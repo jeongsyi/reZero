@@ -1,5 +1,7 @@
 package com.sch.rezero.service.user;
 
+import com.sch.rezero.config.S3Folder;
+import com.sch.rezero.config.S3Service;
 import com.sch.rezero.dto.user.profile.ProfileCreateRequest;
 import com.sch.rezero.dto.user.profile.ProfileResponse;
 import com.sch.rezero.dto.user.profile.ProfileUpdateRequest;
@@ -7,6 +9,8 @@ import com.sch.rezero.entity.user.User;
 import com.sch.rezero.mapper.user.UserMapper;
 import com.sch.rezero.repository.user.FollowRepository;
 import com.sch.rezero.repository.user.UserRepository;
+import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,11 +25,18 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final UserMapper userMapper;
+    private final S3Service s3Service;
 
     @Transactional
-    public ProfileResponse create(ProfileCreateRequest userCreateRequest, String profileUrl) {
+    public ProfileResponse create(ProfileCreateRequest userCreateRequest, MultipartFile profileImage) throws IOException {
         if (userRepository.existsByLoginId(userCreateRequest.userId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "LoginId already exists");
+        }
+
+        String profileUrl = null;
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
         }
 
         User user = new User(userCreateRequest.userId(), userCreateRequest.password(), userCreateRequest.name(),
@@ -48,7 +59,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponse update(Long id, ProfileUpdateRequest profileUpdateRequest, String profileUrl) {
+    public ProfileResponse update(Long id, ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImage) throws IOException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -56,6 +67,17 @@ public class ProfileService {
             && !user.getLoginId().equals(profileUpdateRequest.userId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "LoginId already exists");
         }
+
+        String profileUrl = user.getProfileUrl();
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            if (profileUrl != null && !profileUrl.isEmpty()) {
+                s3Service.deleteFile(profileUrl);
+            }
+
+            profileUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
+        }
+
         user.update(profileUpdateRequest.userId(), profileUpdateRequest.password(),
                 profileUpdateRequest.name(),
                 profileUrl, profileUpdateRequest.birth(),
@@ -69,8 +91,12 @@ public class ProfileService {
 
     @Transactional
     public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        String profileUrl = user.getProfileUrl();
+
+        if (profileUrl != null && !profileUrl.isEmpty()) {
+            s3Service.deleteFile(profileUrl);
         }
 
         userRepository.deleteById(id);

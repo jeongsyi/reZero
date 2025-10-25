@@ -32,7 +32,6 @@ public class LoginController {
   private final LoginService loginService;
   private final ProfileService profileService;
   private final UserMapper userMapper;
-  private final S3Service s3Service;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
@@ -58,13 +57,7 @@ public class LoginController {
       @RequestPart(name = "profileImage", required = false) MultipartFile profileImage
       ) throws IOException {
 
-    String imageUrl = null;
-
-    if (profileImage != null && !profileImage.isEmpty()) {
-      imageUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
-    }
-
-    ProfileResponse created = profileService.create(profileCreateRequest, imageUrl);
+    ProfileResponse created = profileService.create(profileCreateRequest, profileImage);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)

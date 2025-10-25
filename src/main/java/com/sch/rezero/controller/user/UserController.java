@@ -50,33 +50,14 @@ public class UserController {
       @RequestPart(name = "profileImage", required = false) MultipartFile profileImage)
       throws IOException {
     Long userId = userContext.getCurrentUserId();
-
-    User currentUser = userContext.getCurrentUser();
-    String profileUrl = currentUser.getProfileUrl();
-
-    if (profileImage != null && !profileImage.isEmpty()) {
-      if (profileUrl != null && !profileUrl.isEmpty()) {
-        s3Service.deleteFile(profileUrl);
-      }
-
-      profileUrl = s3Service.uploadFile(profileImage, S3Folder.PROFILE.getName());
-    }
-
-    ProfileResponse updated = profileService.update(userId, profileUpdateRequest, profileUrl);
+    ProfileResponse updated = profileService.update(userId, profileUpdateRequest, profileImage);
 
     return ResponseEntity.status(HttpStatus.OK).body(updated);
   }
 
   @DeleteMapping("/me")
   public ResponseEntity<Void> delete() {
-    User user = userContext.getCurrentUser();
-    String profileUrl = user.getProfileUrl();
-
-    if (profileUrl != null && !profileUrl.isEmpty()) {
-      s3Service.deleteFile(profileUrl);
-    }
     profileService.delete(userContext.getCurrentUserId());
-
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
