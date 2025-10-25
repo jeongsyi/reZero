@@ -1,5 +1,7 @@
 package com.sch.rezero.controller.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sch.rezero.config.S3Folder;
 import com.sch.rezero.config.S3Service;
 import com.sch.rezero.dto.user.auth.LoginRequest;
 import com.sch.rezero.dto.user.auth.LoginResponse;
@@ -31,7 +33,6 @@ public class LoginController {
   private final LoginService loginService;
   private final ProfileService profileService;
   private final UserMapper userMapper;
-  private final S3Service s3Service;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
@@ -57,17 +58,10 @@ public class LoginController {
       @RequestPart(name = "profileImage", required = false) MultipartFile profileImage
       ) throws IOException {
 
-    String imageUrl = null;
-
-    if (profileImage != null && !profileImage.isEmpty()) {
-      imageUrl = s3Service.uploadFile(profileImage);  // ✅ S3 업로드 후 URL 생성
-    }
-
-    ProfileResponse created = profileService.create(profileCreateRequest, imageUrl);
+    ProfileResponse created = profileService.create(profileCreateRequest, profileImage);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(created);
   }
-
 }

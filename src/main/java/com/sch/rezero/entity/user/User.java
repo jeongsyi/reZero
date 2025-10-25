@@ -64,29 +64,25 @@ public class User {
 
     public void update(String loginId, String password, String name, String profileUrl,
         LocalDate birth, String region) {
-        if (this.loginId != null && !this.loginId.equals(loginId)) {
+        if (loginId != null && !this.loginId.equals(loginId)) {
             this.loginId = loginId;
         }
-        if (this.password != null && !this.password.equals(password)) {
+        if (password != null && !this.password.equals(password)) {
             this.password = password;
         }
-        if (this.name != null && !this.name.equals(name)) {
+        if (name != null && !this.name.equals(name)) {
             this.name = name;
         }
-        if (profileUrl != null) {
-            if (this.profileUrl == null || !this.profileUrl.equals(profileUrl)) {
-                this.profileUrl = profileUrl;
-            }
+        if (profileUrl != null || (this.profileUrl != null && profileUrl == null)) {
+            this.profileUrl = profileUrl;
         }
-        if (birth != null) {
-            if (this.birth == null || !this.birth.equals(birth)) {
-                this.birth = birth;
-            }
+
+        if (birth != null || (this.birth != null && birth == null)) {
+            this.birth = birth;
         }
-        if (region != null) {
-            if (this.region == null || !this.region.equals(region)) {
-                this.region = region;
-            }
+
+        if (region != null || (this.region != null && region == null)) {
+            this.region = region;
         }
     }
 }

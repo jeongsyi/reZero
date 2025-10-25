@@ -12,40 +12,48 @@
 
 <section class="login-container">
     <div class="login-box">
-        <h2>회원가입</h2>
+        <h2>🌱 회원가입</h2>
 
-        <label for="userId" style="margin-top:10px;">아이디</label>
-        <input type="text" id="userId" placeholder="아이디를 입력하세요 (영문/숫자 조합)" />
-        <label for="password" style="margin-top:10px;">비밀번호</label>
-        <input type="password" id="password" placeholder="비밀번호 (문자, 숫자, 특수문자 포함 8자 이상)" />
-        <label for="name" style="margin-top:10px;">이름</label>
-        <input type="text" id="name" placeholder="이름을 입력하세요" />
+        <form id="signupForm" enctype="multipart/form-data">
 
-        <label for="birth" style="margin-top:10px;">생년월일</label>
-        <input type="date" id="birth" />
+            <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required />
+            <p class="error-message" id="userIdError"></p>
 
-        <label for="region" style="margin-top:10px;">지역</label>
-        <select id="region">
-            <option value="">지역을 선택하세요</option>
-            <option value="서울">서울</option>
-            <option value="경기">경기</option>
-            <option value="부산">부산</option>
-            <option value="대전">대전</option>
-            <option value="광주">광주</option>
-            <option value="강원">강원</option>
-            <option value="제주">제주</option>
-            <option value="인천">인천</option>
-            <option value="인천">충남</option>
-            <option value="인천">충북</option>
-            <option value="인천">전남</option>
-            <option value="인천">전북</option>
-            <option value="인천">경남</option>
-            <option value="인천">경북</option>
-        </select>
+            <input type="password" id="password" name="password" placeholder="비밀번호 (8~20자, 영문/숫자/특수문자 포함)" required />
+            <p class="error-message" id="passwordError"></p>
 
-        <button onclick="handleSignup()">회원가입</button>
-        <p class="error-message" id="errorMsg"></p>
-        <p>이미 계정이 있으신가요? <a href="login.html">로그인</a></p>
+            <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required />
+            <p class="error-message" id="nameError"></p>
+
+            <input type="date" id="birth" name="birth" />
+
+            <select id="region" name="region"> <option value="">지역을 선택하세요</option>
+                <option value="SEOUL">서울</option>
+                <option value="GYEONGGI">경기</option>
+                <option value="BUSAN">부산</option>
+                <option value="DAEJEON">대전</option>
+                <option value="GWANGJU">광주</option>
+                <option value="GANGWON">강원</option>
+                <option value="JEJU">제주</option>
+                <option value="INCHEON">인천</option>
+                <option value="CHUNGNAM">충남</option>
+                <option value="CHUNGBUK">충북</option>
+                <option value="JEONNAM">전남</option>
+                <option value="JEONBUK">전북</option>
+                <option value="GYEONGNAM">경남</option>
+                <option value="GYEONGBUK">경북</option>
+            </select>
+
+            <label for="profileImage" style="display: block; margin: 10px 0 5px; font-size: 0.9rem; color: #333;">프로필 이미지 (선택)</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)" />
+            <img id="imagePreview" style="display: none; max-width: 100px; margin-top: 10px; border-radius: 8px;" alt="이미지 미리보기">
+
+            <button type="submit">회원가입 완료</button>
+
+            <p class="error-message" id="signupErrorMsg"></p>
+
+            <p>이미 계정이 있으신가요? <a href="login.html">로그인</a></p>
+        </form>
     </div>
 </section>
 

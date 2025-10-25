@@ -6,10 +6,6 @@ public record RecyclingPostUpdateRequest(
         @Size(max = 255)
         String title,
         String description,
-
-        @Size(max = 255)
-        String thumbNailImage,
-
         Long categoryId
 ) {
 }

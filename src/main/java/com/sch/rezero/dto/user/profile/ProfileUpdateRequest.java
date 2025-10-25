@@ -23,8 +23,7 @@ public record ProfileUpdateRequest(
     @Size(max = 100)
     String region,
 
-    @Size(max = 255)
-    String profileUrl
+    Boolean deleteProfileImage
 ) {
 
 }
