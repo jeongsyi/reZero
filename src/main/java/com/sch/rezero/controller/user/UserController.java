@@ -33,8 +33,6 @@ public class UserController {
   private final ProfileService profileService;
   private final UserService userService;
   private final UserContext userContext;
-  private  final S3Service s3Service;
-
   // 본인 프로필 (my page)
   @GetMapping("/me")
   public ResponseEntity<ProfileResponse> find() {

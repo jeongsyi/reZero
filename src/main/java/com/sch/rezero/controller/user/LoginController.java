@@ -1,5 +1,6 @@
 package com.sch.rezero.controller.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sch.rezero.config.S3Folder;
 import com.sch.rezero.config.S3Service;
 import com.sch.rezero.dto.user.auth.LoginRequest;

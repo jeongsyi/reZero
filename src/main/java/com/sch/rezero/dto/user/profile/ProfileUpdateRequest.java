@@ -21,7 +21,9 @@ public record ProfileUpdateRequest(
     LocalDate birth,
 
     @Size(max = 100)
-    String region
+    String region,
+
+    Boolean deleteProfileImage
 ) {
 
 }
