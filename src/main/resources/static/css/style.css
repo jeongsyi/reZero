@@ -386,16 +386,14 @@ footer {
 }
 
 /* ==============================================
-   🌿 로그인
+   🌿 로그인 & 마이페이지 공통
    ============================================== */
 .login-container {
     margin-top: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* ⭐️ 수정된 부분: height: 100vh; 대신 min-height로 변경하여 내용이 길어져도 스크롤 가능하게 함 */
     min-height: 100vh;
-    /* 폼의 내용이 화면보다 짧을 때 대비하여 패딩 추가 (선택 사항) */
     padding: 120px 20px 80px;
     box-sizing: border-box;
 }
@@ -493,124 +491,168 @@ footer {
     margin-top: 5px;
 }
 
-/* ⭐️ 파일 입력 필드에 적절한 하단 여백 부여 */
+/* 파일 입력 필드에 적절한 하단 여백 부여 */
 .login-box input[type="file"] {
     margin-bottom: 14px;
 }
-/* ⭐️ 파일 입력 필드 label의 상하 여백 조정 */
+/* 파일 입력 필드 label의 상하 여백 조정 */
 .login-box label[for="profileImage"] {
     margin: 10px 0 5px;
 }
 
 
-.profile-container {
-    margin-top: 120px;
+/* ==============================================
+   🌿 로그인 & 마이페이지 공통
+   ============================================== */
+/* ... (이전 코드 유지) ... */
+
+/* ⭐️⭐️⭐️ 마이페이지 정보 정렬 및 간격 조정 (최종 수정) ⭐️⭐️⭐️ */
+#profileView {
+    /* 이 컨테이너 내부의 모든 인라인 요소(텍스트, p 요소 등)를 중앙 정렬합니다. */
+    text-align: center;
+}
+
+/* 프로필 이미지, 이름, 아이디 섹션을 감싸는 div의 하단 간격 조정 */
+#profileView > div:first-child {
+    /* 이미지/이름/아이디 섹션 아래 간격을 0으로 줄여서 역할 정보와 붙입니다. */
+    margin-bottom: 0;
+}
+
+/* 이름(h3)과 아이디(p)의 마진을 0으로 설정하여 밀착시킵니다. */
+#viewName, #viewUserId {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* 사용자 역할(role) 정보 */
+#viewRole {
+    display: block;
+    /* 역할 정보 위에 마진을 0으로 설정하여 아이디와 완전히 붙입니다. */
+    margin-top: 0;
+    /* 역할 정보 아래에만 10px 마진을 두어 그 다음 정보(생년월일)와 살짝 띄웁니다. */
+    margin-bottom: 10px;
+
+}
+
+/* 모든 p 태그의 중앙 정렬 */
+#profileView p {
+    /* 생년월일, 지역, 팔로워/팔로잉 p 태그의 상하 마진을 3px으로 줄입니다. */
+    margin: 3px auto;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* 팔로워/팔로잉 정보는 버튼 위에 적절한 간격을 두기 위해 상단 마진을 다시 설정합니다. */
+#profileView p:last-of-type {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+/* ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️ */
+
+/* ... (나머지 코드 유지) ... */
+
+
+/* ==============================================
+   🌿 재활용 글쓰기 폼
+   ============================================== */
+
+.write-container {
+    max-width: 700px;
+    margin: 140px auto 80px;
+    background: #ffffff;
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.write-container h1 {
+    text-align: center;
+    color: #355c3a;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #2a3d2b;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.preview-img {
+    width: 200px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.multi-preview {
     display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.multi-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
     justify-content: center;
-    align-items: flex-start;
+    margin-top: 20px;
+}
 
-    /* ==============================================
-       🌿 재활용 글쓰기 폼
-       ============================================== */
+.btn {
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-    .write-container {
-        max-width: 700px;
-        margin: 140px auto 80px;
-        background: #ffffff;
-        padding: 40px 50px;
-        border-radius: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
+/* 등록 버튼 */
 
-    .write-container h1 {
-        text-align: center;
-        color: #355c3a;
-        margin-bottom: 30px;
-        font-weight: 800;
-    }
+.btn.write {
+    background-color: #5ca77f;
+    color: white;
+}
 
-    .form-group {
-        margin-bottom: 25px;
-    }
+.btn.write:hover {
+    background-color: #4e916d;
+}
 
-    .form-group label {
-        display: block;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #2a3d2b;
-    }
+/* 취소 버튼 */
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-size: 1rem;
-        color: #333;
-        background-color: #fff;
-        box-sizing: border-box;
-    }
+.btn.cancel {
+    background-color: #e0e0e0;
+    color: #333;
+}
 
-    .preview-img {
-        width: 200px;
-        margin-top: 10px;
-        border-radius: 10px;
-    }
-
-    .multi-preview {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-    }
-
-    .multi-preview img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-    }
-
-    .button-group {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .btn {
-        width: 100px;
-        height: 40px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    /* 등록 버튼 */
-
-    .btn.write {
-        background-color: #5ca77f;
-        color: white;
-    }
-
-    .btn.write:hover {
-        background-color: #4e916d;
-    }
-
-    /* 취소 버튼 */
-
-    .btn.cancel {
-        background-color: #e0e0e0;
-        color: #333;
-    }
-
-    .btn.cancel:hover {
-        background-color: #c5c5c5;
-    }
+.btn.cancel:hover {
+    background-color: #c5c5c5;
 }

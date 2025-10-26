@@ -11,19 +11,26 @@
 <div id="header-placeholder"></div>
 
 <section class="login-container">
-  <div class="login-box" style="width: 400px;"> <h2>👤 마이페이지</h2>
+  <div class="login-box" style="width: 400px;">
+    <h2>👤 마이페이지</h2>
     <p class="error-message" id="globalErrorMsg"></p>
 
     <div id="profileView" style="display: block;">
-      <div style="text-align: center; margin-bottom: 20px;">
+      <div style="text-align: center;">
         <img id="viewProfileImage" src="img/default_profile.png" alt="프로필 이미지" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67;" />
-        <h3 id="viewName" style="margin-top: 10px; color: #355c3a;"></h3>
-        <p id="viewUserId" style="color: #666; font-size: 0.9rem;"></p>
+
+        <h3 id="viewName" style="color: #355c3a;">test04</h3>
+
+        <p id="viewUserId" style="color: #666; font-size: 0.9rem;">@test04</p>
       </div>
 
-      <p><strong>역할:</strong> <span id="viewRole"></span></p>
-      <p><strong>생년월일:</strong> <span id="viewBirth"></span></p>
-      <p><strong>지역:</strong> <span id="viewRegion"></span></p>
+      <p>
+        <strong><span id="viewRole">사용자</span></strong>
+      </p>
+
+      <p><strong>생년월일:</strong> <span id="viewBirth">2025-10-07</span></p>
+      <p><strong>지역:</strong> <span id="viewRegion">미입력</span></p>
+
       <p style="margin-top: 15px;">
         <strong>팔로워:</strong> <span id="viewFollowerCount">0</span>명 |
         <strong>팔로잉:</strong> <span id="viewFollowingCount">0</span>명
@@ -34,7 +41,6 @@
     </div>
 
     <form id="profileEditForm" enctype="multipart/form-data" style="display: none;">
-
       <div style="text-align: center; margin-bottom: 20px;">
         <img id="editProfileImagePreview" src="img/default_profile.png" alt="프로필 이미지 미리보기"
              style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67; cursor: pointer; display: block; margin: 0 auto;"
