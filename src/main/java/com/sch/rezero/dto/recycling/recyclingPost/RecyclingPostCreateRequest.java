@@ -12,10 +12,6 @@ public record RecyclingPostCreateRequest(
         @NotBlank
         String description,
 
-        @Size(max = 255)
-        @NotBlank
-        String thumbNailImage,
-
         @NotNull
         Long categoryId
 ) {

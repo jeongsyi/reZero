@@ -3,68 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>내 프로필 | reZero</title>
-
-  <!-- 스타일 -->
-  <link rel="stylesheet" href="/css/style.css" />
-
-  <!-- 스크립트 -->
-  <script defer src="/js/mypage.js"></script>
+  <title>reZero 마이페이지</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
-<!-- 헤더 -->
 <div id="header-placeholder"></div>
 
-<!-- 메인 -->
-<main class="profile-container">
-  <section class="profile-box">
-    <h1>내 프로필</h1>
+<section class="login-container">
+  <div class="login-box" style="width: 400px;">
+    <h2>👤 마이페이지</h2>
+    <p class="error-message" id="globalErrorMsg"></p>
 
-    <!-- 프로필 정보 -->
-    <div class="profile-info">
-      <img id="profile-image" src="/img/default_profile.png" alt="프로필 이미지" />
-      <div class="details">
-        <h2 id="name"></h2>
-        <p><strong>ID:</strong> <span id="userId"></span></p>
-        <p><strong>역할:</strong> <span id="role"></span></p>
-        <p><strong>지역:</strong> <span id="region"></span></p>
-        <p><strong>생년월일:</strong> <span id="birth"></span></p>
+    <div id="profileView" style="display: block;">
+      <div style="text-align: center;">
+        <img id="viewProfileImage" src="img/default_profile.png" alt="프로필 이미지" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67;" />
+
+        <h3 id="viewName" style="color: #355c3a;">test04</h3>
+
+        <p id="viewUserId" style="color: #666; font-size: 0.9rem;">@test04</p>
       </div>
+
+      <p>
+        <strong><span id="viewRole">사용자</span></strong>
+      </p>
+
+      <p><strong>생년월일:</strong> <span id="viewBirth">2025-10-07</span></p>
+      <p><strong>지역:</strong> <span id="viewRegion">미입력</span></p>
+
+      <p style="margin-top: 15px;">
+        <strong>팔로워:</strong> <span id="viewFollowerCount">0</span>명 |
+        <strong>팔로잉:</strong> <span id="viewFollowingCount">0</span>명
+      </p>
+
+      <button onclick="toggleEditMode(true)">프로필 수정하기</button>
+      <button onclick="handleDeleteUser()" style="background: #e07272;">회원 탈퇴</button>
     </div>
 
-    <!-- 팔로우 정보 -->
-    <div class="follow-info">
-      <span>팔로워 <strong id="followerCount">0</strong></span> |
-      <span>팔로잉 <strong id="followingCount">0</strong></span>
-    </div>
+    <form id="profileEditForm" enctype="multipart/form-data" style="display: none;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img id="editProfileImagePreview" src="img/default_profile.png" alt="프로필 이미지 미리보기"
+             style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67; cursor: pointer; display: block; margin: 0 auto;"
+             onclick="document.getElementById('editProfileImageFile').click();" />
+        <input type="file" id="editProfileImageFile" name="profileImage" accept="image/*" onchange="previewImage(event, 'editProfileImagePreview')" style="display: none;" />
 
-    <!-- 프로필 액션 -->
-    <div class="profile-actions">
-      <button id="edit-btn" class="btn">프로필 수정</button>
-      <button id="delete-btn" class="btn danger">계정 삭제</button>
-    </div>
-
-    <!-- ✨ 프로필 수정 폼 -->
-    <!-- ✨ 프로필 수정 폼 -->
-    <div id="edit-form" class="edit-form hidden">
-      <h3>프로필 수정</h3>
-
-      <input type="text" id="edit-userId" placeholder="아이디 (4~50자)" />
-      <input type="password" id="edit-password" placeholder="새 비밀번호 (8~20자, 숫자+문자+특수문자)" />
-      <input type="text" id="edit-name" placeholder="이름 (최대 100자)" />
-      <input type="date" id="edit-birth" placeholder="생년월일" />
-      <input type="text" id="edit-region" placeholder="지역 (최대 100자)" />
-      <input type="text" id="edit-profileUrl" placeholder="프로필 이미지 URL (최대 255자)" />
-
-      <div class="edit-buttons">
-        <button id="save-edit" class="btn">저장</button>
-        <button id="cancel-edit" class="btn gray">취소</button>
+        <button type="button" onclick="handleImageRemoval()"
+                style="background: #ccc; color: #333; width: auto; padding: 5px 10px; font-size: 0.85rem; margin-top: 10px; border-radius: 5px;">
+          이미지 삭제
+        </button>
       </div>
-    </div>
-  </section>
-</main>
 
-<!-- 푸터 -->
+      <label for="editUserId">아이디</label>
+      <input type="text" id="editUserId" name="userId" required />
+      <p class="error-message" id="editUserIdError"></p>
+
+      <label for="editName">이름</label>
+      <input type="text" id="editName" name="name" required />
+      <p class="error-message" id="editNameError"></p>
+
+      <label for="editPassword">새 비밀번호 (변경 시에만 입력)</label>
+      <input type="password" id="editPassword" name="password" placeholder="비밀번호 (변경하지 않으려면 비워두세요)" />
+      <p class="error-message" id="editPasswordError"></p>
+
+      <label for="editBirth">생년월일</label>
+      <input type="date" id="editBirth" name="birth" />
+
+      <label for="editRegion">지역</label>
+      <select id="editRegion" name="region">
+        <option value="">지역을 선택하세요</option>
+        <option value="SEOUL">서울</option>
+        <option value="GYEONGGI">경기</option>
+        <option value="BUSAN">부산</option>
+        <option value="DAEJEON">대전</option>
+        <option value="GWANGJU">광주</option>
+        <option value="GANGWON">강원</option>
+        <option value="JEJU">제주</option>
+        <option value="INCHEON">인천</option>
+        <option value="CHUNGNAM">충남</option>
+        <option value="CHUNGBUK">충북</option>
+        <option value="JEONNAM">전남</option>
+        <option value="JEONBUK">전북</option>
+        <option value="GYEONGNAM">경남</option>
+        <option value="GYEONGBUK">경북</option>
+      </select>
+
+      <button type="submit">변경 내용 저장</button>
+      <button type="button" onclick="toggleEditMode(false)" style="background: #e0e0e0; color: #333;">취소</button>
+
+      <p class="error-message" id="editFormErrorMsg"></p>
+    </form>
+  </div>
+</section>
+
 <div id="footer-placeholder"></div>
+
+<script src="js/common.js"></script>
+<script src="js/mypage.js"></script>
 </body>
 </html>

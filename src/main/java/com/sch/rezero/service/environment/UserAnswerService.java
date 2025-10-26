@@ -29,76 +29,78 @@ public class UserAnswerService {
   private final UserAnswerMapper userAnswerMapper;
 
   @Transactional
-  public UserAnswerResponse create(Long userId, List<UserAnswerRequest> userAnswerRequests) {
+  public UserAnswerResponse create(Long userId, List<UserAnswerRequest> requests) {
+    return saveOrUpdate(userId, requests, false);
+  }
+
+
+  @Transactional(readOnly = true)
+  public UserAnswerResponse createWithoutSaving(List<UserAnswerRequest> userAnswerRequests) {
+    List<Long> answerIds = userAnswerRequests.stream()
+        .map(UserAnswerRequest::answerId)
+        .toList();
+
+    List<Answer> answers = answerRepository.findAllById(answerIds);
+
+    if (answers.size() != answerIds.size()) {
+      throw new NoSuchElementException("Some answers not found");
+    }
+
+    int totalScore = answers.stream()
+        .mapToInt(Answer::getScore)
+        .sum();
+
+    String level = levelRepository.findLevelByScore(totalScore)
+        .map(Level::getName)
+        .orElseThrow(() -> new NoSuchElementException("Level not found"));
+
+    return userAnswerMapper.toUserAnswerResponse(level, totalScore);
+  }
+
+
+  @Transactional
+  public UserAnswerResponse update(Long userId, List<UserAnswerRequest> requests) {
+    return saveOrUpdate(userId, requests, true);
+  }
+
+  private UserAnswerResponse saveOrUpdate(Long userId, List<UserAnswerRequest> requests, boolean isUpdate) {
+    // 1️⃣ 유저 검증
     User user = validateUserId(userId);
 
-    int totalScore = 0;
-    List<UserAnswer> userAnswers = new ArrayList<>();
-
-    for (UserAnswerRequest req : userAnswerRequests) {
-      Answer answer = answerRepository.findById(req.answerId())
-          .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
-
-      userAnswers.add(new UserAnswer(answer, user));
-      totalScore += answer.getScore();
+    if (isUpdate) {
+      userAnswerRepository.deleteAllByUserId(user.getId());
     }
+
+    List<Long> answerIds = requests.stream()
+        .map(UserAnswerRequest::answerId)
+        .toList();
+
+    List<Answer> answers = answerRepository.findAllById(answerIds);
+
+    if (answers.size() != answerIds.size()) {
+      throw new NoSuchElementException("Some answers not found");
+    }
+
+    int totalScore = answers.stream()
+        .mapToInt(Answer::getScore)
+        .sum();
+
+    List<UserAnswer> userAnswers = answers.stream()
+        .map(answer -> new UserAnswer(answer, user))
+        .toList();
 
     userAnswerRepository.saveAll(userAnswers);
-    userAnswerRepository.flush();
 
     String level = levelRepository.findLevelByScore(totalScore)
-        .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
-
-    return userAnswerMapper.toUserAnswerResponse(level, totalScore);
-  }
-
-  @Transactional
-  public UserAnswerResponse createWithoutSaving(List<UserAnswerRequest> userAnswerRequests) {
-    int totalScore = 0;
-
-    for (UserAnswerRequest req : userAnswerRequests) {
-      Answer answer = answerRepository.findById(req.answerId())
-          .orElseThrow(() -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
-
-      totalScore += answer.getScore();
-    }
-
-    String level = levelRepository.findLevelByScore(totalScore)
-        .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
-
-    return userAnswerMapper.toUserAnswerResponse(level, totalScore);
-  }
-
-  @Transactional
-  public UserAnswerResponse update(Long userId, List<UserAnswerRequest> userAnswerRequests) {
-    User user = validateUserId(userId);
-
-    userAnswerRepository.deleteAllByUserId(user.getId());
-
-    int totalScore = 0;
-
-    for (UserAnswerRequest req : userAnswerRequests) {
-      Answer answer = answerRepository.findById(req.answerId())
-          .orElseThrow(
-              () -> new NoSuchElementException("Answer with id " + req.answerId() + " not found"));
-
-      UserAnswer userAnswer = new UserAnswer(answer, user);
-      userAnswerRepository.save(userAnswer);
-
-      totalScore += answer.getScore();
-    }
-
-    String level = levelRepository.findLevelByScore(totalScore)
-        .map(Level::getName).orElseThrow(() -> new NoSuchElementException("Level not found"));
+        .map(Level::getName)
+        .orElseThrow(() -> new NoSuchElementException("Level not found"));
 
     return userAnswerMapper.toUserAnswerResponse(level, totalScore);
   }
 
 
   private User validateUserId(Long userId) {
-    return userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+    return userRepository.findById(userId)
+        .orElseThrow(NoSuchElementException::new);
   }
-
-
-
 }
