@@ -109,6 +109,7 @@ public class RecyclingPostService {
             throw new IllegalArgumentException("본인이 작성한 게시물만 수정 가능합니다");
         }
 
+        // 썸네일 수정
         if (thumbnailImage != null && !thumbnailImage.isEmpty()) {
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 s3Service.deleteFile(imageUrl);
@@ -117,10 +118,13 @@ public class RecyclingPostService {
             imageUrl = s3Service.uploadFile(thumbnailImage, S3Folder.RECYCLING_THUMBNAIL.getName());
         }
 
+        // 본이미지 수정
         if (recyclingImages != null) {
-            if (recyclingPost.getImages().isEmpty()) {
+            if (!recyclingPost.getImages().isEmpty()) {
                 for (RecyclingImage oldImage : List.copyOf(recyclingPost.getImages())) {
-                    s3Service.deleteFile(oldImage.getImageUrl());
+                    if (oldImage.getImageUrl() != null && !oldImage.getImageUrl().isEmpty()) {
+                        s3Service.deleteFile(oldImage.getImageUrl());
+                    }
                     recyclingPost.deleteImage(oldImage);
                     recyclingImageRepository.delete(oldImage);
                 }
@@ -170,20 +174,20 @@ public class RecyclingPostService {
         recyclingPostRepository.delete(post);
     }
 
-    @Transactional
-    public void deleteImage(HttpSession session, Long postId, Long imageId) {
-        User loginUser = (User) session.getAttribute("user");
-        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
-        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-        RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
-
-        if (!user.getId().equals(post.getUser().getId())) {
-            throw new IllegalArgumentException("게시물이 작성한 사용자만 이미지 삭제가 가능합니다");
-        }
-        if (!image.getPost().getId().equals(post.getId())) {
-            throw new IllegalArgumentException("해당 게시글의 이미지가 아닙니다.");
-        }
-
-        post.deleteImage(image);
-    }
+//    @Transactional
+//    public void deleteImage(HttpSession session, Long postId, Long imageId) {
+//        User loginUser = (User) session.getAttribute("user");
+//        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
+//        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
+//        RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
+//
+//        if (!user.getId().equals(post.getUser().getId())) {
+//            throw new IllegalArgumentException("게시물이 작성한 사용자만 이미지 삭제가 가능합니다");
+//        }
+//        if (!image.getPost().getId().equals(post.getId())) {
+//            throw new IllegalArgumentException("해당 게시글의 이미지가 아닙니다.");
+//        }
+//
+//        post.deleteImage(image);
+//    }
 }
