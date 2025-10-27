@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -41,7 +40,6 @@ public class CommunityPost {
   @Column(nullable = false)
   private String title;
 
-  @Lob
   @Column(columnDefinition = "TEXT", nullable = false)
   private String description;
 

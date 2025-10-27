@@ -13,21 +13,19 @@ function checkAdminAccess() {
     const role = localStorage.getItem("role");
     if (!isLoggedIn || role !== "ADMIN") {
         alert("관리자만 글을 작성할 수 있습니다.");
-        window.location.href = "/recycling/recycling.html";
+        window.location.href = "/recycling-list.html";
     }
 }
 
 async function loadCategories() {
     const res = await fetch("/api/category");
-    if (!res.ok) return;
-
     const categories = await res.json();
-    const select = document.getElementById("category");
 
+    const select = document.getElementById("category");
     categories.forEach(c => {
         const option = document.createElement("option");
-        option.value = c.category;
-        option.textContent = c.category;
+        option.value = c.id || c.categoryId;
+        option.textContent = c.category || c.name;
         select.appendChild(option);
     });
 }
@@ -40,14 +38,28 @@ function previewThumbnail(e) {
     preview.style.display = "block";
 }
 
+let selectedFiles = [];
+
 function previewImages(e) {
     const container = document.getElementById("imagePreviewContainer");
+    const newFiles = Array.from(e.target.files);
+    selectedFiles = [...selectedFiles, ...newFiles];
     container.innerHTML = "";
-    Array.from(e.target.files).forEach(file => {
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        container.appendChild(img);
+
+    selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = event => {
+            const img = document.createElement("img");
+            img.src = event.target.result;
+            img.alt = file.name;
+            container.appendChild(img);
+        };
+        reader.readAsDataURL(file);
     });
+
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(f => dataTransfer.items.add(f));
+    e.target.files = dataTransfer.files;
 }
 
 async function handleSubmit(e) {
@@ -69,12 +81,12 @@ async function handleSubmit(e) {
     const requestData = {
         title,
         description,
-        thumbNailImage: thumbNailFile.name, // 서버에서 URL로 변환할 예정
-        categoryId: Number(categoryId)
+        categoryId: Number(categoryId),
     };
 
     const formData = new FormData();
     formData.append("request", new Blob([JSON.stringify(requestData)], { type: "application/json" }));
+    formData.append("thumbsNailImage", thumbNailFile);
     Array.from(imageFiles).forEach(f => formData.append("images", f));
 
     try {
@@ -91,7 +103,6 @@ async function handleSubmit(e) {
         alert("게시글이 성공적으로 등록되었습니다!");
         window.location.href = "/recycling/recycling.html";
     } catch (err) {
-        console.error(err);
         errorMsg.textContent = "등록 중 오류가 발생했습니다.";
     }
 }
