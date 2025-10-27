@@ -30,7 +30,6 @@ public class RecyclingPost {
     @Column(nullable = false)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 

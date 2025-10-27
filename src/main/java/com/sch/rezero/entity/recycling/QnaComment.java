@@ -33,7 +33,6 @@ public class QnaComment {
     @JoinColumn(name = "parent_id")
     private QnaComment parent;
 
-    @Lob
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
