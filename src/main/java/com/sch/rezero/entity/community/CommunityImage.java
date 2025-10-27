@@ -43,6 +43,11 @@ public class CommunityImage {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  public CommunityImage(CommunityPost communityPost, String imageUrl) {
+    this.communityPost = communityPost;
+    this.imageUrl = imageUrl;
+  }
+
   private void update(String image_url) {
     if (image_url != null && !image_url.equals(this.imageUrl)) {
       this.imageUrl = image_url;

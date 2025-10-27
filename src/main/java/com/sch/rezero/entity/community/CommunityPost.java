@@ -43,8 +43,6 @@ public class CommunityPost {
   @Column(columnDefinition = "TEXT", nullable = false)
   private String description;
 
-  @Column(name = "thumb_nail_image", nullable = false)
-  private String thumbNailImageUrl;
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
@@ -63,11 +61,10 @@ public class CommunityPost {
   @OneToMany(mappedBy = "communityPost", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Like> likes = new ArrayList<>();
 
-  public CommunityPost(User user, String title, String description, String thumbNailImageUrl) {
+  public CommunityPost(User user, String title, String description) {
     this.user = user;
     this.title = title;
     this.description = description;
-    this.thumbNailImageUrl = thumbNailImageUrl;
   }
 
   public void update(String title, String description) {
@@ -77,5 +74,13 @@ public class CommunityPost {
     if (description != null && !description.equals(this.description)) {
       this.description = description;
     }
+  }
+
+  public void addImage(CommunityImage image) {
+    this.images.add(image);
+  }
+
+  public void deleteImage(CommunityImage image) {
+    this.images.remove(image);
   }
 }
