@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>커뮤니티 글쓰기 | reZero</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/community-write.js"></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="write-container">
+  <h1>커뮤니티 글쓰기</h1>
+  <form id="communityForm" enctype="multipart/form-data">
+    <!-- 제목 -->
+    <div class="form-group">
+      <input type="text" id="title" name="title" placeholder="제목을 입력하세요" maxlength="255" required>
+    </div>
+
+    <!-- 내용 -->
+    <div class="form-group">
+      <textarea id="description" name="description" rows="7" placeholder="내용을 입력하세요" required></textarea>
+    </div>
+
+    <!-- 이미지 업로드 -->
+    <div class="form-group">
+      <label for="images">📸 사진 추가 (선택)</label>
+      <input type="file" id="images" name="images" multiple accept="image/*">
+      <div id="imagePreview" class="multi-preview"></div>
+    </div>
+
+    <div class="button-group">
+      <button type="button" class="btn cancel" onclick="history.back()">취소</button>
+      <button type="submit" class="btn write">등록</button>
+    </div>
+  </form>
+</section>
+
+<div id="footer-placeholder"></div>
+</body>
+</html>

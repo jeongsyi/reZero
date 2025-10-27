@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 글보기 | reZero</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/community-detail.js"></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<main class="recycling-detail-container">
+  <article class="recycling-detail" id="communityDetail">
+    <!-- JS에서 게시글 내용 렌더링 -->
+  </article>
+
+  <!-- 댓글 영역 -->
+  <section class="comment-section">
+    <h2>💬 댓글</h2>
+    <div id="commentList"></div>
+
+    <form id="commentForm">
+      <textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
+      <button type="submit" class="btn write">등록</button>
+    </form>
+  </section>
+</main>
+
+<div id="footer-placeholder"></div>
+</body>
+</html>
