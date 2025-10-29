@@ -11,6 +11,8 @@ public record QnaCommentResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String userName,
-        List<QnaCommentResponse> children
+        String userId,
+        List<QnaCommentResponse> children,
+        String profileUrl
 ) {
 }

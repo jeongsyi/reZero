@@ -82,7 +82,9 @@ public class QnaCommentService {
                             parentDto.createdAt(),
                             parentDto.updatedAt(),
                             parentDto.userName(),
-                            childDtos
+                            parentDto.userId(),
+                            childDtos,
+                            parentDto.profileUrl()
                     );
                 })
                 .toList();

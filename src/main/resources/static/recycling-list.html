@@ -16,6 +16,31 @@
         <p>재활용 꿀팁, 분리배출 노하우, 제로웨이스트 실천 방법을 공유해요!</p>
         <button class="btn board-write" onclick="location.href='recycling-write.html'">✏️ 글쓰기</button>
     </section>
+
+    <section class="board-controls">
+        <select id="searchType">
+            <option value="title">제목</option>
+            <option value="description">내용</option>
+        </select>
+
+        <input type="text" id="searchKeyword" placeholder="검색어를 입력하세요" />
+
+        <select id="sortSelect">
+            <option value="createdAt-desc">최신순</option>
+            <option value="createdAt-asc">오래된순</option>
+            <option value="scrap-desc">스크랩 많은 순</option>
+            <option value="scrap-asc">스크랩 적은 순</option>
+        </select>
+
+        <select id="limitSelect">
+            <option value="20">20개씩 보기</option>
+            <option value="40">40개씩 보기</option>
+            <option value="80">80개씩 보기</option>
+        </select>
+
+        <button id="searchBtn" class="btn">검색</button>
+    </section>
+
     <div id="post-list" class="post-list"></div>
 </main>
 
