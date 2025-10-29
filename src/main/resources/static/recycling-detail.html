@@ -4,6 +4,10 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>재활용 게시글 상세 - reZero</title>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
@@ -16,7 +20,31 @@
         <img id="thumbnail" alt="썸네일" class="thumbnail" />
         <p id="post-description" class="description"></p>
 
-        <div class="image-gallery" id="image-gallery"></div>
+        <!-- 댓글 섹션 -->
+        <section class="comment-section">
+            <h2>댓글</h2>
+
+            <!-- 댓글 작성 -->
+            <div class="comment-form">
+                <textarea id="new-comment-content" placeholder="댓글을 입력하세요"></textarea>
+                <button id="submit-comment">등록</button>
+            </div>
+
+            <div class="comment-header-top">
+                <select id="sort-select">
+                    <option value="asc">오래된순</option>
+                    <option value="desc">최신순</option>
+                </select>
+            </div>
+
+            <!-- 댓글 리스트 -->
+            <div id="comment-list"></div>
+
+            <!-- 로드 더보기 -->
+            <div class="load-more-container">
+                <button id="load-more-btn">댓글 더보기</button>
+            </div>
+        </section>
 
         <div class="button-group">
             <button class="btn" onclick="goBack()">← 목록으로</button>

@@ -30,6 +30,7 @@ function logout() {
   fetch("/api/auth/logout", { method: "POST" });
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("username");
+  localStorage.removeItem("userId");
   window.location.href = "index.html";
 }
 

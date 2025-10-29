@@ -2,13 +2,18 @@ let nextCursor = null;
 let nextIdAfter = null;
 let isLoading = false;
 
-window.addEventListener("DOMContentLoaded", () => {
-    loadLayout().then(() => {
-        loadPosts();
-        controlWriteButtonVisibility();
-    });
+window.addEventListener("DOMContentLoaded", async () => {
+    await loadLayout();
+    controlWriteButtonVisibility();
+
+    await loadPosts();
 
     window.addEventListener("scroll", handleScroll);
+
+    document.getElementById("searchBtn").addEventListener("click", resetAndSearch);
+    document.getElementById("sortSelect").addEventListener("change", resetAndSearch);
+    document.getElementById("limitSelect").addEventListener("change", resetAndSearch);
+    document.getElementById("searchType").addEventListener("change", resetAndSearch);
 });
 
 async function handleScroll() {
@@ -25,18 +30,29 @@ async function loadPosts() {
     isLoading = true;
 
     const postList = document.getElementById("post-list");
-    const size = 20;
 
-    const url = nextCursor
-        ? `/api/recycling-posts?size=${size}&cursor=${encodeURIComponent(nextCursor)}&idAfter=${nextIdAfter}`
-        : `/api/recycling-posts?size=${size}`;
+    const searchType = document.getElementById("searchType")?.value || "title";
+    const keyword = document.getElementById("searchKeyword")?.value.trim() || "";
+    const [sortField, sortDirection] = (document.getElementById("sortSelect")?.value || "createdAt-desc").split("-");
+    const size = Number(document.getElementById("limitSelect")?.value || 20);
+
+    let title = "";
+    let description = "";
+    if (searchType === "title") title = keyword;
+    else if (searchType === "description") description = keyword;
+
+    // 커서 기반 URL 구성
+    let url = `/api/recycling-posts?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&sortField=${sortField}&sortDirection=${sortDirection}&size=${size}`;
+    if (nextCursor && nextIdAfter) {
+        url += `&cursor=${encodeURIComponent(nextCursor)}&idAfter=${nextIdAfter}`;
+    }
 
     try {
         const res = await fetch(url);
         if (!res.ok) throw new Error("게시글 불러오기 실패");
 
         const data = await res.json();
-        const posts = Array.isArray(data) ? data : data.content;
+        const posts = Array.isArray(data) ? data : data.items || data.content;
 
         if (!posts || posts.length === 0) {
             if (!nextCursor) {
@@ -46,15 +62,19 @@ async function loadPosts() {
         }
 
         posts.forEach(post => {
+            const imageUrl =
+                post.thumbNailImageUrl ||
+                post.thumbNailUrl ||
+                post.thumbnailImageUrl ||
+                '/images/default-thumb.jpg';
+
             const card = document.createElement("div");
             card.className = "post-card";
             card.innerHTML = `
-                <img src="${post.thumbNailImageUrl && post.thumbNailImageUrl !== ''
-                ? post.thumbNailImageUrl
-                : '/images/default-thumb.jpg'}" alt="${post.title}">
+                <img src="${imageUrl}" alt="${post.title}">
                 <div class="info">
                     <div class="title">${post.title}</div>
-                    <div class="meta">${post.userName || '익명'} · ${formatDate(post.createdAt)}</div>
+                    <div class="meta">${post.userName || '익명'} · ${formatDate(post.createdAt)} · ⭐ ${post.scraps?.length || 0}</div>
                 </div>
             `;
             card.addEventListener("click", () => {
@@ -78,6 +98,15 @@ async function loadPosts() {
     } finally {
         isLoading = false;
     }
+}
+
+function resetAndSearch() {
+    nextCursor = null;
+    nextIdAfter = null;
+    const postList = document.getElementById("post-list");
+    postList.innerHTML = "";
+    window.addEventListener("scroll", handleScroll);
+    loadPosts();
 }
 
 function formatDate(dateStr) {

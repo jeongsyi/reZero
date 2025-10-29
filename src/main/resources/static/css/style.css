@@ -305,6 +305,63 @@ canvas {
     }
 }
 
+/* 검색*/
+.board-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 25px 0;
+    padding: 10px 0;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.board-controls select,
+.board-controls input[type="text"] {
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.board-controls select:focus,
+.board-controls input[type="text"]:focus {
+    outline: none;
+    border-color: #5ca77f;
+    box-shadow: 0 0 4px rgba(92, 167, 127, 0.5);
+}
+
+.board-controls .btn {
+    background-color: #5ca77f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.board-controls .btn:hover {
+    background-color: #4e916d;
+}
+
+@media (max-width: 768px) {
+    .board-controls {
+        justify-content: center;
+    }
+    .board-controls input[type="text"],
+    .board-controls select {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
 /* ==============================================
    🌿 글쓰기 버튼
    ============================================== */
@@ -334,13 +391,14 @@ canvas {
    ============================================== */
 .recycling-detail-container {
     max-width: 800px;
-    margin: 60px auto;
+    margin: 70px auto;
     padding: 20px;
 }
 
 .recycling-detail h1 {
     font-size: 2rem;
     color: #2d5a27;
+    margin-top: 50px;
     margin-bottom: 10px;
 }
 
@@ -361,7 +419,7 @@ canvas {
 .recycling-detail .description {
     white-space: pre-wrap;
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin-bottom: 20px;
 }
 
@@ -383,6 +441,256 @@ footer {
     padding: 30px;
     font-size: 0.9rem;
     margin-top: 50px;
+}
+
+/*
+댓글
+*/
+.comment-section {
+    margin-top: 40px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+.comment-section h2 {
+    font-size: 1.3rem;
+    color: #2d5a27;
+    margin-bottom: 15px;
+}
+
+/* 댓글 작성 */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    resize: vertical;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.comment-form button {
+    align-self: flex-end;
+    background: #2d5a27;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.comment-form button:hover {
+    background: #3d7736;
+}
+
+/* 댓글 본문 */
+.comment {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+    position: relative;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.comment-profile img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-info {
+    flex: 1;
+}
+
+.comment-info .user-name {
+    font-weight: 600;
+    color: #2d5a27;
+    margin-bottom: 2px;
+}
+
+.comment-info .meta {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.comment-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-actions button {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 3px;
+    transition: color 0.2s;
+}
+
+.comment-actions button:hover {
+    color: #2d5a27;
+}
+
+/* 옵션 메뉴 */
+.more-menu {
+    position: absolute;
+    top: 25px;
+    right: 0;
+    display: flex;
+    flex-direction: row; /* ✅ 가로 배치 */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* 버튼 사이 여백 */
+    white-space: nowrap; /* ✅ 줄바꿈 방지 핵심 */
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 6px 10px;
+    z-index: 20;
+}
+
+.more-menu.hidden {
+    display: none;
+}
+
+.more-menu button {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+
+.more-menu button:hover {
+    background: #f4f4f4;
+}
+
+/* 본문 */
+.comment .content {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+    padding-left: 45px;
+}
+
+/* 답글 리스트 */
+.reply-list {
+    margin-left: 20px;
+    border-left: 2px solid #eee;
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+
+/* 대댓글 입력창 */
+.reply-form {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.reply-form textarea {
+    flex: 1;
+    min-height: 80px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+}
+
+.reply-form button {
+    background: #2d5a27;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.reply-form button:hover {
+    background: #3c7134;
+}
+
+.edit-area {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-top: 8px;
+    resize: vertical;
+}
+
+/* 대댓글 들여쓰기만 적용 */
+.comment.reply {
+    margin-left: 35px;
+    padding-left: 10px;
+}
+
+/* 수정 버튼 영역 */
+.edit-btns {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btns button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.save-edit {
+    background: #2d5a27;
+    color: white;
+}
+
+.cancel-edit {
+    background: #eee;
+    color: #333;
+}
+
+.comment-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#sort-select {
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    color: #333;
 }
 
 /* ==============================================
