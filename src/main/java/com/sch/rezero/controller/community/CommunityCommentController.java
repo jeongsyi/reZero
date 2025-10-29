@@ -30,7 +30,7 @@ public class CommunityCommentController {
       @RequestBody CommunityCommentCreateRequest request
   ) {
     Long userId = userContext.getCurrentUserId();
-    CommunityCommentResponse created = communityCommentService.create(postId, userId, request);
+    CommunityCommentResponse created = communityCommentService.create(userId, postId, request);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(created);
   }

@@ -16,8 +16,22 @@
     <p>지속 가능한 일상을 나누는 공간</p>
   </div>
 
+  <!-- 🔍 검색 + 정렬 영역 -->
+  <div class="community-search">
+    <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (제목/내용/작성자)">
+    <select id="sortSelect">
+      <option value="createdAt,desc">최신순</option>
+      <option value="like,desc">좋아요순</option>
+    </select>
+    <button id="searchBtn">검색</button>
+  </div>
+
   <div id="communityPostList" class="community-list">
-    <!-- JS로 렌더링 -->
+    <!-- JS로 게시글 렌더링 -->
+  </div>
+
+  <div class="pagination">
+    <button id="loadMoreBtn" style="display:none;">더보기</button>
   </div>
 
   <button class="floating-write-btn" onclick="location.href='community-write.html'">
