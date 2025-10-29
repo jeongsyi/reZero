@@ -16,16 +16,65 @@ async function loadPostDetail() {
         if (!res.ok) throw new Error("게시글 불러오기 실패");
         const post = await res.json();
 
+        // 제목
         document.getElementById("post-title").textContent = post.title;
-        document.getElementById("post-meta").textContent =
+
+        // ✅ postUserInfo에만 텍스트 넣기 (덮어쓰기 금지)
+        const postUserInfo = document.getElementById("postUserInfo");
+        postUserInfo.textContent =
             `${post.userName || "익명"} · ${formatDate(post.createdAt)} · ${post.category || "카테고리 없음"}`;
+
+        // 썸네일
         const thumbnail = document.getElementById("thumbnail");
         thumbnail.src =
             post.thumbNailImageUrl && post.thumbNailImageUrl !== ""
                 ? post.thumbNailImageUrl
                 : "/images/default-thumb.jpg";
-        document.getElementById("post-description").textContent = post.description || "내용이 없습니다.";
 
+        document.getElementById("post-description").textContent =
+            post.description || "내용이 없습니다.";
+
+        // ✅ 작성자 본인만 점 세개 표시
+        const postActions = document.getElementById("postActions");
+        const moreIcon = document.getElementById("postMoreIcon");
+        const moreMenu = document.getElementById("postMoreMenu");
+        const editBtn = document.getElementById("editPostBtn");
+        const deleteBtn = document.getElementById("deletePostBtn");
+
+        const currentUserId = localStorage.getItem("userId");
+        if (currentUserId && post.userId && currentUserId === String(post.userId)) {
+            postActions.style.display = "flex";
+        } else {
+            postActions.style.display = "none";
+        }
+
+        // 점 버튼 클릭 이벤트
+        moreIcon.addEventListener("click", (e) => {
+            e.stopPropagation();
+            moreMenu.classList.toggle("hidden");
+        });
+        document.addEventListener("click", () => {
+            moreMenu.classList.add("hidden");
+        });
+
+        // 수정 버튼
+        editBtn.addEventListener("click", () => {
+            window.location.href = `/recycling-edit.html?id=${postId}`;
+        });
+
+        // 삭제 버튼
+        deleteBtn.addEventListener("click", async () => {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            const res = await fetch(`/api/recycling-posts/${postId}`, { method: "DELETE" });
+            if (res.ok) {
+                alert("게시글이 삭제되었습니다.");
+                window.location.href = "/recycling-list.html";
+            } else {
+                alert("삭제 중 오류가 발생했습니다.");
+            }
+        });
+
+        // 스크랩 버튼 세팅
         await setupScrapButton(postId);
     } catch (e) {
         console.error("상세 불러오기 오류:", e);

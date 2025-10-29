@@ -17,8 +17,21 @@
     <section class="recycling-detail">
         <h1 id="post-title">로딩 중...</h1>
         <div id="post-meta" class="post-meta">
-            <div id="postUserInfo"></div>
+            <div class="meta-line">
+                <div id="postUserInfo"></div>
+                <div id="postActions" class="post-actions" style="display:none;">
+                    <button id="postMoreIcon" class="more-icon">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+
+                    <div id="postMoreMenu" class="more-menu hidden">
+                        <button id="editPostBtn">수정</button>
+                        <button id="deletePostBtn">삭제</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <img id="thumbnail" alt="썸네일" class="thumbnail"/>
         <p id="post-description" class="description"></p>
 

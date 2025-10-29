@@ -1302,6 +1302,85 @@ footer {
 }
 
 /* ==============================================
+   🌿 게시글 메타라인 (작성자 · 날짜 · 카테고리 + 점 버튼 한 줄)
+   ============================================== */
+.meta-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 좌우 정렬 */
+    width: 100%;
+    gap: 10px;
+}
+
+#postUserInfo {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+/* ==============================================
+   🌿 점 세 개 버튼 영역
+   ============================================== */
+.post-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.post-actions .more-icon {
+    background: none;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.post-actions .more-icon:hover {
+    color: #2d5a27;
+}
+
+/* ==============================================
+   🌿 점 클릭 시 나오는 수정/삭제 메뉴
+   ============================================== */
+#postMoreMenu.more-menu {
+    position: absolute;
+    top: 24px; /* 점 바로 아래로 */
+    right: 0;
+    display: flex;
+    flex-direction: row; /* 가로 정렬 */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 20;
+}
+
+#postMoreMenu.hidden {
+    display: none;
+}
+
+#postMoreMenu button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+#postMoreMenu button:hover {
+    background: #f4f4f4;
+}
+
+/* ==============================================
    🌿 스크랩 버튼
    ============================================== */
 .scrap-btn {

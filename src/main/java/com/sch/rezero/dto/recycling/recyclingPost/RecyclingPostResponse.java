@@ -12,6 +12,7 @@ public record RecyclingPostResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String userName,
+        String userId,
 
         List<String> imageUrls,
         Integer commentCount,
