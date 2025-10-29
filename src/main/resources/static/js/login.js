@@ -24,6 +24,7 @@ async function handleLogin() {
 
         // 로그인 성공 → localStorage에 로그인 상태 저장
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userId", data.userId);
         localStorage.setItem("username", data.name);
         localStorage.setItem("role", data.role);
 
