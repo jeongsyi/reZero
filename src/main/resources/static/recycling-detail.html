@@ -16,9 +16,17 @@
 <main class="recycling-detail-container">
     <section class="recycling-detail">
         <h1 id="post-title">로딩 중...</h1>
-        <div class="meta" id="post-meta"></div>
-        <img id="thumbnail" alt="썸네일" class="thumbnail" />
+        <div id="post-meta" class="post-meta">
+            <div id="postUserInfo"></div>
+        </div>
+        <img id="thumbnail" alt="썸네일" class="thumbnail"/>
         <p id="post-description" class="description"></p>
+
+        <div class="scrap-container">
+            <button id="scrapBtn" class="scrap-btn">
+                ⭐ <span>0</span>
+            </button>
+        </div>
 
         <!-- 댓글 섹션 -->
         <section class="comment-section">
