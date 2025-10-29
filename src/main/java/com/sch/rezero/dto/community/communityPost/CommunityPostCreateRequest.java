@@ -9,10 +9,6 @@ public record CommunityPostCreateRequest(
     String title,
 
     @NotBlank
-    String description,
-
-    @Size(max = 255)
-    @NotBlank
-    String thumbNailImage
+    String description
 ) {
 }

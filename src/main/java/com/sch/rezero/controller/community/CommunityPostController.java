@@ -8,6 +8,7 @@ import com.sch.rezero.dto.community.communityPost.CommunityPostUpdateRequest;
 import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.service.community.CommunityPostService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class CommunityPostController {
   public ResponseEntity<CommunityPostResponse> create(
       @RequestPart("request") @Valid CommunityPostCreateRequest request,
       @RequestPart(value = "images", required = false) List<MultipartFile> images
-      ) {
+      ) throws IOException {
     Long userId = userContext.getCurrentUserId();
     CommunityPostResponse created = communityPostService.create(userId, request, images);
 
@@ -59,10 +60,12 @@ public class CommunityPostController {
   public ResponseEntity<CommunityPostResponse> update(
       @PathVariable long postId,
       @RequestPart @Valid CommunityPostUpdateRequest request,
-      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+      @RequestPart(value = "images", required = false) List<MultipartFile> images)
+      throws IOException {
     Long userId = userContext.getCurrentUserId();
 
-    CommunityPostResponse updated = communityPostService.update(userId, postId, request);
+    CommunityPostResponse updated = communityPostService.update(userId, postId, request, images);
+
     return ResponseEntity.status(HttpStatus.OK).body(updated);
   }
 
