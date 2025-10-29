@@ -118,7 +118,6 @@ CREATE TABLE IF NOT EXISTS community_posts
     description      TEXT         NOT NULL,
     created_at       timestamptz  NOT NULL DEFAULT NOW(),
     updated_at       timestamptz,
-    thumb_nail_image VARCHAR(255) NOT NULL,
 
     CONSTRAINT fk_users_to_community_posts FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE

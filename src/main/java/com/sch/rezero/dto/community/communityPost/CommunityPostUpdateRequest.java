@@ -5,9 +5,6 @@ import jakarta.validation.constraints.Size;
 public record CommunityPostUpdateRequest(
     @Size(max = 255)
     String title,
-    String description,
-
-    @Size(max = 255)
-    String thumbNailImage
+    String description
 ) {
 }

@@ -11,7 +11,6 @@ public record CommunityPostResponse(
 
     Integer likeCount,
     Integer commentCount,
-    String thumbNailImageUrl,
     List<String> imageUrls,
 
     LocalDateTime createdAt,
