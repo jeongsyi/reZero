@@ -22,56 +22,76 @@ import static com.sch.rezero.entity.community.QLike.like;
 @Repository
 @RequiredArgsConstructor
 public class CommunityPostQueryRepositoryImpl implements CommunityPostQueryRepository {
+
     private final JPAQueryFactory queryFactory;
 
     @Override
     public CursorPageResponse<CommunityPost> findAll(CommunityPostQuery query) {
-        //1. 데이터 조회
-        List<CommunityPost> posts = queryFactory.selectFrom(communityPost)
-                .where(
-                        query.title() != null ? communityPost.title.containsIgnoreCase(query.title()) : null,
-                        query.description() != null ? communityPost.description.containsIgnoreCase(query.description()) : null,
-                        query.userName() != null ? communityPost.user.name.contains(query.userName()) : null,
-                        buildCursorCondition(query)
-                )
-                .orderBy(sortResolve(query.sortField(), query.sortDirection()))
-                .limit(query.size() + 1)
-                .fetch();
 
-        //2. 다음 페이지 여부
+        BooleanExpression searchCondition = buildSearchCondition(query);
+
+        BooleanExpression cursorCondition = buildCursorCondition(query);
+
+        List<CommunityPost> posts = queryFactory
+            .selectFrom(communityPost)
+            .where(searchCondition, cursorCondition)
+            .orderBy(sortResolve(query.sortField(), query.sortDirection()))
+            .limit(query.size() + 1)
+            .fetch();
+
         boolean hasNext = posts.size() > query.size();
-        if (hasNext) {
-            posts = posts.subList(0, query.size());
-        }
+        if (hasNext) posts = posts.subList(0, query.size());
 
-        //3. 다음 커서 계산
         String nextCursor = null;
         Long nextIdAfter = null;
 
         if (!posts.isEmpty()) {
             CommunityPost last = posts.get(posts.size() - 1);
-            nextCursor = "createdAt".equalsIgnoreCase(query.sortField())
-                    ? last.getCreatedAt().toString() : String.valueOf(last.getLikes().size());
+            nextCursor = "like".equalsIgnoreCase(query.sortField())
+                ? String.valueOf(last.getLikes().size())
+                : last.getCreatedAt().toString();
             nextIdAfter = last.getId();
         }
 
         return new CursorPageResponse<>(posts, nextCursor, nextIdAfter, query.size(), hasNext);
     }
 
-    private BooleanExpression buildCursorCondition(CommunityPostQuery query) {
-        if (query.cursor() == null || query.idAfter() == null) {
-            return null;
+    private BooleanExpression buildSearchCondition(CommunityPostQuery query) {
+        BooleanExpression titleCond = (query.title() != null && !query.title().isBlank())
+            ? communityPost.title.containsIgnoreCase(query.title())
+            : null;
+
+        BooleanExpression descCond = (query.description() != null && !query.description().isBlank())
+            ? communityPost.description.containsIgnoreCase(query.description())
+            : null;
+
+        BooleanExpression userCond = (query.userName() != null && !query.userName().isBlank())
+            ? communityPost.user.name.containsIgnoreCase(query.userName())
+            : null;
+
+        if (titleCond != null || descCond != null || userCond != null) {
+            return Expressions.anyOf(titleCond, descCond, userCond);
         }
+        return null;
+    }
+
+    private BooleanExpression buildCursorCondition(CommunityPostQuery query) {
+        if (query.cursor() == null || query.idAfter() == null) return null;
 
         boolean isDesc = "desc".equalsIgnoreCase(query.sortDirection());
 
         if ("like".equalsIgnoreCase(query.sortField())) {
             var expr = likeCountExpr();
-            Long cursorValue = Long.valueOf(query.cursor());
-            return isDesc ? expr.lt(cursorValue).or(expr.eq(cursorValue).and(communityPost.id.lt(query.idAfter())))
-                    : expr.gt(cursorValue).or(expr.eq(cursorValue).and(communityPost.id.gt(query.idAfter())));
+            long cursorValue = Long.parseLong(query.cursor());
+            return isDesc
+                ? expr.lt(cursorValue)
+                .or(expr.eq(cursorValue).and(communityPost.id.lt(query.idAfter())))
+                : expr.gt(cursorValue)
+                    .or(expr.eq(cursorValue).and(communityPost.id.gt(query.idAfter())));
         } else {
-            return isDesc ? communityPost.id.lt(query.idAfter()) : communityPost.id.gt(query.idAfter());
+            return isDesc
+                ? communityPost.id.lt(query.idAfter())
+                : communityPost.id.gt(query.idAfter());
         }
     }
 
@@ -79,18 +99,24 @@ public class CommunityPostQueryRepositoryImpl implements CommunityPostQueryRepos
         Order order = "desc".equalsIgnoreCase(sortDirection) ? Order.DESC : Order.ASC;
 
         if ("like".equalsIgnoreCase(sortField)) {
-            return new OrderSpecifier[]{new OrderSpecifier<>(order, likeCountExpr()),
-                    new OrderSpecifier<>(order, communityPost.id)};
+            return new OrderSpecifier[]{
+                new OrderSpecifier<>(order, likeCountExpr()),
+                new OrderSpecifier<>(order, communityPost.id)
+            };
         } else {
-            return new OrderSpecifier[]{new OrderSpecifier<>(order, communityPost.createdAt),
-                    new OrderSpecifier<>(order, communityPost.id)};
+            return new OrderSpecifier[]{
+                new OrderSpecifier<>(order, communityPost.createdAt),
+                new OrderSpecifier<>(order, communityPost.id)
+            };
         }
     }
 
     private NumberExpression<Long> likeCountExpr() {
-        return Expressions.asNumber(JPAExpressions
+        return Expressions.asNumber(
+            JPAExpressions
                 .select(like.count())
                 .from(like)
-                .where(like.communityPost.eq(communityPost)));
+                .where(like.communityPost.eq(communityPost))
+        );
     }
 }

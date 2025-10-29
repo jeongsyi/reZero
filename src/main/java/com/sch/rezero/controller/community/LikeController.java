@@ -27,7 +27,7 @@ public class LikeController {
   @PostMapping("{postId}")
   public ResponseEntity<LikeResponse> create(@PathVariable Long postId) {
     userContext.getCurrentUser();
-    LikeResponse like = likeService.create(postId, userContext.getCurrentUserId());
+    LikeResponse like = likeService.create(userContext.getCurrentUserId(), postId);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(like);
   }
@@ -38,12 +38,10 @@ public class LikeController {
     return ResponseEntity.status(HttpStatus.OK).body(allByUserId);
   }
 
-  @DeleteMapping("/{likeId}")
-  public ResponseEntity<Void> delete(@PathVariable Long likeId) {
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<Void> delete(@PathVariable Long postId) {
     userContext.getCurrentUser();
-
-    likeService.delete(userContext.getCurrentUserId(), likeId);
-
+    likeService.deleteByPostId(userContext.getCurrentUserId(), postId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

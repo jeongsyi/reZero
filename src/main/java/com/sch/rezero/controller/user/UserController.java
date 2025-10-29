@@ -59,6 +59,14 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  // 프론트엔드 식별용
+  @GetMapping("/users/me")
+  public ResponseEntity<UserResponse> getCurrentUser() {
+    Long userId = userContext.getCurrentUserId();
+    UserResponse user = userService.findById(userId);
+    return ResponseEntity.ok(user);
+  }
+
   // 상대 프로필
   @GetMapping("/users/{userId}")
   public ResponseEntity<UserResponse> findById(@PathVariable long userId) {
