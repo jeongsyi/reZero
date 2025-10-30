@@ -58,12 +58,12 @@ public class CommunityCommentService {
     }
 
     @Transactional(readOnly = true)
-    public CursorPageResponse<CommunityCommentResponse> findAll(CommunityCommentQuery query) {
-        if (!communityPostRepository.existsById(query.postId())) {
+    public CursorPageResponse<CommunityCommentResponse> findAll(Long postId, CommunityCommentQuery query) {
+        if (!communityPostRepository.existsById(postId)) {
             throw new NoSuchElementException("해당 게시글을 찾을 수 없습니다");
         }
 
-        CursorPageResponse<CommunityComment> parentComments = communityCommentRepository.findAll(query);
+        CursorPageResponse<CommunityComment> parentComments = communityCommentRepository.findAll(postId, query);
         List<Long> parentIds = parentComments.content().stream()
                 .map(CommunityComment::getId)
                 .toList();
@@ -83,11 +83,13 @@ public class CommunityCommentService {
                     return new CommunityCommentResponse(
                             parentDto.id(),
                             parentDto.parentId(),
+                            parentDto.userId(),
                             parentDto.userName(),
                             parentDto.content(),
                             parentDto.createdAt(),
                             parentDto.updatedAt(),
-                            childDtos
+                            childDtos,
+                            parentDto.profileUrl()
                     );
                 })
                 .toList();
@@ -102,6 +104,7 @@ public class CommunityCommentService {
 
     }
 
+    @Transactional
     public CommunityCommentResponse update(Long id, Long userId,
                                            CommunityCommentUpdateRequest communityCommentUpdateRequest) {
 
@@ -116,6 +119,7 @@ public class CommunityCommentService {
         return communityCommentMapper.toCommunityCommentResponse(comment);
     }
 
+    @Transactional
     public void delete(Long userId, Long communityCommentId) {
         CommunityComment communityComment = validateCommunityCommentId(communityCommentId);
 

@@ -1330,3 +1330,263 @@ footer {
     transform: scale(1.05);
 }
 
+/* ==============================================
+   🌿 댓글 섹션 (Community Detail - 친구 스타일 반영)
+   ============================================== */
+.comment-section {
+    margin-top: 50px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px 30px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.comment-section h2 {
+    color: #355c3a;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* 댓글 작성 영역 */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 12px 14px;
+    font-size: 1rem;
+    color: #333;
+    background: #fafafa;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #7fb77e;
+    box-shadow: 0 0 0 3px rgba(127, 183, 126, 0.25);
+}
+
+.comment-form button {
+    align-self: flex-end;
+    background: linear-gradient(90deg, #7fb77e, #639c67);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.25s ease;
+}
+
+.comment-form button:hover {
+    background: linear-gradient(90deg, #6ea36c, #538b5a);
+}
+
+/* 댓글 리스트 */
+#comment-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 개별 댓글 */
+.comment {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 15px 18px;
+    border: 1px solid #eee;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.comment:hover {
+    background: #fdfdfd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.comment-user {
+    font-weight: 700;
+    color: #2a3d2b;
+    margin-bottom: 6px;
+}
+
+.comment-content {
+    font-size: 0.98rem;
+    color: #333;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.comment-date {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* 수정·삭제 버튼 */
+.comment-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.comment-actions .btn {
+    background: #e6eee5;
+    border: none;
+    color: #2d5a27;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.comment-actions .btn:hover {
+    background: #d3e8d1;
+}
+
+/* 대댓글 (reply) */
+.comment.reply {
+    margin-left: 25px;
+    background: #f5f7f4;
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+.reply-form textarea {
+    width: 100%;
+    min-height: 70px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 0.95rem;
+}
+
+.reply-form button {
+    align-self: flex-end;
+    background: #2d5a27;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.reply-form button:hover {
+    background: #3d7736;
+}
+
+/* 정렬 셀렉트 */
+.comment-header-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+#sort-select {
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    color: #333;
+    background: #fff;
+}
+
+/* 더보기 버튼 */
+.load-more-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#load-more-btn {
+    background: #f0f6f1;
+    color: #355c3a;
+    border: 1px solid #b7d4b4;
+    border-radius: 8px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+#load-more-btn:hover {
+    background: #d9ead9;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-profile img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.comment-info {
+    flex: 1;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 400px;
+}
+
+.profile-avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #7fb77e;
+    margin-bottom: 15px;
+}
+
+.btn.follow, .btn.mypage {
+    margin-top: 20px;
+    background: linear-gradient(90deg, #7fb77e, #639c67);
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn.follow:hover, .btn.mypage:hover {
+    background: linear-gradient(90deg, #6ea36c, #538b5a);
+}
+
+
+
