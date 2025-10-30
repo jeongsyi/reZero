@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>사용자 프로필 | reZero</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<main class="profile-container">
+  <section id="userProfile" class="profile-card"></section>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("id");
+    if (!userId) return alert("잘못된 접근입니다.");
+
+    const res = await fetch(`/api/users/${userId}`);
+    if (!res.ok) return alert("프로필을 불러올 수 없습니다.");
+    const user = await res.json();
+
+    // 로그인 사용자 (본인인지 판별용)
+    const meRes = await fetch("/api/users/me");
+    const me = meRes.ok ? await meRes.json() : null;
+
+    const isMe = me && me.userId === user.userId;
+
+    document.getElementById("userProfile").innerHTML = `
+    <img src="${user.profileUrl || '/images/default-profile.png'}" alt="프로필 이미지" class="profile-avatar">
+    <h2>${user.name}</h2>
+    <p>@${user.userId}</p>
+    <p>${user.role}</p>
+    <p>팔로워 ${user.followerCount} · 팔로잉 ${user.followingCount}</p>
+    ${
+        !isMe
+            ? `<button id="followBtn" class="btn follow">팔로우</button>`
+            : `<button class="btn mypage" onclick="location.href='/my-page.html'">내 프로필 보기</button>`
+    }
+  `;
+
+    if (!isMe) {
+      const followBtn = document.getElementById("followBtn");
+      let following = false;
+
+      // 팔로우 상태 확인 API가 있다면 여기서 호출 (지금은 false 기본)
+      followBtn.addEventListener("click", async () => {
+        try {
+          if (!following) {
+            await fetch(`/api/follows`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ followingId: userId })
+            });
+            following = true;
+            followBtn.textContent = "언팔로우";
+          } else {
+            await fetch(`/api/follows/${userId}`, { method: "DELETE" });
+            following = false;
+            followBtn.textContent = "팔로우";
+          }
+        } catch {
+          alert("팔로우 처리 중 오류 발생");
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>

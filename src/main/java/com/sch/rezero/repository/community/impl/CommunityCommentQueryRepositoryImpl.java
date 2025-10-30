@@ -22,10 +22,10 @@ public class CommunityCommentQueryRepositoryImpl implements CommunityCommentQuer
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public CursorPageResponse<CommunityComment> findAll(CommunityCommentQuery query) {
+    public CursorPageResponse<CommunityComment> findAll(Long postId, CommunityCommentQuery query) {
         List<CommunityComment> comments = queryFactory.selectFrom(communityComment)
                 .where(
-                        query.postId() != null ? communityComment.communityPost.id.eq(query.postId()) : null,
+                        postId != null ? communityComment.communityPost.id.eq(postId) : null,
                         communityComment.parent.isNull(),
                         buildCursorCondition(query)
                 )

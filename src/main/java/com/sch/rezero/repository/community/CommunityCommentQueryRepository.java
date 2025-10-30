@@ -7,6 +7,6 @@ import com.sch.rezero.entity.community.CommunityComment;
 import java.util.List;
 
 public interface CommunityCommentQueryRepository {
-    CursorPageResponse<CommunityComment> findAll(CommunityCommentQuery communityCommentQuery);
+    CursorPageResponse<CommunityComment> findAll(Long postId, CommunityCommentQuery communityCommentQuery);
     List<CommunityComment> findRepliesByParentIds(List<Long> parentIds);
 }
