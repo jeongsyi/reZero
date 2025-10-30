@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>재활용 게시글 수정 - reZero</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<main class="write-container">
+    <h1>게시글 수정</h1>
+    <form id="editForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" maxlength="255" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">내용</label>
+            <textarea id="description" name="description" rows="6" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="category">카테고리</label>
+            <select id="category" name="category">
+                <option value="">카테고리 선택</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="thumbnail">썸네일 이미지</label>
+            <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+            <img id="previewThumbnail" class="preview-img" style="display:none;">
+        </div>
+
+        <div class="form-group">
+            <label for="images">본문 이미지 (여러 장 가능)</label>
+            <input type="file" id="images" name="images" accept="image/*" multiple>
+            <div id="multiPreview" class="multi-preview"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn write">수정 완료</button>
+            <button type="button" class="btn cancel" onclick="goBack()">취소</button>
+        </div>
+    </form>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/common.js"></script>
+<script src="/js/recycling-edit.js"></script>
+</body>
+</html>

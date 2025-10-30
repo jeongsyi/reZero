@@ -13,18 +13,14 @@ async function loadPostDetail() {
 
     try {
         const res = await fetch(`/api/recycling-posts/${postId}`);
-        if (!res.ok) throw new Error("게시글 불러오기 실패");
+        if (!res.ok) throw new Error();
         const post = await res.json();
 
-        // 제목
         document.getElementById("post-title").textContent = post.title;
-
-        // ✅ postUserInfo에만 텍스트 넣기 (덮어쓰기 금지)
         const postUserInfo = document.getElementById("postUserInfo");
         postUserInfo.textContent =
             `${post.userName || "익명"} · ${formatDate(post.createdAt)} · ${post.category || "카테고리 없음"}`;
 
-        // 썸네일
         const thumbnail = document.getElementById("thumbnail");
         thumbnail.src =
             post.thumbNailImageUrl && post.thumbNailImageUrl !== ""
@@ -34,7 +30,21 @@ async function loadPostDetail() {
         document.getElementById("post-description").textContent =
             post.description || "내용이 없습니다.";
 
-        // ✅ 작성자 본인만 점 세개 표시
+        if (post.imageUrls && post.imageUrls.length > 0) {
+            const galleryContainer = document.createElement("div");
+            galleryContainer.classList.add("image-gallery");
+
+            post.imageUrls.forEach((url) => {
+                const img = document.createElement("img");
+                img.src = url;
+                img.alt = "추가 이미지";
+                galleryContainer.appendChild(img);
+            });
+
+            const descriptionEl = document.getElementById("post-description");
+            descriptionEl.insertAdjacentElement("afterend", galleryContainer);
+        }
+
         const postActions = document.getElementById("postActions");
         const moreIcon = document.getElementById("postMoreIcon");
         const moreMenu = document.getElementById("postMoreMenu");
@@ -42,13 +52,11 @@ async function loadPostDetail() {
         const deleteBtn = document.getElementById("deletePostBtn");
 
         const currentUserId = localStorage.getItem("userId");
-        if (currentUserId && post.userId && currentUserId === String(post.userId)) {
-            postActions.style.display = "flex";
-        } else {
-            postActions.style.display = "none";
-        }
+        postActions.style.display =
+            currentUserId && post.userId && currentUserId === String(post.userId)
+                ? "flex"
+                : "none";
 
-        // 점 버튼 클릭 이벤트
         moreIcon.addEventListener("click", (e) => {
             e.stopPropagation();
             moreMenu.classList.toggle("hidden");
@@ -57,15 +65,13 @@ async function loadPostDetail() {
             moreMenu.classList.add("hidden");
         });
 
-        // 수정 버튼
         editBtn.addEventListener("click", () => {
             window.location.href = `/recycling-edit.html?id=${postId}`;
         });
 
-        // 삭제 버튼
         deleteBtn.addEventListener("click", async () => {
             if (!confirm("정말 삭제하시겠습니까?")) return;
-            const res = await fetch(`/api/recycling-posts/${postId}`, { method: "DELETE" });
+            const res = await fetch(`/api/recycling-posts/${postId}`, {method: "DELETE"});
             if (res.ok) {
                 alert("게시글이 삭제되었습니다.");
                 window.location.href = "/recycling-list.html";
@@ -74,10 +80,8 @@ async function loadPostDetail() {
             }
         });
 
-        // 스크랩 버튼 세팅
         await setupScrapButton(postId);
-    } catch (e) {
-        console.error("상세 불러오기 오류:", e);
+    } catch {
         document.querySelector(".recycling-detail").innerHTML =
             "<p>게시글을 불러오는 중 오류가 발생했습니다.</p>";
     }
@@ -88,14 +92,11 @@ async function setupScrapButton(postId) {
     if (!scrapBtn) return;
 
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-    // ✅ 버튼은 항상 보이게
     scrapBtn.style.display = "inline-flex";
     let scrapped = false;
     let scrapCount = 0;
 
     try {
-        // ✅ 로그인된 경우에만 스크랩 상태 조회
         if (isLoggedIn) {
             const checkRes = await fetch(`/api/scraps`);
             if (checkRes.ok) {
@@ -105,7 +106,6 @@ async function setupScrapButton(postId) {
             }
         }
 
-        // ✅ 게시글 자체의 scrapCount는 로그인 여부 상관없이 조회
         const postRes = await fetch(`/api/recycling-posts/${postId}`);
         if (postRes.ok) {
             const postData = await postRes.json();
@@ -113,14 +113,11 @@ async function setupScrapButton(postId) {
         }
 
         updateScrapButton(scrapBtn, scrapped, scrapCount);
-    } catch (err) {
-        console.error("스크랩 상태 조회 실패:", err);
+    } catch {
         updateScrapButton(scrapBtn, false, scrapCount);
     }
 
-    // ✅ 클릭 이벤트 처리
     scrapBtn.addEventListener("click", async () => {
-        // 🔒 로그인 안 된 상태면 알림만
         if (!isLoggedIn) {
             alert("스크랩하려면 로그인이 필요합니다.");
             return;
@@ -129,19 +126,18 @@ async function setupScrapButton(postId) {
         try {
             let res;
             if (!scrapped) {
-                res = await fetch(`/api/scraps/${postId}`, { method: "POST" });
-                if (!res.ok) throw new Error("스크랩 실패");
+                res = await fetch(`/api/scraps/${postId}`, {method: "POST"});
+                if (!res.ok) throw new Error();
                 scrapped = true;
                 scrapCount++;
             } else {
-                res = await fetch(`/api/scraps/${postId}`, { method: "DELETE" });
-                if (!res.ok) throw new Error("스크랩 취소 실패");
+                res = await fetch(`/api/scraps/${postId}`, {method: "DELETE"});
+                if (!res.ok) throw new Error();
                 scrapped = false;
                 scrapCount = Math.max(scrapCount - 1, 0);
             }
             updateScrapButton(scrapBtn, scrapped, scrapCount);
-        } catch (e) {
-            console.error("스크랩 처리 중 오류:", e);
+        } catch {
             alert("스크랩 처리 중 오류가 발생했습니다.");
         }
     });
@@ -149,9 +145,7 @@ async function setupScrapButton(postId) {
 
 function updateScrapButton(btn, isActive, count) {
     btn.classList.toggle("active", isActive);
-    btn.innerHTML = isActive
-        ? ` ⭐ <span>${count}</span>`
-        : ` ⭐ <span>${count}</span>`;
+    btn.innerHTML = `⭐ <span>${count}</span>`;
 }
 
 async function initComments() {
@@ -179,7 +173,7 @@ async function initComments() {
             }
 
             const res = await fetch(url);
-            if (!res.ok) throw new Error("댓글 로드 실패");
+            if (!res.ok) throw new Error();
             const data = await res.json();
             const comments = Array.isArray(data) ? data : data.content || data.items;
 
@@ -200,8 +194,8 @@ async function initComments() {
             nextCursor = data.nextCursor ?? null;
             nextIdAfter = data.nextIdAfter ?? null;
             loadMoreBtn.style.display = data.hasNext ? "block" : "none";
-        } catch (err) {
-            console.error("댓글 불러오기 오류:", err);
+        } catch {
+            console.error("댓글 불러오기 오류");
         } finally {
             isLoading = false;
         }
@@ -210,7 +204,7 @@ async function initComments() {
     function renderComment(comment, isReply = false, parentId = null) {
         const div = document.createElement("div");
         div.className = isReply ? "comment reply" : "comment";
-        div.setAttribute("data-id", comment.id);
+        div.dataset.id = comment.id;
 
         const currentUserId = localStorage.getItem("userId");
         const isMine = comment.userId && currentUserId && comment.userId === currentUserId;
@@ -233,23 +227,21 @@ async function initComments() {
                 ${!isReply ? `<button class="reply-icon"><i class="fa-regular fa-comment-dots"></i></button>` : ""}
                 ${isMine
             ? `<button class="more-icon"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                   <div class="more-menu hidden">
-                       <button class="edit-btn">수정</button>
-                       <button class="delete-btn">삭제</button>
-                   </div>`
+                       <div class="more-menu hidden">
+                           <button class="edit-btn">수정</button>
+                           <button class="delete-btn">삭제</button>
+                       </div>`
             : ""}
             </div>
         </div>
         <div class="content" data-id="${comment.id}">${comment.content}</div>
         <div class="reply-list"></div>`;
 
-        if (isReply && parentId) {
-            const parentDiv = document.querySelector(`.comment[data-id="${parentId}"] .reply-list`);
-            (parentDiv || commentList).appendChild(div);
-        } else {
-            commentList.appendChild(div);
-        }
+        const parentDiv = isReply && parentId
+            ? document.querySelector(`.comment[data-id="${parentId}"] .reply-list`)
+            : commentList;
 
+        (parentDiv || commentList).appendChild(div);
         setupCommentActions(div, comment, isReply);
     }
 
@@ -352,8 +344,8 @@ async function initComments() {
                 renderComment(newComment, false);
                 textarea.value = "";
             } else alert("댓글 등록 실패");
-        } catch (err) {
-            console.error("댓글 등록 오류:", err);
+        } catch {
+            console.error("댓글 등록 오류");
         }
     });
 

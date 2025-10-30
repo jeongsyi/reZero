@@ -17,7 +17,6 @@ import com.sch.rezero.repository.recycling.CategoryRepository;
 import com.sch.rezero.repository.recycling.RecyclingImageRepository;
 import com.sch.rezero.repository.recycling.RecyclingPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
