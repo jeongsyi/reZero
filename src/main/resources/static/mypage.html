@@ -1,103 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>reZero 마이페이지</title>
-  <link rel="stylesheet" href="css/style.css" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>마이페이지 | reZero</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="css/mypage.css"/>
 </head>
-
 <body>
 <div id="header-placeholder"></div>
+<main class="mypage-container">
+    <section class="profile-header">
+        <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>
+        <div class="profile-info">
+            <h2 id="userName">사용자 이름</h2>
+            <p id="userRole" class="role">ROLE_USER</p>
+            <p id="userRegion" class="region">서울특별시</p>
+            <p id="userBirth" class="birth">1999-01-01</p>
+        </div>
+        <div class="follow-stats">
+            <span id="followerCount" class="count" onclick="openFollowList('followers')">팔로워 <b>0</b></span>
+            <span id="followingCount" class="count" onclick="openFollowList('following')">팔로잉 <b>0</b></span>
+        </div>
+    </section>
 
-<section class="login-container">
-  <div class="login-box" style="width: 400px;">
-    <h2>👤 마이페이지</h2>
-    <p class="error-message" id="globalErrorMsg"></p>
+    <nav class="mypage-tabs">
+        <button data-tab="scrap" class="active">스크랩</button>
+        <button data-tab="like">좋아요</button>
+        <button data-tab="followers">팔로워</button>
+        <button data-tab="following">팔로잉</button>
+        <button data-tab="edit">내 정보 수정</button>
+    </nav>
 
-    <div id="profileView" style="display: block;">
-      <div style="text-align: center;">
-        <img id="viewProfileImage" src="img/default_profile.png" alt="프로필 이미지" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67;" />
-
-        <h3 id="viewName" style="color: #355c3a;">test04</h3>
-
-        <p id="viewUserId" style="color: #666; font-size: 0.9rem;">@test04</p>
-      </div>
-
-      <p>
-        <strong><span id="viewRole">사용자</span></strong>
-      </p>
-
-      <p><strong>생년월일:</strong> <span id="viewBirth">2025-10-07</span></p>
-      <p><strong>지역:</strong> <span id="viewRegion">미입력</span></p>
-
-      <p style="margin-top: 15px;">
-        <strong>팔로워:</strong> <span id="viewFollowerCount">0</span>명 |
-        <strong>팔로잉:</strong> <span id="viewFollowingCount">0</span>명
-      </p>
-
-      <button onclick="toggleEditMode(true)">프로필 수정하기</button>
-      <button onclick="handleDeleteUser()" style="background: #e07272;">회원 탈퇴</button>
-    </div>
-
-    <form id="profileEditForm" enctype="multipart/form-data" style="display: none;">
-      <div style="text-align: center; margin-bottom: 20px;">
-        <img id="editProfileImagePreview" src="img/default_profile.png" alt="프로필 이미지 미리보기"
-             style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #639c67; cursor: pointer; display: block; margin: 0 auto;"
-             onclick="document.getElementById('editProfileImageFile').click();" />
-        <input type="file" id="editProfileImageFile" name="profileImage" accept="image/*" onchange="previewImage(event, 'editProfileImagePreview')" style="display: none;" />
-
-        <button type="button" onclick="handleImageRemoval()"
-                style="background: #ccc; color: #333; width: auto; padding: 5px 10px; font-size: 0.85rem; margin-top: 10px; border-radius: 5px;">
-          이미지 삭제
-        </button>
-      </div>
-
-      <label for="editUserId">아이디</label>
-      <input type="text" id="editUserId" name="userId" required />
-      <p class="error-message" id="editUserIdError"></p>
-
-      <label for="editName">이름</label>
-      <input type="text" id="editName" name="name" required />
-      <p class="error-message" id="editNameError"></p>
-
-      <label for="editPassword">새 비밀번호 (변경 시에만 입력)</label>
-      <input type="password" id="editPassword" name="password" placeholder="비밀번호 (변경하지 않으려면 비워두세요)" />
-      <p class="error-message" id="editPasswordError"></p>
-
-      <label for="editBirth">생년월일</label>
-      <input type="date" id="editBirth" name="birth" />
-
-      <label for="editRegion">지역</label>
-      <select id="editRegion" name="region">
-        <option value="">지역을 선택하세요</option>
-        <option value="SEOUL">서울</option>
-        <option value="GYEONGGI">경기</option>
-        <option value="BUSAN">부산</option>
-        <option value="DAEJEON">대전</option>
-        <option value="GWANGJU">광주</option>
-        <option value="GANGWON">강원</option>
-        <option value="JEJU">제주</option>
-        <option value="INCHEON">인천</option>
-        <option value="CHUNGNAM">충남</option>
-        <option value="CHUNGBUK">충북</option>
-        <option value="JEONNAM">전남</option>
-        <option value="JEONBUK">전북</option>
-        <option value="GYEONGNAM">경남</option>
-        <option value="GYEONGBUK">경북</option>
-      </select>
-
-      <button type="submit">변경 내용 저장</button>
-      <button type="button" onclick="toggleEditMode(false)" style="background: #e0e0e0; color: #333;">취소</button>
-
-      <p class="error-message" id="editFormErrorMsg"></p>
-    </form>
-  </div>
-</section>
+    <section id="tab-content" class="tab-content">
+        <div id="scrap" class="tab-pane active"></div>
+        <div id="like" class="tab-pane"></div>
+        <div id="followers" class="tab-pane"></div>
+        <div id="following" class="tab-pane"></div>
+        <div id="edit" class="tab-pane">
+            <form id="profileEditForm" enctype="multipart/form-data">
+                <label>프로필 이미지</label>
+                <input type="file" id="newProfileImage" name="profileImage" accept="image/*"/>
+                <label>이름</label>
+                <input type="text" id="editName" name="name" placeholder="이름"/>
+                <label>지역</label>
+                <input type="text" id="editRegion" name="region" placeholder="지역"/>
+                <label>생년월일</label>
+                <input type="date" id="editBirth" name="birth"/>
+                <button type="submit" class="btn-save">저장하기</button>
+                <button type="button" class="btn-delete" onclick="deleteAccount()">회원 탈퇴</button>
+            </form>
+        </div>
+    </section>
+</main>
 
 <div id="footer-placeholder"></div>
-
-<script src="js/common.js"></script>
+<script src="/js/common.js"></script>
 <script src="js/mypage.js"></script>
 </body>
 </html>

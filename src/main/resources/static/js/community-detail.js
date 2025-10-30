@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  /* ==============================================
-     ✅ header / footer include
-     ============================================== */
+
   fetch("header.html").then(res => res.text()).then(html => {
     document.getElementById("header-placeholder").innerHTML = html;
   });

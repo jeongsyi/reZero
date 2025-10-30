@@ -1384,6 +1384,15 @@ footer {
    🌿 스크랩 버튼
    ============================================== */
 /* ✅ 스크랩 버튼 중앙 정렬 및 크기 조정 */
+.scrap-container {
+    display: flex;
+    justify-content: center;  /* 수평 중앙 */
+    align-items: center;       /* 수직 중앙 (필요 시) */
+    margin: 20px 0;            /* 위아래 간격 */
+    width: 100%;               /* 전체 너비 차지 */
+}
+
+/* ✅ 스크랩 버튼 스타일 (기존 유지 가능) */
 .scrap-btn {
     display: inline-flex;
     align-items: center;
@@ -1394,12 +1403,10 @@ footer {
     background-color: #fff8e1;
     color: #b58900;
     font-weight: 600;
-    font-size: 1rem; /* 🔹 약간 키움 */
-    padding: 10px 24px; /* 🔹 세로/가로 여백 늘림 */
+    font-size: 1rem;
+    padding: 10px 24px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin: 20px auto; /* 🔹 위아래 여백 + 가운데 정렬 */
-    display: block; /* 🔹 가운데 정렬 적용 위해 block */
     text-align: center;
 }
 
@@ -1451,4 +1458,3 @@ footer {
     color: #fff;
     transform: scale(1.05);
 }
-
