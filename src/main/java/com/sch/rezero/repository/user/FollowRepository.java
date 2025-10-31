@@ -4,7 +4,7 @@ import com.sch.rezero.entity.user.Follow;
 import com.sch.rezero.entity.user.User;
 import org.springframework.data.repository.CrudRepository;
 
-public interface FollowRepository extends CrudRepository<Follow, Long> {
+public interface FollowRepository extends CrudRepository<Follow, Long>, FollowQueryRepository {
 
   boolean existsByFollowerAndFollowing(User follower, User following);
 
