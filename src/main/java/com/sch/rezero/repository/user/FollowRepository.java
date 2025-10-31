@@ -2,6 +2,7 @@ package com.sch.rezero.repository.user;
 
 import com.sch.rezero.entity.user.Follow;
 import com.sch.rezero.entity.user.User;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 public interface FollowRepository extends CrudRepository<Follow, Long>, FollowQueryRepository {
@@ -10,5 +11,8 @@ public interface FollowRepository extends CrudRepository<Follow, Long>, FollowQu
 
   Integer countByFollower(User follower);
   Integer countByFollowing(User following);
+
+  Optional<Follow> findByFollowerAndFollowing(User follower, User following);
+
 
 }

@@ -1,7 +1,6 @@
 package com.sch.rezero.dto.community.communityComment;
 
 public record CommunityCommentQuery(
-        Long postId,
         Long idAfter,
         String cursor,
         Integer size,
