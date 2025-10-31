@@ -18,7 +18,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 async function loadProfile() {
     try {
         const res = await fetch("/api/me");
+        console.log("status:", res.status);
+
+        if (res.status === 500) {
+            alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+            window.location.href = "/login.html";
+            return;
+        }
+
         if (!res.ok) throw new Error("프로필 조회 실패");
+
         const profile = await res.json();
 
         // ✅ 프로필 이미지
@@ -34,13 +43,12 @@ async function loadProfile() {
         document.getElementById("userRegion").textContent = profile.region || "-";
         document.getElementById("userBirth").textContent = profile.birth || "-";
 
-        // ✅ 팔로워 / 팔로잉 수 그대로 표시
+        // ✅ 팔로워 / 팔로잉 수
         document.querySelector("#followerCount b").textContent =
             profile.followerCount ?? 0;
         document.querySelector("#followingCount b").textContent =
             profile.followingCount ?? 0;
 
-        // ✅ 스크랩 목록 초기화
         await loadScraps(true);
     } catch (err) {
         console.error("프로필 로드 오류:", err);
