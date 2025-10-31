@@ -21,21 +21,26 @@ async function loadProfile() {
         if (!res.ok) throw new Error("프로필 조회 실패");
         const profile = await res.json();
 
+        // ✅ 프로필 이미지
         const profileImg = document.getElementById("profileImage");
         profileImg.src = profile.profileUrl || "/images/default-profile.png";
         profileImg.onerror = () => {
             profileImg.src = "/images/default-profile.png";
         };
 
+        // ✅ 프로필 정보 표시
         document.getElementById("userName").textContent = profile.name;
         document.getElementById("userRole").textContent = profile.role;
         document.getElementById("userRegion").textContent = profile.region || "-";
         document.getElementById("userBirth").textContent = profile.birth || "-";
-        document.querySelector("#followerCount b").textContent =
-            profile.followerCount || 0;
-        document.querySelector("#followingCount b").textContent =
-            profile.followingCount || 0;
 
+        // ✅ 팔로워 / 팔로잉 수 그대로 표시
+        document.querySelector("#followerCount b").textContent =
+            profile.followerCount ?? 0;
+        document.querySelector("#followingCount b").textContent =
+            profile.followingCount ?? 0;
+
+        // ✅ 스크랩 목록 초기화
         await loadScraps(true);
     } catch (err) {
         console.error("프로필 로드 오류:", err);
@@ -62,10 +67,8 @@ async function loadEditForm() {
 document.getElementById("profileEditForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const form = document.getElementById("profileEditForm");
     const formData = new FormData();
 
-    // JSON 부분 (ProfileUpdateRequest)
     const request = {
         userId: document.getElementById("editUserId").value,
         password: document.getElementById("editPassword").value || null,
@@ -77,7 +80,7 @@ document.getElementById("profileEditForm")?.addEventListener("submit", async (e)
 
     formData.append(
         "request",
-        new Blob([JSON.stringify(request)], { type: "application/json" })
+        new Blob([JSON.stringify(request)], {type: "application/json"})
     );
 
     const imageFile = document.getElementById("newProfileImage").files[0];
@@ -92,7 +95,6 @@ document.getElementById("profileEditForm")?.addEventListener("submit", async (e)
         if (!res.ok) throw new Error("수정 실패");
         alert("프로필이 성공적으로 수정되었습니다!");
 
-        // 다시 프로필 불러오기
         await loadProfile();
     } catch (err) {
         console.error("프로필 수정 오류:", err);
@@ -110,7 +112,9 @@ function setupTabs() {
             buttons.forEach((b) => b.classList.remove("active"));
             panes.forEach((p) => p.classList.remove("active"));
             btn.classList.add("active");
-            document.getElementById(btn.dataset.tab).classList.add("active");
+
+            const targetPane = document.getElementById(btn.dataset.tab);
+            if (targetPane) targetPane.classList.add("active"); // ✅ null 방지
 
             if (btn.dataset.tab === "scrap") loadScraps(true);
             if (btn.dataset.tab === "like") loadLikes();
@@ -136,15 +140,12 @@ async function loadScraps(reset = true) {
     try {
         let url = `/api/scraps?size=12`;
         if (scrapNextCursor && scrapNextIdAfter)
-            url += `&cursor=${encodeURIComponent(
-                scrapNextCursor
-            )}&idAfter=${scrapNextIdAfter}`;
+            url += `&cursor=${encodeURIComponent(scrapNextCursor)}&idAfter=${scrapNextIdAfter}`;
 
         const res = await fetch(url);
         if (!res.ok) throw new Error("스크랩 로드 실패");
         const data = await res.json();
 
-        // ✅ CursorPageResponse 구조 보정
         const scraps = data.elements || data.items || data.content || [];
 
         if (scraps.length === 0 && reset) {
@@ -153,8 +154,7 @@ async function loadScraps(reset = true) {
             return;
         }
 
-        const grid =
-            container.querySelector(".post-grid") || document.createElement("div");
+        const grid = container.querySelector(".post-grid") || document.createElement("div");
         grid.className = "post-grid";
 
         for (const scrap of scraps) {
@@ -165,15 +165,12 @@ async function loadScraps(reset = true) {
             const card = document.createElement("div");
             card.className = "post-card compact";
             card.innerHTML = `
-        <img src="${
-                post.thumbNailImageUrl || "/images/default-thumb.png"
-            }" alt="썸네일" />
+        <img src="${post.thumbNailImageUrl || "/images/default-thumb.png"}" 
+             alt="썸네일"
+             onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
         <div class="title-wrap">
-            <p class="title" title="${post.title || "제목 없음"}">
-              ${post.title || "제목 없음"}
-            </p>
-        </div>
-      `;
+          <p class="title" title="${post.title || "제목 없음"}">${post.title || "제목 없음"}</p>
+        </div>`;
             card.addEventListener("click", () => {
                 window.location.href = `/recycling-detail.html?id=${post.id}`;
             });
@@ -227,7 +224,6 @@ async function loadLikes(reset = true) {
         grid.className = "post-grid";
 
         for (const like of likes) {
-            // 커뮤니티 게시글 상세 조회
             const postRes = await fetch(`/api/community-posts/${like.postId}`);
             if (!postRes.ok) continue;
             const post = await postRes.json();
@@ -235,11 +231,12 @@ async function loadLikes(reset = true) {
             const card = document.createElement("div");
             card.className = "post-card compact";
             card.innerHTML = `
-                <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" alt="썸네일" />
-                <div class="title-wrap">
-                    <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
-                </div>
-            `;
+        <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" 
+             alt="썸네일"
+             onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
+        <div class="title-wrap">
+          <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
+        </div>`;
             card.addEventListener("click", () => {
                 window.location.href = `/community-detail.html?id=${post.id}`;
             });
@@ -266,22 +263,17 @@ function openFollowList(type) {
     const modal = document.createElement("div");
     modal.classList.add("follow-modal", "active");
     modal.innerHTML = `
-        <div class="follow-modal-content">
-            <h3>${type === "follower" ? "팔로워 목록" : "팔로잉 목록"}</h3>
-            
-            <input type="text" id="followSearchInput" 
-                   placeholder="이름으로 검색..." 
-                   style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; margin-bottom:12px;" />
-
-            <div id="followListContainer">로딩 중...</div>
-        </div>
-    `;
+    <div class="follow-modal-content">
+      <h3>${type === "follower" ? "팔로워 목록" : "팔로잉 목록"}</h3>
+      <input type="text" id="followSearchInput" placeholder="이름으로 검색..." 
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; margin-bottom:12px;" />
+      <div id="followListContainer">로딩 중...</div>
+    </div>`;
     modal.addEventListener("click", (e) => {
         if (e.target === modal) modal.remove();
     });
     document.body.appendChild(modal);
 
-    // 검색 이벤트
     const searchInput = modal.querySelector("#followSearchInput");
     searchInput.addEventListener("input", (e) => {
         const keyword = e.target.value.trim().toLowerCase();
@@ -294,49 +286,73 @@ function openFollowList(type) {
 // 🔹 팔로워 / 팔로잉 목록 불러오기
 async function loadFollowList(type) {
     try {
-        const res = await fetch(`/api/follows/me/${type}`);
-        if (!res.ok) throw new Error("팔로우 목록 조회 실패");
+        const meRes = await fetch("/api/me");
+        if (!meRes.ok) throw new Error("사용자 정보 불러오기 실패");
+        const me = await meRes.json();
+        const userId = me.id;
+
+        const params = new URLSearchParams({
+            size: 20,
+            sortField: "createdAt",
+            sortDirection: "asc",
+        });
+
+        const res = await fetch(`/api/follows/${userId}/${type}?${params.toString()}`);
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`팔로우 목록 조회 실패 (${res.status}): ${errText}`);
+        }
 
         const data = await res.json();
-        const list = data.elements || data.items || data.content || [];
+        const list = data.content || data.elements || data.items || [];
 
         const container = document.getElementById("followListContainer");
         if (list.length === 0) {
-            container.innerHTML = `<p style='text-align:center;color:#777;'>${type === "follower" ? "팔로워가 없습니다." : "팔로잉한 사용자가 없습니다."}</p>`;
+            container.innerHTML = `<p style='text-align:center;color:#777;'>${
+                type === "follower" ? "팔로워가 없습니다." : "팔로잉한 사용자가 없습니다."
+            }</p>`;
             return;
         }
 
-        container.innerHTML = list.map(u => `
-            <div class="follow-item-row" data-name="${u.name.toLowerCase()}">
-                <img src="${u.profileUrl && u.profileUrl !== 'null' ? u.profileUrl : '/images/default-profile.png'}" alt="">
-                <div style="display:flex;flex-direction:column;">
-                    <span style="font-weight:600;color:#333;">${u.name}</span>
-                    <small style="color:#777;">팔로우 날짜: ${new Date(u.createdAt).toLocaleDateString()}</small>
-                </div>
-            </div>
-        `).join('');
+        container.innerHTML = list
+            .map(
+                (u) => `
+      <div class="follow-item-row" data-name="${(u.name || "").toLowerCase()}">
+        <img src="${
+                    u.profileUrl && u.profileUrl !== "null"
+                        ? u.profileUrl
+                        : "/images/default-profile.png"
+                }"
+        alt="프로필"
+        onerror="this.onerror=null; this.src='/images/default-profile.png';" />
+        <div style="display:flex;flex-direction:column;">
+          <span style="font-weight:600;color:#333;">${u.name}</span>
+          <small style="color:#777;">${u.loginId}</small>
+        </div>
+      </div>`
+            )
+            .join("");
     } catch (err) {
         console.error("팔로우 목록 불러오기 실패:", err);
-        document.getElementById("followListContainer").innerHTML =
-            "<p style='text-align:center;color:red;'>불러오기 실패</p>";
+        const container = document.getElementById("followListContainer");
+        if (container)
+            container.innerHTML = "<p style='text-align:center;color:red;'>목록을 불러오는 중 오류가 발생했습니다.</p>";
     }
 }
 
 // 🔹 검색 필터
 function filterFollowList(keyword) {
     const rows = document.querySelectorAll(".follow-item-row");
-    rows.forEach(row => {
+    rows.forEach((row) => {
         const name = row.dataset.name || "";
         row.style.display = name.includes(keyword) ? "flex" : "none";
     });
 }
 
-
 // 🔹 스크롤 하단 감지
 window.addEventListener("scroll", async () => {
     if (scrapLoading || !scrapHasNext) return;
-    const activeTab = document.querySelector(".mypage-tabs button.active")
-        ?.dataset.tab;
+    const activeTab = document.querySelector(".mypage-tabs button.active")?.dataset.tab;
     if (activeTab !== "scrap") return;
 
     const nearBottom =

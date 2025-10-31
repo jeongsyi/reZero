@@ -57,6 +57,7 @@ public class FollowService {
         List<FollowDto> contents = result.content().stream()
                 .map(r -> new FollowDto(
                         r.getFollower().getId(),
+                        r.getFollower().getLoginId(),
                         r.getFollower().getName(),
                         r.getFollower().getProfileUrl(),
                         r.getCreatedAt())
@@ -78,6 +79,7 @@ public class FollowService {
         List<FollowDto> contents = result.content().stream()
                 .map(r -> new FollowDto(
                         r.getFollowing().getId(),
+                        r.getFollowing().getLoginId(),
                         r.getFollowing().getName(),
                         r.getFollowing().getProfileUrl(),
                         r.getCreatedAt())
