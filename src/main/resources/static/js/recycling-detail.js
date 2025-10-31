@@ -1,5 +1,29 @@
 window.addEventListener("DOMContentLoaded", async () => {
     await loadLayout();
+
+    // ✅ 이미지 로드 실패 시 기본 이미지로 자동 대체
+    document.addEventListener(
+        "error",
+        function (e) {
+            const target = e.target;
+            if (target.tagName === "IMG") {
+                // 이미 fallback 적용된 경우는 무시
+                if (target.src.includes("default-profile") || target.src.includes("default-thumb")) return;
+
+                // 프로필인지 일반 이미지(썸네일/본문)인지 판별
+                const isProfile =
+                    target.classList.contains("profile") ||
+                    target.closest(".comment-profile") ||
+                    target.alt?.includes("profile");
+
+                target.src = isProfile
+                    ? "/images/default-profile.png"
+                    : "/images/default-thumb.png";
+            }
+        },
+        true // 캡처 단계에서 감지
+    );
+
     await loadPostDetail();
     await initComments();
 });
@@ -25,7 +49,7 @@ async function loadPostDetail() {
         thumbnail.src =
             post.thumbNailImageUrl && post.thumbNailImageUrl !== ""
                 ? post.thumbNailImageUrl
-                : "/images/default-thumb.jpg";
+                : "/images/default-thumb.png";
 
         document.getElementById("post-description").textContent =
             post.description || "내용이 없습니다.";

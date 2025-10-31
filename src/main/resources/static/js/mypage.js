@@ -30,7 +30,6 @@ async function loadProfile() {
 
         const profile = await res.json();
 
-        // ✅ 프로필 이미지
         const profileImg = document.getElementById("profileImage");
         profileImg.src = profile.profileUrl || "/images/default-profile.png";
         profileImg.onerror = () => {
