@@ -4,31 +4,35 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>마이페이지 | reZero</title>
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="css/mypage.css"/>
 </head>
 <body>
 <div id="header-placeholder"></div>
 <main class="mypage-container">
     <section class="profile-header">
-        <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>
-        <div class="profile-info">
-            <h2 id="userName">사용자 이름</h2>
-            <p id="userRole" class="role">ROLE_USER</p>
-            <p id="userRegion" class="region">서울특별시</p>
-            <p id="userBirth" class="birth">1999-01-01</p>
+        <div class="profile-left">
+            <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>
         </div>
-        <div class="follow-stats">
-            <span id="followerCount" class="count" onclick="openFollowList('followers')">팔로워 <b>0</b></span>
-            <span id="followingCount" class="count" onclick="openFollowList('following')">팔로잉 <b>0</b></span>
+
+        <div class="profile-center">
+            <h2 id="userName">사용자 이름</h2>
+            <div class="user-subinfo">
+                <span id="userRole">ROLE_USER</span> ·
+                <span id="userRegion">서울특별시</span> ·
+                <span id="userBirth">1999-01-01</span>
+            </div>
+            <div class="follow-stats">
+                <span class="follow-item" onclick="openFollowList('followers')">팔로워 <b id="followerCount">0</b></span>
+                <span class="follow-item" onclick="openFollowList('following')">팔로잉 <b id="followingCount">0</b></span>
+            </div>
         </div>
     </section>
 
     <nav class="mypage-tabs">
         <button data-tab="scrap" class="active">스크랩</button>
         <button data-tab="like">좋아요</button>
-        <button data-tab="followers">팔로워</button>
-        <button data-tab="following">팔로잉</button>
+        <button data-tab="following_community">팔로잉</button>
         <button data-tab="edit">내 정보 수정</button>
     </nav>
 
@@ -39,16 +43,28 @@
         <div id="following" class="tab-pane"></div>
         <div id="edit" class="tab-pane">
             <form id="profileEditForm" enctype="multipart/form-data">
+                <label>아이디</label>
+                <input type="text" id="editUserId" name="userId" readonly/>
+
                 <label>프로필 이미지</label>
                 <input type="file" id="newProfileImage" name="profileImage" accept="image/*"/>
+
+                <label>비밀번호 변경</label>
+                <input type="password" id="editPassword" name="password" placeholder="새 비밀번호 (선택)"/>
+
                 <label>이름</label>
                 <input type="text" id="editName" name="name" placeholder="이름"/>
+
                 <label>지역</label>
                 <input type="text" id="editRegion" name="region" placeholder="지역"/>
+
                 <label>생년월일</label>
                 <input type="date" id="editBirth" name="birth"/>
-                <button type="submit" class="btn-save">저장하기</button>
-                <button type="button" class="btn-delete" onclick="deleteAccount()">회원 탈퇴</button>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">저장하기</button>
+                    <button type="button" class="btn-delete" onclick="deleteAccount()">회원 탈퇴</button>
+                </div>
             </form>
         </div>
     </section>

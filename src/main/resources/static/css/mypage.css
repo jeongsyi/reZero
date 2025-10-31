@@ -162,15 +162,15 @@ body {
 /* 🌿 스크랩 카드 (정렬 수정 + 제목 크기 축소) */
 .post-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 기존 220~250px → 180px로 축소 */
+    grid-template-columns: repeat(4, 1fr); /* 기존 220~250px → 180px로 축소 */
     gap: 12px;
     justify-content: center;
     padding: 10px;
 }
 
 .post-card.compact {
-    width: 100%;
-    height: 150px; /* 가로 줄인 만큼 세로도 비율 유지 */
+    width: 200px;
+    height: 160px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.08);
@@ -181,7 +181,7 @@ body {
 
 .post-card.compact img {
     width: 100%;
-    height: 115px; /* 비율상 약 75~80% */
+    height: 115px;
     object-fit: cover;
 }
 
