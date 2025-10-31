@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface FollowMapper {
 
-  @Mapping(source = "following.id", target = "followingId")
-  FollowResponse toFollowResponse(Follow follow);
+  @Mapping(source = "follow.following.id", target = "followingId")
+  FollowResponse toFollowResponse(Follow follow, Boolean subscribedByMe);
 
 }

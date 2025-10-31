@@ -16,57 +16,88 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
+    // ✅ header / footer 로드
+    fetch("header.html").then(r => r.text()).then(html => document.getElementById("header-placeholder").innerHTML = html);
+    fetch("footer.html").then(r => r.text()).then(html => document.getElementById("footer-placeholder").innerHTML = html);
+
     const params = new URLSearchParams(window.location.search);
     const userId = params.get("id");
     if (!userId) return alert("잘못된 접근입니다.");
 
-    const res = await fetch(`/api/users/${userId}`);
-    if (!res.ok) return alert("프로필을 불러올 수 없습니다.");
-    const user = await res.json();
+    try {
+      // ✅ 사용자 정보 가져오기
+      const res = await fetch(`/api/users/${userId}`);
+      if (!res.ok) throw new Error("프로필 정보를 불러올 수 없습니다.");
+      const user = await res.json();
 
-    // 로그인 사용자 (본인인지 판별용)
-    const meRes = await fetch("/api/users/me");
-    const me = meRes.ok ? await meRes.json() : null;
+      // ✅ 로그인 사용자 정보 (본인 여부 확인용)
+      const meRes = await fetch("/api/me");
+      const me = meRes.ok ? await meRes.json() : null;
+      const isMe = me && me.userId === user.userId;
 
-    const isMe = me && me.userId === user.userId;
-
-    document.getElementById("userProfile").innerHTML = `
-    <img src="${user.profileUrl || '/images/default-profile.png'}" alt="프로필 이미지" class="profile-avatar">
-    <h2>${user.name}</h2>
-    <p>@${user.userId}</p>
-    <p>${user.role}</p>
-    <p>팔로워 ${user.followerCount} · 팔로잉 ${user.followingCount}</p>
-    ${
-        !isMe
-            ? `<button id="followBtn" class="btn follow">팔로우</button>`
-            : `<button class="btn mypage" onclick="location.href='/my-page.html'">내 프로필 보기</button>`
-    }
-  `;
-
-    if (!isMe) {
-      const followBtn = document.getElementById("followBtn");
+      // ✅ 팔로우 상태 확인 API (팔로잉 여부)
       let following = false;
-
-      // 팔로우 상태 확인 API가 있다면 여기서 호출 (지금은 false 기본)
-      followBtn.addEventListener("click", async () => {
-        try {
-          if (!following) {
-            await fetch(`/api/follows`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ followingId: userId })
-            });
-            following = true;
-            followBtn.textContent = "언팔로우";
-          } else {
-            await fetch(`/api/follows/${userId}`, { method: "DELETE" });
-            following = false;
-            followBtn.textContent = "팔로우";
-          }
-        } catch {
-          alert("팔로우 처리 중 오류 발생");
+      if (!isMe) {
+        const followCheckRes = await fetch(`/api/follows/status/${userId}`);
+        if (followCheckRes.ok) {
+          following = await followCheckRes.json(); // true / false
         }
-      });
+      }
+
+      // ✅ 프로필 렌더링
+      const container = document.getElementById("userProfile");
+      container.innerHTML = `
+        <img src="${user.profileUrl || '/images/default-profile.png'}" alt="프로필 이미지" class="profile-avatar">
+        <h2>${user.name}</h2>
+        <p class="user-info">@${user.loginId}</p>
+        <p>${user.role}</p>
+        <p id="followCount">팔로워 ${user.followerCount} · 팔로잉 ${user.followingCount}</p>
+        ${
+          !isMe
+              ? `<button id="followBtn" class="btn follow">${following ? "언팔로우" : "팔로우"}</button>`
+              : `<button class="btn mypage" onclick="location.href='/mypage.html'">내 프로필 보기</button>`
+      }
+      `;
+
+      // ✅ 팔로우 버튼 로직
+      if (!isMe) {
+        const followBtn = document.getElementById("followBtn");
+        const followCountEl = document.getElementById("followCount");
+        let followerCount = user.followerCount;
+
+        followBtn.addEventListener("click", async () => {
+          try {
+            if (!following) {
+              // 팔로우 등록
+              const res = await fetch(`/api/follows`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ followingId: userId })
+              });
+              if (!res.ok) throw new Error("팔로우 실패");
+              following = true;
+              followerCount++;
+              followBtn.textContent = "언팔로우";
+            } else {
+              // 언팔로우
+              const res = await fetch(`/api/follows/${userId}`, { method: "DELETE" });
+              if (!res.ok) throw new Error("언팔로우 실패");
+              following = false;
+              followerCount--;
+              followBtn.textContent = "팔로우";
+            }
+
+            // 팔로워 수 즉시 반영
+            followCountEl.textContent = `팔로워 ${followerCount} · 팔로잉 ${user.followingCount}`;
+          } catch (err) {
+            console.error(err);
+            alert("팔로우 처리 중 오류가 발생했습니다.");
+          }
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert("프로필 로드 중 오류 발생");
     }
   });
 </script>

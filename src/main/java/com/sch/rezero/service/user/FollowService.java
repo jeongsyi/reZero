@@ -42,17 +42,35 @@ public class FollowService {
         Follow follow = new Follow(follower, following);
         followRepository.save(follow);
 
-        return followMapper.toFollowResponse(follow);
+        follower.increaseFollowingCount();
+        following.increaseFollowerCount();
+
+        return followMapper.toFollowResponse(follow, true);
     }
 
-    public void delete(Long userId, Long followId) {
-        Follow follow = followRepository.findById(followId).orElseThrow(() -> new EntityNotFoundException("Follow not found"));
+    public void delete(Long followerId, Long followingId) {
+        User follower = userRepository.findById(followerId)
+            .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+        User following = userRepository.findById(followingId)
+            .orElseThrow(() -> new EntityNotFoundException("Following not found"));
 
-        if (!follow.getFollower().getId().equals(userId)) {
-            throw new IllegalArgumentException("Follower and following are the same");
-        }
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
+            .orElseThrow(() -> new EntityNotFoundException("Follow not found"));
+
+        follower.decreaseFollowingCount();
+        following.decreaseFollowerCount();
 
         followRepository.delete(follow);
+
     }
+
+    public boolean isFollowing(Long followerId, Long followingId) {
+        User follower = userRepository.findById(followerId)
+            .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+        User following = userRepository.findById(followingId)
+            .orElseThrow(() -> new EntityNotFoundException("Following not found"));
+        return followRepository.existsByFollowerAndFollowing(follower, following);
+    }
+
 
 }

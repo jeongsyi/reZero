@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let liked = false;
 
   try {
-    // ✅ 게시글 데이터 불러오기
+    // ✅ 게시글 불러오기
     const res = await fetch(`/api/community-posts/${postId}`);
     if (!res.ok) throw new Error("게시글 불러오기 실패");
     postData = await res.json();
@@ -148,6 +148,7 @@ async function initComments(postId, currentUser) {
     }
   }
 
+  // ✅ 프로필/이름 클릭 가능 댓글 렌더링
   function renderComment(comment, isReply = false, parentId = null) {
     const div = document.createElement("div");
     div.className = isReply ? "comment reply" : "comment";
@@ -165,7 +166,10 @@ async function initComments(postId, currentUser) {
                onclick="location.href='/user-profile.html?id=${comment.userId}'">
         </div>
         <div class="comment-info">
-          <div class="user-name">${comment.userName}</div>
+          <div class="user-name" style="cursor:pointer"
+               onclick="location.href='/user-profile.html?id=${comment.userId}'">
+               ${comment.userName}
+          </div>
           <div class="meta">${new Date(comment.createdAt).toLocaleString()}</div>
         </div>
       </div>
@@ -187,6 +191,7 @@ async function initComments(postId, currentUser) {
     setupCommentActions(div, comment, isReply);
   }
 
+  // ✅ 댓글 액션들
   function setupCommentActions(div, comment, isReply) {
     const replyBtn = div.querySelector(".reply-btn");
     const editBtn = div.querySelector(".edit-btn");
@@ -196,7 +201,6 @@ async function initComments(postId, currentUser) {
       replyBtn.addEventListener("click", () => toggleReplyForm(div, comment.id));
     }
 
-    // ✅ 수정 기능
     if (editBtn) {
       editBtn.addEventListener("click", async () => {
         const contentEl = div.querySelector(".content");
@@ -251,7 +255,6 @@ async function initComments(postId, currentUser) {
       });
     }
 
-    // ✅ 삭제 기능
     if (deleteBtn) {
       deleteBtn.addEventListener("click", async () => {
         if (!confirm("댓글을 삭제하시겠습니까?")) return;
@@ -261,6 +264,7 @@ async function initComments(postId, currentUser) {
     }
   }
 
+  // ✅ 답글 작성
   function toggleReplyForm(parentDiv, parentId) {
     const existing = parentDiv.querySelector(".reply-form");
     if (existing) return existing.remove();
@@ -312,7 +316,6 @@ async function initComments(postId, currentUser) {
     } else alert("댓글 등록 실패");
   });
 
-  // ✅ 정렬 변경 시
   sortSelect.addEventListener("change", async e => {
     sortDirection = e.target.value;
     nextCursor = null;
@@ -320,7 +323,6 @@ async function initComments(postId, currentUser) {
     await loadComments(true);
   });
 
-  // ✅ 더보기 버튼
   loadMoreBtn.addEventListener("click", async () => await loadComments(false));
 
   await loadComments(true);

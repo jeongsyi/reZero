@@ -2,18 +2,14 @@ package com.sch.rezero.entity.user;
 
 import com.sch.rezero.entity.community.CommunityComment;
 import com.sch.rezero.entity.community.CommunityPost;
-import com.sch.rezero.entity.community.Like;
-import com.sch.rezero.entity.recycling.RecyclingPost;
-import com.sch.rezero.entity.recycling.Scrap;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -45,6 +41,13 @@ public class User {
     private LocalDate birth;
     private String region;
 
+    // ✅ 팔로워 / 팔로잉 카운트 추가
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount = 0L;
+
+    @Column(name = "following_count", nullable = false)
+    private Long followingCount = 0L;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityPost> communityPosts = new ArrayList<>();
 
@@ -64,25 +67,28 @@ public class User {
 
     public void update(String loginId, String password, String name, String profileUrl,
         LocalDate birth, String region) {
-        if (loginId != null && !this.loginId.equals(loginId)) {
-            this.loginId = loginId;
-        }
-        if (password != null && !this.password.equals(password)) {
-            this.password = password;
-        }
-        if (name != null && !this.name.equals(name)) {
-            this.name = name;
-        }
-        if (profileUrl != null || (this.profileUrl != null && profileUrl == null)) {
-            this.profileUrl = profileUrl;
-        }
+        if (loginId != null && !this.loginId.equals(loginId)) this.loginId = loginId;
+        if (password != null && !this.password.equals(password)) this.password = password;
+        if (name != null && !this.name.equals(name)) this.name = name;
+        if (profileUrl != null || (this.profileUrl != null && profileUrl == null)) this.profileUrl = profileUrl;
+        if (birth != null || (this.birth != null && birth == null)) this.birth = birth;
+        if (region != null || (this.region != null && region == null)) this.region = region;
+    }
 
-        if (birth != null || (this.birth != null && birth == null)) {
-            this.birth = birth;
-        }
+    // ✅ 팔로워 / 팔로잉 카운트 관련 메서드
+    public void increaseFollowerCount() {
+        this.followerCount++;
+    }
 
-        if (region != null || (this.region != null && region == null)) {
-            this.region = region;
-        }
+    public void decreaseFollowerCount() {
+        if (this.followerCount > 0) this.followerCount--;
+    }
+
+    public void increaseFollowingCount() {
+        this.followingCount++;
+    }
+
+    public void decreaseFollowingCount() {
+        if (this.followingCount > 0) this.followingCount--;
     }
 }

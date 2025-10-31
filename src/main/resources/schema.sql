@@ -19,15 +19,18 @@ DROP TABLE iF EXISTS levels CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id          BIGSERIAL PRIMARY KEY,
-    login_id    VARCHAR(50)  NOT NULL UNIQUE,
-    password    VARCHAR(255) NOT NULL,
-    name        VARCHAR(100) NOT NULL,
-    role        VARCHAR(20)  NOT NULL CHECK (role IN ('ADMIN', 'USER')) DEFAULT 'USER',
-    birth       DATE,
-    region      VARCHAR(100),
-    profile_url VARCHAR(255)
+    id               BIGSERIAL PRIMARY KEY,
+    login_id         VARCHAR(50)  NOT NULL UNIQUE,
+    password         VARCHAR(255) NOT NULL,
+    name             VARCHAR(100) NOT NULL,
+    role             VARCHAR(20)  NOT NULL CHECK (role IN ('ADMIN', 'USER')) DEFAULT 'USER',
+    birth            DATE,
+    region           VARCHAR(100),
+    profile_url      VARCHAR(255),
+    follower_count   BIGINT       NOT NULL DEFAULT 0,
+    following_count  BIGINT       NOT NULL DEFAULT 0
 );
+
 
 CREATE TABLE IF NOT EXISTS categories
 (
