@@ -60,7 +60,6 @@ async function loadPosts() {
             }
             return;
         }
-
         posts.forEach(post => {
             const imageUrl =
                 post.thumbNailImageUrl ||
@@ -71,12 +70,14 @@ async function loadPosts() {
             const card = document.createElement("div");
             card.className = "post-card";
             card.innerHTML = `
-                <img src="${imageUrl}" alt="${post.title}">
-                <div class="info">
-                    <div class="title">${post.title}</div>
-                    <div class="meta">${post.userName || '익명'} · ${formatDate(post.createdAt)} · ⭐ ${post.scraps?.length || 0}</div>
-                </div>
-            `;
+        <img src="${imageUrl}" alt="${post.title}">
+        <div class="info">
+            <div class="title">${post.title}</div>
+            <div class="meta">
+                ${post.userName || '익명'} · ${formatDate(post.createdAt)} · ⭐ ${post.scrapCount ?? 0}
+            </div>
+        </div>
+    `;
             card.addEventListener("click", () => {
                 window.location.href = `/recycling-detail.html?id=${post.id}`;
             });
@@ -112,7 +113,7 @@ function resetAndSearch() {
 function formatDate(dateStr) {
     if (!dateStr) return "";
     const d = new Date(dateStr);
-    return d.toLocaleDateString("ko-KR", { year: "numeric", month: "short", day: "numeric" });
+    return d.toLocaleDateString("ko-KR", {year: "numeric", month: "short", day: "numeric"});
 }
 
 function controlWriteButtonVisibility() {
