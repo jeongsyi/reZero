@@ -261,12 +261,18 @@ async function loadLikes(reset = true) {
     }
 }
 
+// 🔹 팔로워/팔로잉 모달 열기
 function openFollowList(type) {
     const modal = document.createElement("div");
     modal.classList.add("follow-modal", "active");
     modal.innerHTML = `
         <div class="follow-modal-content">
-            <h3>${type === "followers" ? "팔로워 목록" : "팔로잉 목록"}</h3>
+            <h3>${type === "follower" ? "팔로워 목록" : "팔로잉 목록"}</h3>
+            
+            <input type="text" id="followSearchInput" 
+                   placeholder="이름으로 검색..." 
+                   style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; margin-bottom:12px;" />
+
             <div id="followListContainer">로딩 중...</div>
         </div>
     `;
@@ -275,27 +281,54 @@ function openFollowList(type) {
     });
     document.body.appendChild(modal);
 
-    // API 예시
-    fetch(`/api/users/${type}`)
-        .then(res => res.json())
-        .then(data => {
-            const list = data.elements || [];
-            const container = document.getElementById("followListContainer");
-            if (list.length === 0) {
-                container.innerHTML = "<p style='text-align:center;color:#777;'>목록이 없습니다.</p>";
-                return;
-            }
-            container.innerHTML = list.map(u => `
-                <div class="follow-item-row">
-                    <img src="${u.profileUrl || '/images/default-profile.png'}" alt="">
-                    <span>${u.name}</span>
+    // 검색 이벤트
+    const searchInput = modal.querySelector("#followSearchInput");
+    searchInput.addEventListener("input", (e) => {
+        const keyword = e.target.value.trim().toLowerCase();
+        filterFollowList(keyword);
+    });
+
+    loadFollowList(type);
+}
+
+// 🔹 팔로워 / 팔로잉 목록 불러오기
+async function loadFollowList(type) {
+    try {
+        const res = await fetch(`/api/follows/me/${type}`);
+        if (!res.ok) throw new Error("팔로우 목록 조회 실패");
+
+        const data = await res.json();
+        const list = data.elements || data.items || data.content || [];
+
+        const container = document.getElementById("followListContainer");
+        if (list.length === 0) {
+            container.innerHTML = `<p style='text-align:center;color:#777;'>${type === "follower" ? "팔로워가 없습니다." : "팔로잉한 사용자가 없습니다."}</p>`;
+            return;
+        }
+
+        container.innerHTML = list.map(u => `
+            <div class="follow-item-row" data-name="${u.name.toLowerCase()}">
+                <img src="${u.profileUrl && u.profileUrl !== 'null' ? u.profileUrl : '/images/default-profile.png'}" alt="">
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:#333;">${u.name}</span>
+                    <small style="color:#777;">팔로우 날짜: ${new Date(u.createdAt).toLocaleDateString()}</small>
                 </div>
-            `).join('');
-        })
-        .catch(() => {
-            document.getElementById("followListContainer").innerHTML =
-                "<p style='text-align:center;color:red;'>불러오기 실패</p>";
-        });
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error("팔로우 목록 불러오기 실패:", err);
+        document.getElementById("followListContainer").innerHTML =
+            "<p style='text-align:center;color:red;'>불러오기 실패</p>";
+    }
+}
+
+// 🔹 검색 필터
+function filterFollowList(keyword) {
+    const rows = document.querySelectorAll(".follow-item-row");
+    rows.forEach(row => {
+        const name = row.dataset.name || "";
+        row.style.display = name.includes(keyword) ? "flex" : "none";
+    });
 }
 
 
