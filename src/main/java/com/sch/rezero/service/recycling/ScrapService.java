@@ -3,6 +3,7 @@ package com.sch.rezero.service.recycling;
 import com.sch.rezero.dto.recycling.scrap.ScrapQuery;
 import com.sch.rezero.dto.recycling.scrap.ScrapResponse;
 import com.sch.rezero.dto.response.CursorPageResponse;
+import com.sch.rezero.entity.community.Like;
 import com.sch.rezero.entity.recycling.RecyclingPost;
 import com.sch.rezero.entity.recycling.Scrap;
 import com.sch.rezero.entity.user.User;
@@ -54,13 +55,15 @@ public class ScrapService {
 
     @Transactional
     public void delete(Long userId, Long postId) {
-        Scrap scrap = scrapRepository.findByPostId(postId).orElseThrow(NoSuchElementException::new);
+        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+
+        Scrap scrap = scrapRepository.findByUserAndPost(user, post)
+                .orElseThrow(() -> new NoSuchElementException("Like not found"));
 
         if (!scrap.getUser().getId().equals(user.getId())) {
             throw new IllegalStateException("본인 스크랩만 삭제할 수 있습니다");
         }
-
         scrapRepository.delete(scrap);
     }
 }

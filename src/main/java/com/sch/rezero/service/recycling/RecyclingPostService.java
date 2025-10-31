@@ -17,7 +17,6 @@ import com.sch.rezero.repository.recycling.CategoryRepository;
 import com.sch.rezero.repository.recycling.RecyclingImageRepository;
 import com.sch.rezero.repository.recycling.RecyclingPostRepository;
 import com.sch.rezero.repository.user.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -173,21 +172,4 @@ public class RecyclingPostService {
 
         recyclingPostRepository.delete(post);
     }
-
-//    @Transactional
-//    public void deleteImage(HttpSession session, Long postId, Long imageId) {
-//        User loginUser = (User) session.getAttribute("user");
-//        User user = userRepository.findById(loginUser.getId()).orElseThrow(NoSuchElementException::new);
-//        RecyclingPost post = recyclingPostRepository.findById(postId).orElseThrow(NoSuchElementException::new);
-//        RecyclingImage image = recyclingImageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
-//
-//        if (!user.getId().equals(post.getUser().getId())) {
-//            throw new IllegalArgumentException("게시물이 작성한 사용자만 이미지 삭제가 가능합니다");
-//        }
-//        if (!image.getPost().getId().equals(post.getId())) {
-//            throw new IllegalArgumentException("해당 게시글의 이미지가 아닙니다.");
-//        }
-//
-//        post.deleteImage(image);
-//    }
 }

@@ -1,212 +1,345 @@
-const API_BASE_URL = '/api/me';
-const DEFAULT_PROFILE_IMG = 'img/default_profile.png';
-let currentProfileUrl = DEFAULT_PROFILE_IMG;
-let isImageRemoved = false; // ⭐️ 이미지 삭제 상태 추적 변수 추가
+let scrapNextCursor = null;
+let scrapNextIdAfter = null;
+let scrapLoading = false;
+let scrapHasNext = true;
+let likeNextCursor = null;
+let likeNextIdAfter = null;
+let likeLoading = false;
+let likeHasNext = true;
 
-// 이미지 미리보기 함수 (공통)
-function previewImage(event, previewElementId) {
-  const reader = new FileReader();
-  const imagePreview = document.getElementById(previewElementId);
-
-  if (event.target.files.length > 0) {
-    reader.onload = function(){
-      imagePreview.src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-    // ⭐️ 새 파일이 선택되면 삭제 요청을 취소합니다.
-    isImageRemoved = false;
-  }
-}
-
-// ⭐️ 이미지 삭제 처리 함수 수정
-function handleImageRemoval() {
-  const preview = document.getElementById('editProfileImagePreview');
-  const fileInput = document.getElementById('editProfileImageFile');
-
-  // 파일 입력 필드 초기화 (선택된 파일 제거)
-  fileInput.value = '';
-
-  // 미리보기 이미지를 기본 이미지로 변경
-  preview.src = DEFAULT_PROFILE_IMG;
-
-  // ⭐️ 삭제 요청 플래그 활성화
-  isImageRemoved = true;
-  alert("기존 이미지가 삭제 대기 상태입니다. '변경 내용 저장' 버튼을 눌러야 최종 반영됩니다.");
-}
-
-
-// 폼과 뷰 모드 전환
-function toggleEditMode(isEdit) {
-  document.getElementById('profileView').style.display = isEdit ? 'none' : 'block';
-  document.getElementById('profileEditForm').style.display = isEdit ? 'block' : 'none';
-
-  // 수정 모드 진입 시 에러 메시지 초기화
-  document.getElementById('editFormErrorMsg').textContent = '';
-  document.getElementById('editUserIdError').textContent = '';
-  document.getElementById('editPasswordError').textContent = '';
-  document.getElementById('editNameError').textContent = '';
-}
-
-// 프로필 데이터 표시 함수
-function displayProfile(data) {
-  currentProfileUrl = data.profileUrl || DEFAULT_PROFILE_IMG; // 현재 URL 저장
-
-  // 뷰 모드 설정
-  document.getElementById('viewProfileImage').src = currentProfileUrl;
-  document.getElementById('viewName').textContent = data.name;
-  document.getElementById('viewUserId').textContent = `@${data.userId}`;
-
-  // ⭐️ 수정 부분 1: '일반 사용자'를 '사용자'로 변경
-  document.getElementById('viewRole').textContent = data.role === 'USER' ? '사용자' : data.role;
-
-  document.getElementById('viewBirth').textContent = data.birth ? data.birth : '미입력';
-  document.getElementById('viewRegion').textContent = data.region ? data.region : '미입력';
-  document.getElementById('viewFollowerCount').textContent = data.followerCount || 0;
-  document.getElementById('viewFollowingCount').textContent = data.followingCount || 0;
-
-  // 수정 폼 초기값 설정
-  document.getElementById('editProfileImagePreview').src = currentProfileUrl;
-  document.getElementById('editUserId').value = data.userId;
-  document.getElementById('editName').value = data.name;
-  document.getElementById('editBirth').value = data.birth || '';
-  document.getElementById('editRegion').value = data.region || '';
-  document.getElementById('editPassword').value = ''; // 비밀번호는 항상 비워둠
-  document.getElementById('editProfileImageFile').value = ''; // 파일 입력 필드 초기화
-  isImageRemoved = false; // ⭐️ 폼 로드 시 삭제 상태 초기화
-}
-
-// 1. 프로필 정보 조회 (GET /api/me)
-async function fetchProfile() {
-  // ... (기존 fetchProfile 로직 유지)
-  const globalErrorMsg = document.getElementById('globalErrorMsg');
-  globalErrorMsg.textContent = '';
-  try {
-    const response = await fetch(API_BASE_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      displayProfile(data);
-    } else if (response.status === 401 || response.status === 403) {
-      globalErrorMsg.textContent = '로그인이 필요하거나 권한이 없습니다.';
-    } else {
-      globalErrorMsg.textContent = '프로필 정보를 불러오는 데 실패했습니다.';
-    }
-  } catch (error) {
-    console.error('Fetch error:', error);
-    globalErrorMsg.textContent = '네트워크 연결에 문제가 발생했습니다.';
-  }
-}
-
-
-// 2. 프로필 정보 수정 (PATCH /api/me)
-document.getElementById('profileEditForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const editFormErrorMsg = document.getElementById('editFormErrorMsg');
-
-  // 에러 메시지 초기화
-  document.getElementById('editUserIdError').textContent = '';
-  document.getElementById('editPasswordError').textContent = '';
-  document.getElementById('editNameError').textContent = '';
-  editFormErrorMsg.textContent = '';
-
-  // ProfileUpdateRequest JSON 객체 구성
-  const profileUpdateRequest = {
-    userId: formData.get('userId'),
-    password: formData.get('password') || null,
-    name: formData.get('name'),
-    birth: formData.get('birth') || null,
-    region: formData.get('region') || null,
-    // ⭐️ 수정: 백엔드 DTO에 추가된 필드를 가정하고 값을 전송합니다.
-    deleteProfileImage: isImageRemoved
-  };
-
-  // 파일 객체 (MultipartFile)
-  const profileImageFile = formData.get('profileImage');
-  const sendFormData = new FormData();
-
-  // 1. 새 파일이 선택된 경우에만 profileImage 파트를 전송합니다.
-  if (profileImageFile && profileImageFile.size > 0) {
-    sendFormData.append('profileImage', profileImageFile);
-  }
-  // ⭐️ 파일이 없는 경우 (기존 유지 또는 삭제 요청)에는 profileImage 파트를 전송하지 않습니다.
-  // 이 경우 서버는 profileImage를 null로 받게 되며, deleteProfileImage 플래그로 삭제 여부를 결정합니다.
-
-  // DTO JSON을 Blob으로 변환하여 FormData에 추가
-  const jsonBlob = new Blob([JSON.stringify(profileUpdateRequest)], { type: 'application/json' });
-  sendFormData.append('request', jsonBlob, 'request.json');
-
-
-  try {
-    const response = await fetch(API_BASE_URL, {
-      method: 'PATCH',
-      body: sendFormData
-    });
-
-    if (response.ok) {
-      alert('✅ 프로필 정보가 성공적으로 업데이트되었습니다.');
-      const data = await response.json();
-      displayProfile(data); // 업데이트된 정보로 화면 갱신
-      toggleEditMode(false); // 뷰 모드로 전환
-    } else {
-      const errorData = await response.json();
-
-      if (response.status === 400) {
-        if (errorData.message && errorData.message.includes("LoginId already exists")) {
-          document.getElementById('editUserIdError').textContent = '이미 사용 중인 아이디입니다.';
-        } else if (errorData.errors) {
-          errorData.errors.forEach(error => {
-            const errorId = `edit${error.field.charAt(0).toUpperCase() + error.field.slice(1)}Error`;
-            const errorElement = document.getElementById(errorId);
-            if(errorElement) errorElement.textContent = error.defaultMessage;
-          });
-        } else {
-          editFormErrorMsg.textContent = `🚨 업데이트 실패: ${errorData.message || response.statusText}`;
-        }
-      } else {
-        editFormErrorMsg.textContent = `🚨 서버 에러: ${errorData.message || response.statusText}`;
-      }
-    }
-  } catch (error) {
-    console.error('네트워크 에러:', error);
-    editFormErrorMsg.textContent = '🚨 네트워크 연결에 문제가 발생했습니다.';
-  }
+window.addEventListener("DOMContentLoaded", async () => {
+    await loadLayout();
+    await loadProfile();
+    await setupTabs();
+    await loadScraps(true);
 });
 
-// 3. 회원 탈퇴 (DELETE /api/me)
-async function handleDeleteUser() {
-  // ... (기존 handleDeleteUser 로직 유지)
-  if (!confirm("정말로 회원 탈퇴를 하시겠습니까? 모든 데이터는 삭제되며 되돌릴 수 없습니다.")) {
-    return;
-  }
+// 🔹 프로필 불러오기
+async function loadProfile() {
+    try {
+        const res = await fetch("/api/me");
+        if (!res.ok) throw new Error("프로필 조회 실패");
+        const profile = await res.json();
 
-  try {
-    const response = await fetch(API_BASE_URL, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+        const profileImg = document.getElementById("profileImage");
+        profileImg.src = profile.profileUrl || "/images/default-profile.png";
+        profileImg.onerror = () => {
+            profileImg.src = "/images/default-profile.png";
+        };
 
-    if (response.ok) {
-      alert('✅ 회원 탈퇴가 성공적으로 처리되었습니다. 이용해 주셔서 감사합니다.');
-      window.location.href = 'index.html';
-    } else {
-      const errorData = await response.json();
-      alert(`🚨 회원 탈퇴 실패: ${errorData.message || response.statusText}`);
+        document.getElementById("userName").textContent = profile.name;
+        document.getElementById("userRole").textContent = profile.role;
+        document.getElementById("userRegion").textContent = profile.region || "-";
+        document.getElementById("userBirth").textContent = profile.birth || "-";
+        document.querySelector("#followerCount b").textContent =
+            profile.followerCount || 0;
+        document.querySelector("#followingCount b").textContent =
+            profile.followingCount || 0;
+
+        await loadScraps(true);
+    } catch (err) {
+        console.error("프로필 로드 오류:", err);
     }
-  } catch (error) {
-    console.error('Delete error:', error);
-    alert('🚨 네트워크 연결에 문제가 발생했습니다.');
-  }
 }
 
-// 페이지 로드 시 프로필 정보 불러오기
-document.addEventListener('DOMContentLoaded', fetchProfile);
+// ✅ 프로필 수정 폼 초기화
+async function loadEditForm() {
+    try {
+        const res = await fetch("/api/me");
+        if (!res.ok) throw new Error("프로필 로드 실패");
+        const data = await res.json();
+
+        document.getElementById("editUserId").value = data.userId || "";
+        document.getElementById("editName").value = data.name || "";
+        document.getElementById("editRegion").value = data.region || "";
+        document.getElementById("editBirth").value = data.birth || "";
+    } catch (err) {
+        console.error("프로필 수정폼 로드 실패:", err);
+    }
+}
+
+// ✅ 프로필 수정 요청
+document.getElementById("profileEditForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = document.getElementById("profileEditForm");
+    const formData = new FormData();
+
+    // JSON 부분 (ProfileUpdateRequest)
+    const request = {
+        userId: document.getElementById("editUserId").value,
+        password: document.getElementById("editPassword").value || null,
+        name: document.getElementById("editName").value,
+        birth: document.getElementById("editBirth").value,
+        region: document.getElementById("editRegion").value,
+        deleteProfileImage: false,
+    };
+
+    formData.append(
+        "request",
+        new Blob([JSON.stringify(request)], { type: "application/json" })
+    );
+
+    const imageFile = document.getElementById("newProfileImage").files[0];
+    if (imageFile) formData.append("profileImage", imageFile);
+
+    try {
+        const res = await fetch("/api/me", {
+            method: "PATCH",
+            body: formData,
+        });
+
+        if (!res.ok) throw new Error("수정 실패");
+        alert("프로필이 성공적으로 수정되었습니다!");
+
+        // 다시 프로필 불러오기
+        await loadProfile();
+    } catch (err) {
+        console.error("프로필 수정 오류:", err);
+        alert("수정 중 오류가 발생했습니다.");
+    }
+});
+
+// 🔹 탭 전환
+function setupTabs() {
+    const buttons = document.querySelectorAll(".mypage-tabs button");
+    const panes = document.querySelectorAll(".tab-pane");
+
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            buttons.forEach((b) => b.classList.remove("active"));
+            panes.forEach((p) => p.classList.remove("active"));
+            btn.classList.add("active");
+            document.getElementById(btn.dataset.tab).classList.add("active");
+
+            if (btn.dataset.tab === "scrap") loadScraps(true);
+            if (btn.dataset.tab === "like") loadLikes();
+            if (btn.dataset.tab === "edit") loadEditForm();
+        });
+    });
+}
+
+// 🔹 스크랩 목록 (무한 스크롤)
+async function loadScraps(reset = true) {
+    const container = document.getElementById("scrap");
+
+    if (reset) {
+        container.innerHTML = "";
+        scrapNextCursor = null;
+        scrapNextIdAfter = null;
+        scrapHasNext = true;
+    }
+
+    if (scrapLoading || !scrapHasNext) return;
+    scrapLoading = true;
+
+    try {
+        let url = `/api/scraps?size=12`;
+        if (scrapNextCursor && scrapNextIdAfter)
+            url += `&cursor=${encodeURIComponent(
+                scrapNextCursor
+            )}&idAfter=${scrapNextIdAfter}`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("스크랩 로드 실패");
+        const data = await res.json();
+
+        // ✅ CursorPageResponse 구조 보정
+        const scraps = data.elements || data.items || data.content || [];
+
+        if (scraps.length === 0 && reset) {
+            container.innerHTML =
+                "<p style='text-align:center;color:#666;'>스크랩한 게시글이 없습니다.</p>";
+            return;
+        }
+
+        const grid =
+            container.querySelector(".post-grid") || document.createElement("div");
+        grid.className = "post-grid";
+
+        for (const scrap of scraps) {
+            const postRes = await fetch(`/api/recycling-posts/${scrap.postId}`);
+            if (!postRes.ok) continue;
+            const post = await postRes.json();
+
+            const card = document.createElement("div");
+            card.className = "post-card compact";
+            card.innerHTML = `
+        <img src="${
+                post.thumbNailImageUrl || "/images/default-thumb.png"
+            }" alt="썸네일" />
+        <div class="title-wrap">
+            <p class="title" title="${post.title || "제목 없음"}">
+              ${post.title || "제목 없음"}
+            </p>
+        </div>
+      `;
+            card.addEventListener("click", () => {
+                window.location.href = `/recycling-detail.html?id=${post.id}`;
+            });
+            grid.appendChild(card);
+        }
+
+        if (!container.contains(grid)) container.appendChild(grid);
+
+        scrapNextCursor = data.nextCursor || null;
+        scrapNextIdAfter = data.nextIdAfter || null;
+        scrapHasNext = !!data.hasNext;
+    } catch (err) {
+        console.error("스크랩 불러오기 실패:", err);
+        if (reset)
+            container.innerHTML =
+                "<p>스크랩 데이터를 불러오는 중 오류가 발생했습니다.</p>";
+    } finally {
+        scrapLoading = false;
+    }
+}
+
+async function loadLikes(reset = true) {
+    const container = document.getElementById("like");
+
+    if (reset) {
+        container.innerHTML = "";
+        likeNextCursor = null;
+        likeNextIdAfter = null;
+        likeHasNext = true;
+    }
+
+    if (likeLoading || !likeHasNext) return;
+    likeLoading = true;
+
+    try {
+        let url = `/api/likes?size=12`;
+        if (likeNextCursor && likeNextIdAfter)
+            url += `&cursor=${encodeURIComponent(likeNextCursor)}&idAfter=${likeNextIdAfter}`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("좋아요 목록 로드 실패");
+        const data = await res.json();
+
+        const likes = data.elements || data.items || data.content || [];
+        if (likes.length === 0 && reset) {
+            container.innerHTML = "<p style='text-align:center;color:#666;'>좋아요한 게시글이 없습니다.</p>";
+            return;
+        }
+
+        const grid = container.querySelector(".post-grid") || document.createElement("div");
+        grid.className = "post-grid";
+
+        for (const like of likes) {
+            // 커뮤니티 게시글 상세 조회
+            const postRes = await fetch(`/api/community-posts/${like.postId}`);
+            if (!postRes.ok) continue;
+            const post = await postRes.json();
+
+            const card = document.createElement("div");
+            card.className = "post-card compact";
+            card.innerHTML = `
+                <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" alt="썸네일" />
+                <div class="title-wrap">
+                    <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
+                </div>
+            `;
+            card.addEventListener("click", () => {
+                window.location.href = `/community-detail.html?id=${post.id}`;
+            });
+
+            grid.appendChild(card);
+        }
+
+        if (!container.contains(grid)) container.appendChild(grid);
+
+        likeNextCursor = data.nextCursor || null;
+        likeNextIdAfter = data.nextIdAfter || null;
+        likeHasNext = !!data.hasNext;
+    } catch (err) {
+        console.error("좋아요 불러오기 실패:", err);
+        if (reset)
+            container.innerHTML = "<p>좋아요 데이터를 불러오는 중 오류가 발생했습니다.</p>";
+    } finally {
+        likeLoading = false;
+    }
+}
+
+// 🔹 팔로워/팔로잉 모달 열기
+function openFollowList(type) {
+    const modal = document.createElement("div");
+    modal.classList.add("follow-modal", "active");
+    modal.innerHTML = `
+        <div class="follow-modal-content">
+            <h3>${type === "follower" ? "팔로워 목록" : "팔로잉 목록"}</h3>
+            
+            <input type="text" id="followSearchInput" 
+                   placeholder="이름으로 검색..." 
+                   style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; margin-bottom:12px;" />
+
+            <div id="followListContainer">로딩 중...</div>
+        </div>
+    `;
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.remove();
+    });
+    document.body.appendChild(modal);
+
+    // 검색 이벤트
+    const searchInput = modal.querySelector("#followSearchInput");
+    searchInput.addEventListener("input", (e) => {
+        const keyword = e.target.value.trim().toLowerCase();
+        filterFollowList(keyword);
+    });
+
+    loadFollowList(type);
+}
+
+// 🔹 팔로워 / 팔로잉 목록 불러오기
+async function loadFollowList(type) {
+    try {
+        const res = await fetch(`/api/follows/me/${type}`);
+        if (!res.ok) throw new Error("팔로우 목록 조회 실패");
+
+        const data = await res.json();
+        const list = data.elements || data.items || data.content || [];
+
+        const container = document.getElementById("followListContainer");
+        if (list.length === 0) {
+            container.innerHTML = `<p style='text-align:center;color:#777;'>${type === "follower" ? "팔로워가 없습니다." : "팔로잉한 사용자가 없습니다."}</p>`;
+            return;
+        }
+
+        container.innerHTML = list.map(u => `
+            <div class="follow-item-row" data-name="${u.name.toLowerCase()}">
+                <img src="${u.profileUrl && u.profileUrl !== 'null' ? u.profileUrl : '/images/default-profile.png'}" alt="">
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:#333;">${u.name}</span>
+                    <small style="color:#777;">팔로우 날짜: ${new Date(u.createdAt).toLocaleDateString()}</small>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error("팔로우 목록 불러오기 실패:", err);
+        document.getElementById("followListContainer").innerHTML =
+            "<p style='text-align:center;color:red;'>불러오기 실패</p>";
+    }
+}
+
+// 🔹 검색 필터
+function filterFollowList(keyword) {
+    const rows = document.querySelectorAll(".follow-item-row");
+    rows.forEach(row => {
+        const name = row.dataset.name || "";
+        row.style.display = name.includes(keyword) ? "flex" : "none";
+    });
+}
+
+
+// 🔹 스크롤 하단 감지
+window.addEventListener("scroll", async () => {
+    if (scrapLoading || !scrapHasNext) return;
+    const activeTab = document.querySelector(".mypage-tabs button.active")
+        ?.dataset.tab;
+    if (activeTab !== "scrap") return;
+
+    const nearBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 150;
+    if (nearBottom) await loadScraps(false);
+});
