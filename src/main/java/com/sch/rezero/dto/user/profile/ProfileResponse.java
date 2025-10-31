@@ -3,15 +3,16 @@ package com.sch.rezero.dto.user.profile;
 import java.time.LocalDate;
 
 public record ProfileResponse(
-    String userId,
-    String name,
-    String role,
-    String region,
-    LocalDate birth,
-    String profileUrl,
+        Long id,
+        String userId,
+        String name,
+        String role,
+        String region,
+        LocalDate birth,
+        String profileUrl,
 
-    Integer followerCount,
-    Integer followingCount
+        Integer followerCount,
+        Integer followingCount
 ) {
 
 }

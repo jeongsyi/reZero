@@ -23,8 +23,8 @@
                 <span id="userBirth">1999-01-01</span>
             </div>
             <div class="follow-stats">
-                <span class="follow-item" onclick="openFollowList('followers')">팔로워 <b id="followerCount">0</b></span>
-                <span class="follow-item" onclick="openFollowList('following')">팔로잉 <b id="followingCount">0</b></span>
+                <span id="followerCount" onclick="openFollowList('follower')">팔로워 <b>0</b></span>
+                <span id="followingCount" onclick="openFollowList('following')">팔로잉 <b>0</b></span>
             </div>
         </div>
     </section>
@@ -32,7 +32,6 @@
     <nav class="mypage-tabs">
         <button data-tab="scrap" class="active">스크랩</button>
         <button data-tab="like">좋아요</button>
-        <button data-tab="following_community">팔로잉</button>
         <button data-tab="edit">내 정보 수정</button>
     </nav>
 
