@@ -16,19 +16,20 @@ DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
 DROP TABLE IF EXISTS user_answers CASCADE;
 DROP TABLE iF EXISTS levels CASCADE;
+DROP TABLE iF EXISTS user_levels CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id               BIGSERIAL PRIMARY KEY,
-    login_id         VARCHAR(50)  NOT NULL UNIQUE,
-    password         VARCHAR(255) NOT NULL,
-    name             VARCHAR(100) NOT NULL,
-    role             VARCHAR(20)  NOT NULL CHECK (role IN ('ADMIN', 'USER')) DEFAULT 'USER',
-    birth            DATE,
-    region           VARCHAR(100),
-    profile_url      VARCHAR(255),
-    follower_count   BIGINT       NOT NULL DEFAULT 0,
-    following_count  BIGINT       NOT NULL DEFAULT 0
+    id              BIGSERIAL PRIMARY KEY,
+    login_id        VARCHAR(50)  NOT NULL UNIQUE,
+    password        VARCHAR(255) NOT NULL,
+    name            VARCHAR(100) NOT NULL,
+    role            VARCHAR(20)  NOT NULL CHECK (role IN ('ADMIN', 'USER')) DEFAULT 'USER',
+    birth           DATE,
+    region          VARCHAR(100),
+    profile_url     VARCHAR(255),
+    follower_count  BIGINT       NOT NULL                                   DEFAULT 0,
+    following_count BIGINT       NOT NULL                                   DEFAULT 0
 );
 
 
@@ -115,12 +116,12 @@ CREATE TABLE IF NOT EXISTS follows
 
 CREATE TABLE IF NOT EXISTS community_posts
 (
-    id               BIGSERIAL PRIMARY KEY,
-    user_id          BIGINT       NOT NULL,
-    title            VARCHAR(255) NOT NULL,
-    description      TEXT         NOT NULL,
-    created_at       timestamptz  NOT NULL DEFAULT NOW(),
-    updated_at       timestamptz,
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT       NOT NULL,
+    title       VARCHAR(255) NOT NULL,
+    description TEXT         NOT NULL,
+    created_at  timestamptz  NOT NULL DEFAULT NOW(),
+    updated_at  timestamptz,
 
     CONSTRAINT fk_users_to_community_posts FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE
@@ -173,8 +174,10 @@ CREATE TABLE IF NOT EXISTS community_likes
 
 CREATE TABLE IF NOT EXISTS questions
 (
-    id       BIGSERIAL PRIMARY KEY NOT NULL,
-    question VARCHAR(255)          NOT NULL
+    id          BIGSERIAL PRIMARY KEY NOT NULL,
+    question    VARCHAR(255)          NOT NULL,
+    order_index INT                   NOT NULL,
+    created_at  TIMESTAMP DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS answers
@@ -183,9 +186,11 @@ CREATE TABLE IF NOT EXISTS answers
     question_id BIGINT                NOT NULL,
     answer      VARCHAR(255)          NOT NULL,
     score       INT                   NOT NULL,
+    order_index INT                   NOT NULL,
 
     CONSTRAINT fk_questions_to_answers FOREIGN KEY (question_id)
-        REFERENCES questions (id) ON DELETE CASCADE
+        REFERENCES questions (id) ON DELETE CASCADE,
+    CONSTRAINT uq_question_answer UNIQUE (question_id, answer)
 );
 
 CREATE TABLE IF NOT EXISTS user_answers
@@ -197,13 +202,29 @@ CREATE TABLE IF NOT EXISTS user_answers
     CONSTRAINT fk_users_to_user_answers FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_answers_to_user_answers FOREIGN KEY (answer_id)
-        REFERENCES answers (id) ON DELETE CASCADE
+        REFERENCES answers (id) ON DELETE CASCADE,
+    CONSTRAINT uq_user_answer UNIQUE (user_id, answer_id)
 );
 
 CREATE TABLE IF NOT EXISTS levels
 (
-    id        BIGSERIAL PRIMARY KEY NOT NULL,
-    name      VARCHAR(50)           NOT NULL,
-    min_score INT,
-    max_score INT
+    id          BIGSERIAL PRIMARY KEY NOT NULL,
+    name        VARCHAR(50)           NOT NULL,
+    min_score   INT,
+    max_score   INT,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS user_levels
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT NOT NULL,
+    level_id    BIGINT NOT NULL,
+    total_score INT    NOT NULL,
+
+    CONSTRAINT fk_user_levels_user FOREIGN KEY (user_id)
+        REFERENCES users (id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_user_levels_level FOREIGN KEY (level_id)
+        REFERENCES levels (id) ON DELETE CASCADE
 );

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>환경 레벨 테스트 | reZero</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f6f7f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+    }
+    .question {
+      margin-bottom: 24px;
+    }
+    .question h3 {
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .option {
+      display: block;
+      background: #f0f0f0;
+      margin-top: 6px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option:hover {
+      background: #dcedc8;
+    }
+    .option.selected {
+      background: #81c784;
+      color: white;
+    }
+    button {
+      background: #388e3c;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .result {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .result h2 {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🌿 환경 레벨 테스트</h1>
+  <div id="quiz"></div>
+  <button id="submitBtn">결과 확인하기</button>
+  <div class="result" id="resultBox"></div>
+</div>
+
+<script>
+  const quizContainer = document.getElementById('quiz');
+  const submitBtn = document.getElementById('submitBtn');
+  const resultBox = document.getElementById('resultBox');
+  let selectedAnswers = {};
+
+  async function loadQuestions() {
+    const res = await fetch('/api/environment/questions');
+    const questions = await res.json();
+    renderQuestions(questions);
+  }
+
+  function renderQuestions(questions) {
+    quizContainer.innerHTML = '';
+    questions.forEach(q => {
+      const div = document.createElement('div');
+      div.classList.add('question');
+      div.innerHTML = `<h3>${q.orderIndex}. ${q.question}</h3>`;
+      q.options.forEach(opt => {
+        const optDiv = document.createElement('div');
+        optDiv.classList.add('option');
+        optDiv.innerText = opt.answer;
+        optDiv.onclick = () => {
+          document.querySelectorAll(`[data-q="${q.id}"]`).forEach(o => o.classList.remove('selected'));
+          optDiv.classList.add('selected');
+          selectedAnswers[q.id] = opt.id;
+        };
+        optDiv.setAttribute('data-q', q.id);
+        div.appendChild(optDiv);
+      });
+      quizContainer.appendChild(div);
+    });
+  }
+
+  submitBtn.onclick = async () => {
+    if (Object.keys(selectedAnswers).length < 10) {
+      alert("모든 질문에 답해주세요!");
+      return;
+    }
+    const answerIds = Object.values(selectedAnswers);
+    const res = await fetch('/api/environment/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: answerIds })
+    });
+    const result = await res.json();
+    renderResult(result);
+  };
+
+  function renderResult(result) {
+    resultBox.innerHTML = `
+        <h2>${result.levelName}</h2>
+        <p>${result.description}</p>
+        <p>총점: <strong>${result.totalScore}</strong></p>
+      `;
+    quizContainer.style.display = 'none';
+    submitBtn.style.display = 'none';
+  }
+
+  loadQuestions();
+</script>
+</body>
+</html>

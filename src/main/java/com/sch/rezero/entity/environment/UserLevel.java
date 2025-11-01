@@ -1,5 +1,6 @@
 package com.sch.rezero.entity.environment;
 
+import com.sch.rezero.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,29 +14,28 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter
-@Table(name = "answers")
+@Getter @Setter
+@Table(name = "user_levels")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Answer {
+public class UserLevel {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "question_id", nullable = false)
-  private Question question;
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "level_id", nullable = false)
+  private Level level;
 
   @Column(nullable = false)
-  private String answer;
-
-  @Column(nullable = false)
-  private int score;
-
-  @Column(nullable = false)
-  private int order_index;
+  private int total_score;
 
 }

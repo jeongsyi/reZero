@@ -1,0 +1,138 @@
+/* 전체 레이아웃 */
+.profile-container {
+  max-width: 900px;
+  margin: 120px auto 60px;
+  padding: 0 20px;
+}
+
+/* 프로필 헤더 */
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #dcdcdc; /* 회색선 약간 진하게 */
+  width: 100%; /* 🔹 선 길이를 컨테이너 전체로 */
+  margin-bottom: 20px;
+}
+
+/* 프로필 이미지 */
+.profile-left img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 프로필 중앙 정보 */
+.profile-center {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.follow-stats {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.follow-stats span {
+  margin-right: 10px;
+}
+
+/* 팔로우 버튼 */
+.btn.follow {
+  background-color: #3da35a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn.follow:hover {
+  background-color: #2e864a;
+}
+
+/* 게시글 섹션 */
+.user-posts {
+  margin-top: -80px; /* 🔹 제목을 프로필선 바로 아래로 끌어올림 */
+  width: 100%; /* 컨테이너 가로 전체 차지 */
+}
+
+/* 섹션 제목 */
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: left; /* 🔹 왼쪽 정렬 */
+  margin-left: 0; /* 🔹 구분선 왼쪽 끝에 맞춤 */
+}
+
+/* 커뮤니티 게시글 리스트 */
+.community-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%; /* 🔹 회색선 폭과 동일하게 */
+}
+
+/* 게시글 카드 */
+.community-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: 0.2s ease;
+  cursor: pointer;
+  width: 100%; /* 🔹 컨테이너 폭에 맞춤 */
+  box-sizing: border-box; /* 🔹 패딩 포함 폭 계산 */
+}
+
+.community-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 게시글 내용 */
+.community-item .text {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.community-item .title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.community-item .desc {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.community-item .meta {
+  font-size: 13px;
+  color: #999;
+}
+
+/* 썸네일 */
+.community-item .thumb {
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* 빈 상태 */
+.empty-text {
+  color: #888;
+  text-align: center;
+  margin: 40px 0;
+}

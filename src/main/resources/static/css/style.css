@@ -1717,5 +1717,216 @@ footer {
     background: linear-gradient(90deg, #6ea36c, #538b5a);
 }
 
+/* ✅ 프로필 카드 */
+.profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6baa75;
+    margin-bottom: 15px;
+}
+
+.user-info {
+    color: #777;
+    margin: 5px 0;
+}
+
+.user-role {
+    color: #555;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn.follow, .btn.mypage {
+    background-color: #6baa75;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn.follow:hover, .btn.mypage:hover {
+    background-color: #5aa368;
+}
+
+/* ✅ 게시글 리스트 */
+.user-posts {
+    margin-top: 40px;
+    text-align: left;
+}
+
+.post-section-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.post-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.post-thumb {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.post-content {
+    padding: 12px 15px;
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.meta {
+    color: #777;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.no-posts {
+    text-align: center;
+    color: #777;
+    margin-top: 30px;
+}
+
+/* 전체 레이아웃 */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* 프로필 카드 */
+.profile-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.btn.follow, .btn.mypage {
+    background-color: #5c8d5a;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* 게시글 리스트 */
+.post-list {
+    width: 100%;
+    max-width: 700px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.post-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.post-card {
+    display: flex;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+}
+
+.post-thumbnail {
+    width: 120px;
+    height: 100px;
+    object-fit: cover;
+    background: #f0f0f0;
+}
+
+.post-info {
+    padding: 12px 16px;
+    flex: 1;
+}
+
+.post-info h4 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    color: #222;
+}
+
+.post-meta {
+    font-size: 13px;
+    color: #777;
+}
+
+.empty-text {
+    text-align: center;
+    color: #888;
+    margin-top: 20px;
+}
+
+
+
 
 

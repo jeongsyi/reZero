@@ -29,4 +29,6 @@ public class Level {
 
   private int max_score;
 
+  private String description;
+
 }

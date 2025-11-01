@@ -80,6 +80,12 @@ public class CommunityPostService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<CommunityPostResponse> findByUser_Id(Long userId) {
+        List<CommunityPost> posts = communityPostRepository.findByUser_Id(userId);
+        return posts.stream().map(communityPostMapper::toCommunityPostResponse).toList();
+    }
+
     @Transactional
     public <E> CommunityPostResponse update(Long userId, Long postId,
         CommunityPostUpdateRequest communityUpdateRequest, List<MultipartFile> communityPostImages)

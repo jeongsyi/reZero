@@ -45,6 +45,13 @@ public class CommunityPostController {
     return ResponseEntity.status(HttpStatus.OK).body(communityPostService.findByPostId(postId));
   }
 
+  @GetMapping("/{userId}/posts")
+  public ResponseEntity<List<CommunityPostResponse>> getUserPosts(@PathVariable Long userId) {
+    List<CommunityPostResponse> posts = communityPostService.findByUser_Id(userId);
+    return ResponseEntity.status(HttpStatus.OK).body(posts);
+  }
+
+
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<CommunityPostResponse> create(
       @RequestPart("request") @Valid CommunityPostCreateRequest request,
