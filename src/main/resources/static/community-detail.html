@@ -7,9 +7,15 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- ✅ 공통 헤더/푸터 로드 및 로그인 상태 반영 -->
+  <script src="js/common.js"></script>
+
+  <!-- ✅ 페이지 전용 스크립트 -->
   <script defer src="js/community-detail.js"></script>
 </head>
 <body>
+<!-- ✅ header.html이 여기에 로드됨 -->
 <div id="header-placeholder"></div>
 
 <main class="recycling-detail-container">
@@ -22,7 +28,7 @@
     <button id="likeBtn" class="btn like">❤️ 0</button>
   </div>
 
-  <!-- 수정 / 삭제 버튼 -->
+  <!-- ✏️ 수정 / 삭제 버튼 -->
   <div class="post-actions" id="postActions" style="display:none;">
     <button id="editBtn" class="btn edit">✏️ 수정</button>
     <button id="deleteBtn" class="btn delete">🗑️ 삭제</button>
@@ -53,6 +59,7 @@
   </section>
 </main>
 
+<!-- ✅ footer.html이 여기에 로드됨 -->
 <div id="footer-placeholder"></div>
 </body>
 </html>

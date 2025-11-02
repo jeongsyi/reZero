@@ -5,9 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>커뮤니티 | reZero</title>
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- ✅ 공통 로직 먼저 -->
+  <script src="js/common.js"></script>
+  <!-- ✅ 페이지 전용 로직 -->
   <script defer src="js/community.js"></script>
 </head>
+
 <body>
+<!-- ✅ 공통 header/footer 로드 영역 -->
 <div id="header-placeholder"></div>
 
 <main class="community-container">
@@ -16,7 +22,7 @@
     <p>지속 가능한 일상을 나누는 공간</p>
   </div>
 
-  <!-- 🔍 검색 + 정렬 영역 -->
+  <!-- 🔍 검색 + 정렬 + 필터 영역 -->
   <div class="community-search">
     <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (제목/내용/작성자)">
     <select id="sortSelect">
@@ -24,6 +30,9 @@
       <option value="like,desc">좋아요순</option>
     </select>
     <button id="searchBtn">검색</button>
+
+    <!-- ✅ 팔로우 피드 버튼 -->
+    <button id="feedBtn" class="feed-toggle">👥 팔로잉 게시글 보기</button>
   </div>
 
   <div id="communityPostList" class="community-list">

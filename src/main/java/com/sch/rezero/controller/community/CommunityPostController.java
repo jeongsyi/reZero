@@ -83,5 +83,13 @@ public class CommunityPostController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  @GetMapping("/feed")
+  public ResponseEntity<CursorPageResponse<CommunityPostResponse>> getFollowingFeed(
+      @ModelAttribute CommunityPostQuery query) {
+    Long userId = userContext.getCurrentUserId();
+    CursorPageResponse<CommunityPostResponse> feed = communityPostService.findFollowingFeed(userId, query);
+    return ResponseEntity.ok(feed);
+  }
+
 
 }

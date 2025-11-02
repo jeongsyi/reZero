@@ -12,4 +12,8 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
 
   @Query("SELECT p FROM CommunityPost p WHERE p.user.id = :userId ORDER BY p.createdAt DESC")
   List<CommunityPost> findByUser_Id(@Param("userId") Long userId);
+
+  @Query("SELECT p FROM CommunityPost p WHERE p.user.id IN :followingIds ORDER BY p.createdAt DESC")
+  List<CommunityPost> findByUserIds(@Param("followingIds") List<Long> followingIds);
+
 }

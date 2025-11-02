@@ -1926,6 +1926,22 @@ footer {
     margin-top: 20px;
 }
 
+.feed-toggle {
+    background-color: #3da35a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: 0.2s;
+}
+
+.feed-toggle:hover {
+    background-color: #2e864a;
+}
+
+
 
 
 

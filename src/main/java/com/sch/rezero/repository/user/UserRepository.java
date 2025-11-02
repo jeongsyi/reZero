@@ -1,5 +1,7 @@
 package com.sch.rezero.repository.user;
 
+import com.sch.rezero.dto.community.communityPost.CommunityPostResponse;
+import com.sch.rezero.entity.community.CommunityPost;
 import com.sch.rezero.entity.user.User;
 import java.util.List;
 import java.util.Optional;
@@ -11,4 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Boolean existsByLoginId(String loginId);
   Optional<User> findByLoginId(String loginId);
+  Optional<CommunityPost> findByName(String name);
 }

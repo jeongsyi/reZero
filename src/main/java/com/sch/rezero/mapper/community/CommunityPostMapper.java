@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface CommunityPostMapper {
 
   @Mapping(target = "userName", source = "user.name")
+  @Mapping(target = "userId", source = "user.id")
   @Mapping(target = "likeCount", expression = "java(communityPost.getLikes().size())")
   @Mapping(target = "commentCount", expression = "java(communityPost.getComments().size())")
   @Mapping(target = "imageUrls", expression = "java(communityPost.getImages().stream().map(image -> image.getImageUrl()).toList())")

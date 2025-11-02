@@ -5,6 +5,7 @@ import java.util.List;
 
 public record CommunityPostResponse(
     Long id,
+    Long userId,
     String userName,
     String title,
     String description,

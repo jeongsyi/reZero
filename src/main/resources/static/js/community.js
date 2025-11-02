@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const sortSelect = document.getElementById("sortSelect");
   const searchBtn = document.getElementById("searchBtn");
+  const feedBtn = document.getElementById("feedBtn"); // ✅ 새 버튼
 
   // 페이지 상태
   let nextCursor = null;
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentKeyword = "";
   let currentSortField = "createdAt";
   let currentSortDirection = "desc";
+  let showingFeed = false; // ✅ 현재 피드 보기 상태
 
   // 🔹 게시글 로드 함수
   async function loadPosts(reset = false) {
@@ -51,8 +53,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       params.append("idAfter", nextIdAfter);
     }
 
+    // ✅ URL 분기: 일반 게시글 or 팔로잉 피드
+    const endpoint = showingFeed ? `/api/community-posts/feed` : `/api/community-posts`;
+
     try {
-      const res = await fetch(`/api/community-posts?${params.toString()}`);
+      const res = await fetch(`${endpoint}?${params.toString()}`);
       if (!res.ok) throw new Error("게시글 불러오기 실패");
       const data = await res.json();
 
@@ -80,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         : post.description}</p>
           <div class="meta">
             💬 ${post.commentCount} · ❤️ ${post.likeCount} · 
-            ${new Date(post.createdAt).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })} · 익명
+            ${new Date(post.createdAt).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })} · ${post.userName || "익명"}
           </div>
         </div>
         ${post.imageUrls && post.imageUrls.length > 0
@@ -109,6 +114,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 🔹 더보기 버튼 클릭
   loadMoreBtn.addEventListener("click", () => {
     loadPosts();
+  });
+
+  // ✅ 팔로잉 피드 버튼 클릭
+  feedBtn.addEventListener("click", () => {
+    showingFeed = !showingFeed;
+    feedBtn.textContent = showingFeed ? "📜 전체 게시글 보기" : "👥 팔로잉 게시글 보기";
+    loadPosts(true);
   });
 
   // 첫 로드

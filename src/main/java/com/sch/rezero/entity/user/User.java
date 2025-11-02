@@ -41,7 +41,6 @@ public class User {
     private LocalDate birth;
     private String region;
 
-    // ✅ 팔로워 / 팔로잉 카운트 추가
     @Column(name = "follower_count", nullable = false)
     private Long followerCount = 0L;
 
@@ -53,6 +52,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followers = new ArrayList<>();
 
     public User(String loginId, String password, String name, Role role,
         String profileUrl, LocalDate birth, String region) {

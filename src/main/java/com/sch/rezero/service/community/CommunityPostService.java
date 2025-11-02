@@ -144,6 +144,44 @@ public class CommunityPostService {
         communityPostRepository.delete(communityPost);
     }
 
+    @Transactional(readOnly = true)
+    public CursorPageResponse<CommunityPostResponse> findFollowingFeed(Long userId, CommunityPostQuery query) {
+        User user = ValidateUserId(userId);
+
+        List<Long> followingIds = user.getFollowings().stream()
+            .map(follow -> follow.getFollowing().getId())
+            .toList();
+
+        if (followingIds.isEmpty()) {
+            return new CursorPageResponse<>(List.of(), null, null, query.size(), false);
+        }
+
+        // ✅ DB에서 바로 팔로잉 유저들의 게시글만 가져옴
+        List<CommunityPost> posts = communityPostRepository.findByUserIds(followingIds);
+
+        // ✅ MapStruct 변환
+        List<CommunityPostResponse> contents = posts.stream()
+            .map(communityPostMapper::toCommunityPostResponse)
+            .toList();
+
+        // ✅ 페이지 크기 제한
+        boolean hasNext = contents.size() > query.size();
+        List<CommunityPostResponse> paged = hasNext ? contents.subList(0, query.size()) : contents;
+
+        String nextCursor = !paged.isEmpty() ? paged.get(paged.size() - 1).createdAt().toString() : null;
+        Long nextIdAfter = !paged.isEmpty() ? paged.get(paged.size() - 1).id() : null;
+
+        return new CursorPageResponse<>(
+            paged,
+            nextCursor,
+            nextIdAfter,
+            query.size(),
+            hasNext
+        );
+    }
+
+
+
     private User ValidateUserId(Long userId) {
         return userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
     }

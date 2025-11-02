@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>환경 레벨 테스트 | reZero</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -11,25 +12,30 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
       max-width: 700px;
-      margin: 40px auto;
+      margin: 120px auto 60px; /* ✅ 헤더 높이 확보 */
       background: white;
       border-radius: 16px;
       padding: 32px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
     h1 {
       text-align: center;
       color: #2e7d32;
     }
+
     .question {
       margin-bottom: 24px;
     }
+
     .question h3 {
       font-size: 1.1rem;
       color: #333;
     }
+
     .option {
       display: block;
       background: #f0f0f0;
@@ -39,13 +45,16 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .option:hover {
       background: #dcedc8;
     }
+
     .option.selected {
       background: #81c784;
       color: white;
     }
+
     button {
       background: #388e3c;
       color: white;
@@ -57,22 +66,35 @@
       margin-top: 20px;
       width: 100%;
     }
+
     .result {
       text-align: center;
       margin-top: 40px;
     }
+
     .result h2 {
       color: #2e7d32;
     }
   </style>
 </head>
+
 <body>
-<div class="container">
-  <h1>🌿 환경 레벨 테스트</h1>
-  <div id="quiz"></div>
-  <button id="submitBtn">결과 확인하기</button>
-  <div class="result" id="resultBox"></div>
-</div>
+<!-- ✅ header, footer를 동적으로 로드할 placeholder -->
+<div id="header-placeholder"></div>
+
+<main>
+  <div class="container">
+    <h1>🌿 환경 레벨 테스트</h1>
+    <div id="quiz"></div>
+    <button id="submitBtn">결과 확인하기</button>
+    <div class="result" id="resultBox"></div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<!-- ✅ 공통 스크립트 -->
+<script src="js/common.js"></script>
 
 <script>
   const quizContainer = document.getElementById('quiz');
