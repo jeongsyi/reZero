@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>사용자 검색 | reZero</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/user.css" />
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<main class="user-search-container">
+    <section class="search-box">
+        <h2>🔍 사용자 검색</h2>
+
+        <!-- ✅ 이 div가 추가되어야 여백/정렬이 제대로 잡힘 -->
+        <div class="search-controls">
+            <input type="text" id="searchInput" placeholder="아이디 또는 이름을 입력하세요" />
+            <select id="searchType">
+                <option value="id">아이디</option>
+                <option value="name">이름</option>
+            </select>
+            <button id="searchBtn">검색</button>
+        </div>
+    </section>
+
+    <section id="resultContainer" class="result-container">
+        <p class="placeholder">검색 결과가 여기에 표시됩니다.</p>
+    </section>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/js/common.js"></script>
+<script src="/js/user.js"></script>
+</body>
+</html>
