@@ -121,10 +121,11 @@ function setupTabs() {
             btn.classList.add("active");
 
             const targetPane = document.getElementById(btn.dataset.tab);
-            if (targetPane) targetPane.classList.add("active"); // ✅ null 방지
+            if (targetPane) targetPane.classList.add("active");
 
             if (btn.dataset.tab === "scrap") loadScraps(true);
             if (btn.dataset.tab === "like") loadLikes();
+            if (btn.dataset.tab === "community") loadMyCommunityPosts(true);
             if (btn.dataset.tab === "edit") loadEditForm();
         });
     });
@@ -262,6 +263,63 @@ async function loadLikes(reset = true) {
             container.innerHTML = "<p>좋아요 데이터를 불러오는 중 오류가 발생했습니다.</p>";
     } finally {
         likeLoading = false;
+    }
+}
+
+// 🔹 내가 쓴 커뮤니티 게시글 불러오기
+async function loadMyCommunityPosts(reset = true) {
+    const container = document.getElementById("community");
+
+    if (reset) {
+        container.innerHTML = "";
+    }
+
+    try {
+        // 🔹 현재 로그인한 사용자 정보 조회
+        const meRes = await fetch("/api/me");
+        if (!meRes.ok) throw new Error("사용자 정보 불러오기 실패");
+        const me = await meRes.json();
+        const userId = me.id;
+
+        // 🔹 사용자 게시글 조회 API 호출
+        const res = await fetch(`/api/community-posts/${userId}/posts`);
+        if (!res.ok) throw new Error("내 커뮤니티 게시글 불러오기 실패");
+
+        const posts = await res.json();
+
+        // 🔹 게시글 없을 때
+        if (!posts || posts.length === 0) {
+            container.innerHTML =
+                "<p style='text-align:center;color:#666;'>작성한 커뮤니티 게시글이 없습니다.</p>";
+            return;
+        }
+
+        // 🔹 게시글 카드 렌더링
+        const grid = container.querySelector(".post-grid") || document.createElement("div");
+        grid.className = "post-grid";
+
+        posts.forEach((post) => {
+            const card = document.createElement("div");
+            card.className = "post-card compact";
+            card.innerHTML = `
+                <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" 
+                     alt="썸네일"
+                     onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
+                <div class="title-wrap">
+                    <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
+                </div>
+            `;
+            card.addEventListener("click", () => {
+                window.location.href = `/community-detail.html?id=${post.id}`;
+            });
+            grid.appendChild(card);
+        });
+
+        if (!container.contains(grid)) container.appendChild(grid);
+    } catch (err) {
+        console.error("내 커뮤니티 게시글 불러오기 실패:", err);
+        container.innerHTML =
+            "<p style='text-align:center;color:red;'>게시글을 불러오는 중 오류가 발생했습니다.</p>";
     }
 }
 
