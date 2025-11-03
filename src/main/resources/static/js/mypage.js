@@ -380,9 +380,8 @@ async function loadFollowList(type) {
         }
 
         container.innerHTML = list
-            .map(
-                (u) => `
-      <div class="follow-item-row" data-name="${(u.name || "").toLowerCase()}">
+            .map((u) => `
+      <div class="follow-item-row" data-id="${u.userId}" data-name="${(u.name || "").toLowerCase()}">
         <img src="${
                     u.profileUrl && u.profileUrl !== "null"
                         ? u.profileUrl
@@ -397,6 +396,25 @@ async function loadFollowList(type) {
       </div>`
             )
             .join("");
+
+// ✅ 각 사용자 클릭 시 프로필 페이지로 이동
+        const rows = container.querySelectorAll(".follow-item-row");
+        rows.forEach((row) => {
+            row.addEventListener("click", () => {
+                const userId = row.dataset.id;
+                if (userId) {
+                    window.location.href = `/user-profile.html?id=${userId}`;
+                }
+
+                if (userId && userId !== "undefined" && userId !== "") {
+                    window.location.href = `/user-profile.html?id=${userId}`;
+                } else {
+                    console.warn("⚠️ userId가 비어 있음: ", row);
+                }
+
+            });
+        });
+
     } catch (err) {
         console.error("팔로우 목록 불러오기 실패:", err);
         const container = document.getElementById("followListContainer");
