@@ -1,8 +1,10 @@
 package com.sch.rezero.controller.user;
 
 import com.sch.rezero.config.UserContext;
+import com.sch.rezero.dto.response.CursorPageResponse;
 import com.sch.rezero.dto.user.profile.ProfileResponse;
 import com.sch.rezero.dto.user.profile.ProfileUpdateRequest;
+import com.sch.rezero.dto.user.profile.UserQuery;
 import com.sch.rezero.dto.user.profile.UserResponse;
 import com.sch.rezero.service.user.ProfileService;
 import com.sch.rezero.service.user.UserService;
@@ -64,11 +66,16 @@ public class UserController {
     }
 
     // 상대 프로필
+    @GetMapping("/list")
+    public ResponseEntity<CursorPageResponse<UserResponse>> findAll(UserQuery query) {
+        CursorPageResponse<UserResponse> users = userService.findAll(query);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserResponse> findById(@PathVariable long userId) {
         UserResponse user = userService.findById(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
-
 }
