@@ -1,31 +1,59 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // header/footer include
-  fetch("header.html").then(res => res.text()).then(html => {
-    document.getElementById("header-placeholder").innerHTML = html;
-  });
-  fetch("footer.html").then(res => res.text()).then(html => {
-    document.getElementById("footer-placeholder").innerHTML = html;
-  });
+  // ✅ header/footer include
+  await Promise.all([
+    fetch("header.html")
+    .then(res => res.text())
+    .then(html => (document.getElementById("header-placeholder").innerHTML = html)),
+    fetch("footer.html")
+    .then(res => res.text())
+    .then(html => (document.getElementById("footer-placeholder").innerHTML = html))
+  ]);
 
+  // ✅ 로그인 여부 확인
+  try {
+    const authRes = await fetch("/api/me");
+    if (authRes.status === 401 || authRes.status === 403) {
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      window.location.href = "/login.html";
+      return;
+    }
+
+    // ✅ 응답이 200이어도 로그인 정보가 없는 경우 (예: null, anonymous 등)
+    const data = await authRes.json();
+    if (!data || !data.id) {
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      window.location.href = "/login.html";
+      return;
+    }
+  } catch (err) {
+    console.error("인증 확인 중 오류:", err);
+    alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+    window.location.href = "/login.html";
+    return;
+  }
+
+  // ✅ 로그인 통과 후 커뮤니티 로직 실행
+  initCommunity();
+});
+
+function initCommunity() {
   const listContainer = document.getElementById("communityPostList");
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   const searchInput = document.getElementById("searchInput");
   const sortSelect = document.getElementById("sortSelect");
   const searchBtn = document.getElementById("searchBtn");
-  const feedBtn = document.getElementById("feedBtn"); // ✅ 새 버튼
+  const feedBtn = document.getElementById("feedBtn");
 
-  // 페이지 상태
   let nextCursor = null;
   let nextIdAfter = null;
   let hasNext = true;
 
-  // 현재 필터 상태
   let currentKeyword = "";
   let currentSortField = "createdAt";
   let currentSortDirection = "desc";
-  let showingFeed = false; // ✅ 현재 피드 보기 상태
+  let showingFeed = false;
 
-  // 🔹 게시글 로드 함수
+  // 🔹 게시글 불러오기
   async function loadPosts(reset = false) {
     if (reset) {
       listContainer.innerHTML = "";
@@ -53,7 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       params.append("idAfter", nextIdAfter);
     }
 
-    // ✅ URL 분기: 일반 게시글 or 팔로잉 피드
     const endpoint = showingFeed ? `/api/community-posts/feed` : `/api/community-posts`;
 
     try {
@@ -62,11 +89,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await res.json();
 
       renderPosts(data.content);
-
       nextCursor = data.nextCursor;
       nextIdAfter = data.nextIdAfter;
       hasNext = data.hasNext;
-
       loadMoreBtn.style.display = hasNext ? "block" : "none";
     } catch (err) {
       console.error(err);
@@ -93,17 +118,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         : ""}
       </div>
     `).join("");
-
     listContainer.insertAdjacentHTML("beforeend", html);
   }
 
-  // 🔹 검색 버튼 클릭
+  // 🔹 검색 버튼
   searchBtn.addEventListener("click", () => {
     currentKeyword = searchInput.value.trim();
     loadPosts(true);
   });
 
-  // 🔹 정렬 옵션 변경
+  // 🔹 정렬 변경
   sortSelect.addEventListener("change", () => {
     const [field, dir] = sortSelect.value.split(",");
     currentSortField = field;
@@ -111,18 +135,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadPosts(true);
   });
 
-  // 🔹 더보기 버튼 클릭
-  loadMoreBtn.addEventListener("click", () => {
-    loadPosts();
-  });
+  // 🔹 더보기 버튼
+  loadMoreBtn.addEventListener("click", () => loadPosts());
 
-  // ✅ 팔로잉 피드 버튼 클릭
+  // 🔹 팔로잉 피드 버튼
   feedBtn.addEventListener("click", () => {
     showingFeed = !showingFeed;
-    feedBtn.textContent = showingFeed ? "📜 전체 게시글 보기" : "👥 팔로잉 게시글 보기";
+    feedBtn.textContent = showingFeed ? "전체 게시글 보기" : "팔로잉 게시글 보기";
     loadPosts(true);
   });
 
-  // 첫 로드
+  // ✅ 첫 로드
   loadPosts(true);
-});
+}

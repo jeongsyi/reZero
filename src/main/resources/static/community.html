@@ -6,10 +6,61 @@
   <title>커뮤니티 | reZero</title>
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- ✅ 공통 로직 먼저 -->
+  <!-- ✅ 공통 로직 -->
   <script src="js/common.js"></script>
-  <!-- ✅ 페이지 전용 로직 -->
+  <!-- ✅ 커뮤니티 전용 로직 -->
   <script defer src="js/community.js"></script>
+
+  <style>
+    /* ✅ 로그인 안내 모달 스타일 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-box {
+      background: white;
+      border-radius: 12px;
+      padding: 28px 40px;
+      text-align: center;
+      max-width: 350px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-box h2 {
+      color: #2e7d32;
+      margin-bottom: 12px;
+    }
+    .modal-box p {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+    .modal-box button {
+      background: #388e3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 
 <body>
@@ -49,5 +100,14 @@
 </main>
 
 <div id="footer-placeholder"></div>
+
+<!-- ✅ 로그인 안내 모달 -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <h2>로그인이 필요합니다</h2>
+    <p>이 페이지를 이용하려면 로그인이 필요합니다.</p>
+    <button id="closeModalBtn">닫기</button>
+  </div>
+</div>
 </body>
 </html>
