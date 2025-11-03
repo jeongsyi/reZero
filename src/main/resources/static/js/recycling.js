@@ -38,11 +38,13 @@ async function loadPosts() {
 
     let title = "";
     let description = "";
+    let category = "";
     if (searchType === "title") title = keyword;
     else if (searchType === "description") description = keyword;
+    else if (searchType === "category") category = keyword;
 
     // 커서 기반 URL 구성
-    let url = `/api/recycling-posts?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&sortField=${sortField}&sortDirection=${sortDirection}&size=${size}`;
+    let url = `/api/recycling-posts?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&category=${encodeURIComponent(category)}&sortField=${sortField}&sortDirection=${sortDirection}&size=${size}`;
     if (nextCursor && nextIdAfter) {
         url += `&cursor=${encodeURIComponent(nextCursor)}&idAfter=${nextIdAfter}`;
     }

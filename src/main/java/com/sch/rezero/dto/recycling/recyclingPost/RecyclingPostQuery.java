@@ -1,9 +1,12 @@
 package com.sch.rezero.dto.recycling.recyclingPost;
 
+import com.sch.rezero.entity.recycling.Category;
+
 public record RecyclingPostQuery(
         String title,
         String description,
         String userName,
+        Category category,
         Long idAfter,
         String cursor,
         Integer size,
@@ -28,6 +31,7 @@ public record RecyclingPostQuery(
                 null,
                 null,
                 userName,
+                null,
                 idAfter,
                 cursor,
                 size,

@@ -32,6 +32,7 @@ public class RecyclingPostQueryRepositoryImpl implements RecyclingPostQueryRepos
                         query.title() != null ? recyclingPost.title.containsIgnoreCase(query.title()) : null,
                         query.description() != null ? recyclingPost.description.containsIgnoreCase(query.description()) : null,
                         query.userName() != null ? recyclingPost.user.name.contains(query.userName()) : null,
+                        query.category() != null ? recyclingPost.category.eq(query.category()) : null,
                         buildCursorCondition(query)
                 )
                 .orderBy(sortResolve(query.sortField(), query.sortDirection()))
