@@ -1,20 +1,20 @@
 .user-search-container {
     max-width: 900px;
-    margin: 80px auto;
+    margin: 120px auto 80px; !important; /* ⬅ 위쪽 여백 크게 추가 (기존 80px → 120px) */
     padding: 0 16px;
 }
 
-/* 🔍 검색 영역 */
 .search-box {
     display: flex;
-    flex-direction: column; /* 위아래 정렬 */
+    flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 50px; /* 아래 여백 넉넉히 */
+    margin-bottom: 80px; /* 기존 50 → 80으로 간격 더 확보 */
+    gap: 24px; /* 제목과 입력칸 사이에 여유 추가 */
 }
 
 .search-box h2 {
-    margin-bottom: 25px; /* 제목과 검색줄 간격 넓힘 */
+    margin-bottom: 10px; /* gap으로 충분히 띄우므로 줄임 */
     font-size: 24px;
     display: flex;
     align-items: center;
@@ -22,14 +22,12 @@
     gap: 8px;
 }
 
-/* 🔹 입력 그룹 */
 .search-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 14px; /* 각 요소 간 간격 */
+    gap: 16px; /* 입력칸·셀렉트·버튼 간 간격 조금 더 띄움 */
     flex-wrap: wrap;
-    margin-bottom: 10px;
 }
 
 .search-box input,
