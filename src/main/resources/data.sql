@@ -117,7 +117,7 @@ VALUES
     ('user29', 'User@1234', '이서준', 'USER', '1991-02-19', '서울', NULL, 0, 0),
     ('user30', 'User@1234', '박채원', 'USER', '1988-03-13', '경기', 'https://rezero-bucket.s3.ap-northeast-2.amazonaws.com/profile/574c184e-9ff1-4cd3-869b-d95601547358_IMG_8196.JPG', 0, 0),
     ('user31', 'User@1234', '정은우', 'USER', '1999-07-30', '부산', NULL, 0, 0),
-    ('user32', 'User@1234', '최하윤', 'USER', '2004-01-15', '대전', 'https://rezero-bucket.s3.ap-northeast-2.amazonaws.com/profile/44e6b0bf-fbd7-4b83-b6f5-2e24766fe159_%E1%84%80%E1%85%B3%E1%84%82%E1%85%A1%E1%86%AF+%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%E1%84%86%E1%85%A1%E1%86%AB%E1%84%83%E1%85%AE%E1%84%82%E1%85%B3%E1%86%AB+%E1%84%84%E1%85%A5%E1%84%8B%E1%85%A9%E1%86%AF%E1%84%85%E1%85%A1%E1%86%BB%E1%84%83%E1%85%A1.png', 0, 0),
+    ('user32', 'User@1234', '최하윤', 'USER', '2004-01-15', '대전', NULL, 0, 0),
     ('user33', 'User@1234', '조민준', 'USER', '1992-04-24', '광주', NULL, 0, 0),
     ('user34', 'User@1234', '한서아', 'USER', '1998-06-10', '강원', 'https://rezero-bucket.s3.ap-northeast-2.amazonaws.com/profile/3496b50c-615f-411f-b8f0-accc69b71d2d_IMG_7508.JPG', 0, 0),
     ('user35', 'User@1234', '서도현', 'USER', '1994-09-28', '제주', NULL, 0, 0),
