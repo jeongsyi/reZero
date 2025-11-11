@@ -128,14 +128,14 @@ function setupTabs() {
             if (targetPane) targetPane.classList.add("active");
 
             if (btn.dataset.tab === "scrap") loadScraps(true);
-            if (btn.dataset.tab === "like") loadLikes();
+            if (btn.dataset.tab === "like") loadLikes(true);
             if (btn.dataset.tab === "community") loadMyCommunityPosts(true);
             if (btn.dataset.tab === "edit") loadEditForm();
         });
     });
 }
 
-// 🔹 스크랩 목록 (무한 스크롤)
+// 🔹 스크랩 목록 (카드형 유지)
 async function loadScraps(reset = true) {
     const container = document.getElementById("scrap");
 
@@ -177,12 +177,12 @@ async function loadScraps(reset = true) {
             const card = document.createElement("div");
             card.className = "post-card compact";
             card.innerHTML = `
-        <img src="${post.thumbNailImageUrl || "/images/default-thumb.png"}" 
-             alt="썸네일"
-             onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
-        <div class="title-wrap">
-          <p class="title" title="${post.title || "제목 없음"}">${post.title || "제목 없음"}</p>
-        </div>`;
+                <img src="${post.thumbNailImageUrl || "/images/default-thumb.png"}" 
+                     alt="썸네일"
+                     onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
+                <div class="title-wrap">
+                  <p class="title" title="${post.title || "제목 없음"}">${post.title || "제목 없음"}</p>
+                </div>`;
             card.addEventListener("click", () => {
                 window.location.href = `/recycling-detail.html?id=${post.id}`;
             });
@@ -204,6 +204,7 @@ async function loadScraps(reset = true) {
     }
 }
 
+// 🔹 좋아요 목록 (리스트형)
 async function loadLikes(reset = true) {
     const container = document.getElementById("like");
 
@@ -232,31 +233,27 @@ async function loadLikes(reset = true) {
             return;
         }
 
-        const grid = container.querySelector(".post-grid") || document.createElement("div");
-        grid.className = "post-grid";
+        const list = container.querySelector(".post-list") || document.createElement("div");
+        list.className = "post-list";
 
         for (const like of likes) {
             const postRes = await fetch(`/api/community-posts/${like.postId}`);
             if (!postRes.ok) continue;
             const post = await postRes.json();
 
-            const card = document.createElement("div");
-            card.className = "post-card compact";
-            card.innerHTML = `
-        <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" 
-             alt="썸네일"
-             onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
-        <div class="title-wrap">
-          <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
-        </div>`;
-            card.addEventListener("click", () => {
+            const item = document.createElement("div");
+            item.className = "post-item";
+            item.innerHTML = `
+                <p class="title">${post.title || '제목 없음'}</p>
+                <span class="meta">${new Date(post.createdAt).toLocaleDateString('ko-KR')}</span>
+            `;
+            item.addEventListener("click", () => {
                 window.location.href = `/community-detail.html?id=${post.id}`;
             });
-
-            grid.appendChild(card);
+            list.appendChild(item);
         }
 
-        if (!container.contains(grid)) container.appendChild(grid);
+        if (!container.contains(list)) container.appendChild(list);
 
         likeNextCursor = data.nextCursor || null;
         likeNextIdAfter = data.nextIdAfter || null;
@@ -270,7 +267,7 @@ async function loadLikes(reset = true) {
     }
 }
 
-// 🔹 내가 쓴 커뮤니티 게시글 불러오기
+// 🔹 내가 쓴 커뮤니티 게시글 (리스트형)
 async function loadMyCommunityPosts(reset = true) {
     const container = document.getElementById("community");
 
@@ -279,47 +276,39 @@ async function loadMyCommunityPosts(reset = true) {
     }
 
     try {
-        // 🔹 현재 로그인한 사용자 정보 조회
         const meRes = await fetch("/api/me");
         if (!meRes.ok) throw new Error("사용자 정보 불러오기 실패");
         const me = await meRes.json();
         const userId = me.id;
 
-        // 🔹 사용자 게시글 조회 API 호출
         const res = await fetch(`/api/community-posts/${userId}/posts`);
         if (!res.ok) throw new Error("내 커뮤니티 게시글 불러오기 실패");
 
         const posts = await res.json();
 
-        // 🔹 게시글 없을 때
         if (!posts || posts.length === 0) {
             container.innerHTML =
                 "<p style='text-align:center;color:#666;'>작성한 커뮤니티 게시글이 없습니다.</p>";
             return;
         }
 
-        // 🔹 게시글 카드 렌더링
-        const grid = container.querySelector(".post-grid") || document.createElement("div");
-        grid.className = "post-grid";
+        const list = container.querySelector(".post-list") || document.createElement("div");
+        list.className = "post-list";
 
         posts.forEach((post) => {
-            const card = document.createElement("div");
-            card.className = "post-card compact";
-            card.innerHTML = `
-                <img src="${post.thumbNailImageUrl || '/images/default-thumb.png'}" 
-                     alt="썸네일"
-                     onerror="this.onerror=null; this.src='/images/default-thumb.png';" />
-                <div class="title-wrap">
-                    <p class="title" title="${post.title || '제목 없음'}">${post.title || '제목 없음'}</p>
-                </div>
+            const item = document.createElement("div");
+            item.className = "post-item";
+            item.innerHTML = `
+                <p class="title">${post.title || '제목 없음'}</p>
+                <span class="meta">${new Date(post.createdAt).toLocaleDateString('ko-KR')}</span>
             `;
-            card.addEventListener("click", () => {
+            item.addEventListener("click", () => {
                 window.location.href = `/community-detail.html?id=${post.id}`;
             });
-            grid.appendChild(card);
+            list.appendChild(item);
         });
 
-        if (!container.contains(grid)) container.appendChild(grid);
+        if (!container.contains(list)) container.appendChild(list);
     } catch (err) {
         console.error("내 커뮤니티 게시글 불러오기 실패:", err);
         container.innerHTML =
@@ -327,6 +316,7 @@ async function loadMyCommunityPosts(reset = true) {
     }
 }
 
+// 🔹 팔로우 목록
 async function loadFollowList(type, reset = true) {
     const container = document.getElementById("followListContainer");
 
@@ -363,7 +353,6 @@ async function loadFollowList(type, reset = true) {
             return;
         }
 
-        // ✅ append 모드
         if (reset) container.innerHTML = "";
         list.forEach((u) => {
             const row = document.createElement("div");
@@ -384,7 +373,6 @@ async function loadFollowList(type, reset = true) {
             container.appendChild(row);
         });
 
-        // ✅ 커서 업데이트
         followNextCursor = data.nextCursor || null;
         followNextIdAfter = data.nextIdAfter || null;
         followHasNext = !!data.hasNext;
@@ -416,7 +404,6 @@ function openFollowList(type) {
     document.body.appendChild(modal);
     loadFollowList(type);
 
-    // 🔹 스크롤 이벤트로 다음 페이지 로드
     const container = modal.querySelector("#followListContainer");
     container.addEventListener("scroll", async () => {
         if (followLoading || !followHasNext) return;
@@ -425,7 +412,6 @@ function openFollowList(type) {
         if (nearBottom) await loadFollowList(type, false);
     });
 
-    // ✅ 🔹 여기에 추가해야 이름 검색 동작함
     const searchInput = modal.querySelector("#followSearchInput");
     searchInput.addEventListener("input", (e) => {
         const keyword = e.target.value.trim().toLowerCase();
@@ -442,7 +428,7 @@ function filterFollowList(keyword) {
     });
 }
 
-// 🔹 스크롤 하단 감지
+// 🔹 스크롤 하단 감지 (스크랩)
 window.addEventListener("scroll", async () => {
     if (scrapLoading || !scrapHasNext) return;
     const activeTab = document.querySelector(".mypage-tabs button.active")?.dataset.tab;
