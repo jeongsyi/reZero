@@ -51,7 +51,7 @@ async function sendImage() {
 }
 
 // 카메라 연결
-navigator.mediaDevices.getUserMedia({ video: true })
+navigator.mediaDevices.getUserMedia({video: true})
     .then(stream => {
         video.srcObject = stream;
     });
@@ -91,7 +91,11 @@ async function fetchRecyclingPostsByCategoryId(categoryId) {
 
         if (posts.length > 0) {
             posts.forEach(post => {
-                const imageUrl = post.thumbnailImageUrl || '/images/default-thumb.png';
+                const imageUrl =
+                    post.thumbNailImageUrl ||
+                    post.thumbNailUrl ||
+                    post.thumbnailImageUrl ||
+                    '/images/default-thumb.jpg';
                 const card = document.createElement("div");
                 card.className = "post-card";
                 card.innerHTML = `
@@ -119,5 +123,5 @@ async function fetchRecyclingPostsByCategoryId(categoryId) {
 function formatDate(dateStr) {
     if (!dateStr) return "";
     const d = new Date(dateStr);
-    return d.toLocaleDateString("ko-KR", { year: "numeric", month: "short", day: "numeric" });
+    return d.toLocaleDateString("ko-KR", {year: "numeric", month: "short", day: "numeric"});
 }
