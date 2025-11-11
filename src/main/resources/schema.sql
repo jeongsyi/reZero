@@ -1,16 +1,18 @@
 DROP TABLE IF EXISTS users CASCADE;
 
-DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS recycling_posts CASCADE;
 DROP TABLE IF EXISTS recycling_images CASCADE;
 DROP TABLE IF EXISTS qna_comments CASCADE;
 DROP TABLE IF EXISTS scraps CASCADE;
 
 DROP TABLE IF EXISTS follows CASCADE;
-DROP TABLE IF EXISTS community_posts CASCADE;
-DROP TABLE IF EXISTS community_images CASCADE;
-DROP TABLE IF EXISTS community_comments CASCADE;
-DROP TABLE IF EXISTS community_likes CASCADE;
+DROP TABLE IF EXISTS missions CASCADE;
+DROP TABLE IF EXISTS mission_posts CASCADE;
+DROP TABLE IF EXISTS mission_post_images CASCADE;
+DROP TABLE IF EXISTS mission_post_comments CASCADE;
+DROP TABLE IF EXISTS mission_post_likes CASCADE;
+DROP TABLE IF EXISTS mission_stamps CASCADE;
 
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
@@ -113,63 +115,94 @@ CREATE TABLE IF NOT EXISTS follows
     CONSTRAINT uq_follows UNIQUE (following_id, follower_id)
 );
 
+CREATE TABLE missions
+(
+    id          BIGSERIAL PRIMARY KEY,
+    title       VARCHAR(255) NOT NULL,
+    description TEXT         NOT NULL,
+    start_date  TIMESTAMPTZ  NOT NULL,
+    end_date    TIMESTAMPTZ  NOT NULL,
+    active      BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMPTZ
+);
 
-CREATE TABLE IF NOT EXISTS community_posts
+
+CREATE TABLE IF NOT EXISTS mission_posts
 (
     id          BIGSERIAL PRIMARY KEY,
     user_id     BIGINT       NOT NULL,
+    mission_id  BIGINT       NOT NULL,
     title       VARCHAR(255) NOT NULL,
-    description TEXT         NOT NULL,
-    created_at  timestamptz  NOT NULL DEFAULT NOW(),
-    updated_at  timestamptz,
+    description TEXT,
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMPTZ,
+    status      VARCHAR(20)  NOT NULL CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
 
-    CONSTRAINT fk_users_to_community_posts FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE
+    CONSTRAINT fk_mission_posts_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_mission_posts_mission
+        FOREIGN KEY (mission_id) REFERENCES missions (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS community_images
+CREATE TABLE IF NOT EXISTS mission_post_images
 (
-    id           BIGSERIAL PRIMARY KEY,
-    community_id BIGINT       NOT NULL,
-    image_url    VARCHAR(255) NOT NULL,
-    created_at   timestamptz  NOT NULL DEFAULT NOW(),
-    updated_at   timestamptz,
+    id         BIGSERIAL PRIMARY KEY,
+    post_id    BIGINT       NOT NULL,
+    image_url  VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ,
 
-    CONSTRAINT fk_community_posts_to_community_images FOREIGN KEY (community_id)
-        REFERENCES community_posts (id) ON DELETE CASCADE
+    CONSTRAINT fk_post_images_post
+        FOREIGN KEY (post_id) REFERENCES mission_posts (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS community_comments
+CREATE TABLE IF NOT EXISTS mission_post_comments
 (
-    id           BIGSERIAL PRIMARY KEY,
-    community_id BIGINT      NOT NULL,
-    user_id      BIGINT      NOT NULL,
-    parent_id    BIGINT,
-    content      TEXT        NOT NULL,
-    created_at   timestamptz NOT NULL DEFAULT NOW(),
-    updated_at   timestamptz,
+    id         BIGSERIAL PRIMARY KEY,
+    post_id    BIGINT       NOT NULL,
+    user_id    BIGINT       NOT NULL,
+    parent_id  BIGINT       NULL,
+    content    VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ,
 
-    CONSTRAINT fk_community_posts_to_community_comments FOREIGN KEY (community_id)
-        REFERENCES community_posts (id) ON DELETE CASCADE,
-    CONSTRAINT fk_users_to_community_comments FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT fk_community_comments_to_community_comments FOREIGN KEY (parent_id)
-        REFERENCES community_comments (id) ON DELETE CASCADE
+    CONSTRAINT fk_post_comments_post
+        FOREIGN KEY (post_id) REFERENCES mission_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_comments_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_comments_parent
+        FOREIGN KEY (parent_id) REFERENCES mission_post_comments (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS community_likes
+CREATE TABLE IF NOT EXISTS mission_post_likes
 (
-    id           BIGSERIAL PRIMARY KEY,
-    community_id BIGINT      NOT NULL,
-    user_id      BIGINT      NOT NULL,
-    created_at   timestamptz NOT NULL DEFAULT NOW(),
+    id         BIGSERIAL PRIMARY KEY,
+    post_id    BIGINT      NOT NULL,
+    user_id    BIGINT      NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    CONSTRAINT fk_community_posts_to_community_likes FOREIGN KEY (community_id)
-        REFERENCES community_posts (id) ON DELETE CASCADE,
-    CONSTRAINT fk_users_to_community_likes FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_likes_post
+        FOREIGN KEY (post_id) REFERENCES mission_posts (id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_likes_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT uq_post_like UNIQUE (post_id, user_id)
+);
 
-    CONSTRAINT uq_community_likes UNIQUE (community_id, user_id)
+CREATE TABLE mission_stamps
+(
+    id         BIGSERIAL PRIMARY KEY,
+    mission_id BIGINT  NOT NULL,
+    user_id    BIGINT  NOT NULL,
+    stamp_date DATE    NOT NULL,
+    stamped    BOOLEAN NOT NULL DEFAULT FALSE,
+    stamped_at TIMESTAMPTZ,
+
+    CONSTRAINT fk_mission_stamps_mission
+        FOREIGN KEY (mission_id) REFERENCES missions (id) ON DELETE CASCADE,
+    CONSTRAINT fk_mission_stamps_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT uq_mission_stamp UNIQUE (mission_id, user_id, stamp_date)
 );
 
 CREATE TABLE IF NOT EXISTS questions
@@ -177,7 +210,7 @@ CREATE TABLE IF NOT EXISTS questions
     id          BIGSERIAL PRIMARY KEY NOT NULL,
     question    VARCHAR(255)          NOT NULL,
     order_index INT                   NOT NULL,
-    created_at  TIMESTAMP DEFAULT now()
+    created_at  TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS answers
