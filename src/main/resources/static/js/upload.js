@@ -18,15 +18,12 @@ function mapLabelToCategoryId(label) {
     const mapping = {
         paper: 1,
         plastic: 2,
-        vinyl: 2,
-        metal: 3,
-        glass: 3,
-        can: 3,
-        food: 4,
-        organic: 4,
-        textile: 5,
-        cloth: 5,
-        other: 6
+        vinyl: 3,
+        metal: 4,
+        glass: 5,
+        food: 6,
+        textile: 7,
+        other: 8
     };
     return mapping[label] || 6;
 }
