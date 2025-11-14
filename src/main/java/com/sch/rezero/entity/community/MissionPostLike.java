@@ -41,4 +41,10 @@ public class MissionPostLike {
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
+
+  public MissionPostLike(MissionPost missionPost, User user) {
+    this.missionPost = missionPost;
+    this.user = user;
+    this.createdAt = LocalDateTime.now();
+  }
 }

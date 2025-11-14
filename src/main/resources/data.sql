@@ -843,10 +843,15 @@ SET following_count = (
     WHERE f.follower_id = u.id
 );
 
-DROP TABLE IF EXISTS community_comments CASCADE;
-DROP TABLE IF EXISTS community_images CASCADE;
-DROP TABLE IF EXISTS community_posts CASCADE;
-DROP TABLE IF EXISTS community_likes CASCADE;
-DROP TABLE IF EXISTS post_likes CASCADE;
-DROP TABLE IF EXISTS post_images CASCADE;
-DROP TABLE IF EXISTS post_comments CASCADE;
+CREATE TABLE notifications (
+                               id BIGSERIAL PRIMARY KEY,
+                               user_id BIGINT NOT NULL,          -- 알림 받는 사람
+                               sender_id BIGINT,                 -- 알림 보낸 사람
+                               post_id BIGINT,                   -- 관련 게시글
+                               type VARCHAR(20) NOT NULL,        -- LIKE, COMMENT, APPROVED, REJECTED
+                               message TEXT NOT NULL,            -- 알림 내용
+                               is_read BOOLEAN DEFAULT FALSE,    -- 읽음 여부
+                               created_at TIMESTAMPTZ DEFAULT now(),
+
+                               CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

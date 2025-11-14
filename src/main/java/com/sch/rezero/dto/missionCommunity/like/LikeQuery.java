@@ -1,0 +1,21 @@
+package com.sch.rezero.dto.missionCommunity.like;
+
+public record LikeQuery(
+        Long idAfter,
+        String cursor,
+        Integer size,
+        String sortField,
+        String sortDirection
+) {
+    public LikeQuery {
+        if (size == null) {
+            size = 20;
+        }
+        if (sortField == null) {
+            sortField = "createdAt";
+        }
+        if (sortDirection == null) {
+            sortDirection = "desc";
+        }
+    }
+}

@@ -60,9 +60,13 @@ public class Mission {
     this.updatedAt = LocalDateTime.now();
   }
 
-  public void updateActive(boolean active) {
+  public Mission(String title, String description, LocalDateTime startDate, LocalDateTime endDate,
+      boolean active) {
+    this.title = title;
+    this.description = description;
+    this.startDate = startDate;
+    this.endDate = endDate;
     this.active = active;
-    this.updatedAt = LocalDateTime.now();
+    this.createdAt = LocalDateTime.now();
   }
-
 }

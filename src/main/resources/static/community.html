@@ -6,6 +6,8 @@
   <title>커뮤니티 | reZero</title>
   <link rel="stylesheet" href="css/style.css" />
 
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <!-- ✅ 공통 로직 -->
   <script src="js/common.js"></script>
   <!-- ✅ 커뮤니티 전용 로직 -->
@@ -68,38 +70,61 @@
 <div id="header-placeholder"></div>
 
 <main class="community-container">
-  <div class="community-header">
-    <h1>🌿 커뮤니티</h1>
-    <p>지속 가능한 일상을 나누는 공간</p>
-  </div>
+  <!-- ✅ 현재 미션 정보 표시 영역 -->
+  <section id="currentMission" class="current-mission">
+    <!-- JS에서 자동 렌더링 -->
+  </section>
 
-  <!-- 🔍 검색 + 정렬 + 필터 영역 -->
+  <!-- 🔍 검색 + 정렬 + 관리자 버튼 -->
   <div class="community-search">
     <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (제목/내용/작성자)">
     <select id="sortSelect">
       <option value="createdAt,desc">최신순</option>
-      <option value="like,desc">좋아요순</option>
+      <option value="likeCount,desc">좋아요순</option>
     </select>
     <button id="searchBtn">검색</button>
 
-    <!-- ✅ 팔로우 피드 버튼 -->
-    <button id="feedBtn" class="feed-toggle">👥 팔로잉 게시글 보기</button>
+    <!-- ✅ 관리자 전용 버튼 -->
+    <button id="pendingBtn" class="feed-toggle" style="display:none;">승인 대기</button>
+    <button id="rejectedBtn" class="feed-toggle" style="display:none;">거절</button>
   </div>
 
-  <div id="communityPostList" class="community-list">
-    <!-- JS로 게시글 렌더링 -->
-  </div>
+  <div id="communityPostList" class="community-list"></div>
 
   <div class="pagination">
     <button id="loadMoreBtn" style="display:none;">더보기</button>
   </div>
 
   <button class="floating-write-btn" onclick="location.href='community-write.html'">
-    ✏️ 글쓰기
+    ✏️ 인증글 작성
   </button>
 </main>
 
 <div id="footer-placeholder"></div>
+<!-- 🌿 미션 관리 모달 (생성/수정 공용) -->
+<div id="missionModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="modalTitle">미션 관리</h3>
+    <form id="missionForm">
+      <label>제목</label>
+      <input type="text" id="missionTitle" required placeholder="미션 제목을 입력하세요">
+
+      <label>설명</label>
+      <textarea id="missionDesc" rows="3" required placeholder="미션 내용을 입력하세요"></textarea>
+
+      <label>시작일</label>
+      <input type="datetime-local" id="missionStart" required>
+
+      <label>종료일</label>
+      <input type="datetime-local" id="missionEnd" required>
+
+      <div class="modal-buttons">
+        <button type="button" id="cancelMissionBtn" class="cancel-btn">취소</button>
+        <button type="submit" id="saveMissionBtn" class="save-btn">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- ✅ 로그인 안내 모달 -->
 <div class="modal-overlay" id="loginModal">

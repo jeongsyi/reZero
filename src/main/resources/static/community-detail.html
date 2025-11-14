@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>커뮤니티 글보기 | reZero</title>
+  <title>미션 게시글 보기 | reZero</title>
+
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
 
-  <!-- ✅ 공통 헤더/푸터 로드 및 로그인 상태 반영 -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <script src="js/common.js"></script>
-
-  <!-- ✅ 페이지 전용 스크립트 -->
   <script defer src="js/community-detail.js"></script>
 </head>
 <body>
@@ -19,17 +21,34 @@
 <div id="header-placeholder"></div>
 
 <main class="recycling-detail-container">
-  <article class="recycling-detail" id="communityDetail">
-    <!-- JS에서 게시글 내용 렌더링 -->
-  </article>
+  <!-- ✅ 게시글 본문 -->
+  <article class="recycling-detail" id="missionDetail"></article>
 
   <!-- ❤️ 좋아요 버튼 -->
-  <div class="like-section" id="likeSection" style="text-align:center; margin: 20px 0;">
+  <div
+      class="like-section"
+      id="likeSection"
+      style="text-align:center; margin: 20px 0;"
+  >
     <button id="likeBtn" class="btn like">❤️ 0</button>
   </div>
 
-  <!-- ✏️ 수정 / 삭제 버튼 -->
-  <div class="post-actions" id="postActions" style="display:none;">
+  <!-- ✅ 관리자 승인 / 반려 버튼 -->
+  <div
+      class="admin-actions"
+      id="adminActions"
+      style="display:none; text-align:center; margin: 16px 0;"
+  >
+    <button id="approveBtn" class="btn approve">승인</button>
+    <button id="rejectBtn" class="btn reject">반려</button>
+  </div>
+
+  <!-- ✏️ 수정 / 삭제 버튼 (adminActions 밖으로 이동됨) -->
+  <div
+      class="post-actions"
+      id="postActions"
+      style="display:none; text-align:center; margin: 12px 0;"
+  >
     <button id="editBtn" class="btn edit">✏️ 수정</button>
     <button id="deleteBtn" class="btn delete">🗑️ 삭제</button>
   </div>
@@ -40,7 +59,10 @@
 
     <!-- 댓글 작성 -->
     <div class="comment-form">
-      <textarea id="new-comment-content" placeholder="댓글을 입력하세요"></textarea>
+        <textarea
+            id="new-comment-content"
+            placeholder="댓글을 입력하세요"
+        ></textarea>
       <button id="submit-comment">등록</button>
     </div>
 

@@ -4,6 +4,7 @@ public enum S3Folder {
   COMMUNITY("community"),
   RECYCLING("recycling"),
   PROFILE("profile"),
+  MISSION("mission"),
   COMMUNITY_THUMBNAIL("communityThumbnail"),
   RECYCLING_THUMBNAIL("recyclingThumbnail");
 

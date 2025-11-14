@@ -1,5 +1,6 @@
 package com.sch.rezero.entity.community;
 
+import com.sch.rezero.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -47,11 +50,22 @@ public class MissionPost {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "mission_id", nullable = false)
+  private Mission mission;
+
   @OneToMany(mappedBy = "missionPost", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<MissionPostComment> comments = new ArrayList<>();
 
   @OneToMany(mappedBy = "missionPost", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<MissionPostImage> images = new ArrayList<>();
+
+  @OneToMany(mappedBy = "missionPost", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<MissionPostLike> likes = new ArrayList<>();
 
   public enum Status {
     PENDING, APPROVED, REJECTED
@@ -90,4 +104,10 @@ public class MissionPost {
     this.images.remove(image);
   }
 
+  public MissionPost(String title, String description, Mission mission, User user) {
+    this.title = title;
+    this.description = description;
+    this.mission = mission;
+    this.user = user;
+  }
 }
