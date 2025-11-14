@@ -294,3 +294,41 @@ body {
     object-fit: cover;
 }
 
+/* 🌿 리스트형 카드 (썸네일 제거, 직사각형 형태) */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.post-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.post-item:hover {
+    background: #f9f9f9;
+}
+
+.post-item .title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.post-item .meta {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: 16px;
+    white-space: nowrap;
+}

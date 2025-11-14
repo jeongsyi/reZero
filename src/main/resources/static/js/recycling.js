@@ -24,12 +24,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     categorySelect.style.display = "none";
     categorySelect.innerHTML = `
         <option value="">전체</option>
-        <option value="1">종이류</option>
-        <option value="2">플라스틱/비닐류</option>
-        <option value="3">유리/금속/캔</option>
-        <option value="4">음식물/유기물</option>
-        <option value="5">천/옷</option>
-        <option value="6">기타</option>
+        <option value="1">종이</option>
+        <option value="2">플라스틱</option>
+        <option value="3">비닐</option>
+        <option value="4">금속</option>
+        <option value="5">유리</option>
+        <option value="6">음식</option>
+        <option value="7">천</option>
+        <option value="8">기타</option>
     `;
     keywordInput.insertAdjacentElement("afterend", categorySelect);
 

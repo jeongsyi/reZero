@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 이미지 분류</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+
+<body>
+<div id="header-placeholder"></div>
+<section class="upload-section">
+    <h2>이미지 업로드 또는 촬영</h2>
+
+    <div class="upload-box">
+        <label for="imageInput" class="upload-label">이미지 파일 선택</label>
+        <input type="file" id="imageInput" accept="image/*" />
+    </div>
+
+    <div class="camera-box">
+        <h3>📷 카메라 촬영</h3>
+        <video id="camera" autoplay></video>
+        <button onclick="capture()">사진 찍기</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+    </div>
+
+    <div class="preview-box">
+        <h3>미리보기</h3>
+        <div class="preview-row">
+            <img id="preview" src="" alt="이미지 미리보기" />
+            <button onclick="sendImage()">분류 요청</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+</section>
+
+<section class="related-section">
+    <h2>관련 재활용 게시물</h2>
+    <div id="relatedPosts" class="card-container"></div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/common.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>
