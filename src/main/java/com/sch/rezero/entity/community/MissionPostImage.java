@@ -46,4 +46,8 @@ public class MissionPostImage {
     this.updatedAt = LocalDateTime.now();
   }
 
+  public MissionPostImage(MissionPost missionPost, String imageUrl) {
+    this.missionPost = missionPost;
+    this.imageUrl = imageUrl;
+  }
 }

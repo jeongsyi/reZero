@@ -54,4 +54,13 @@ public class MissionPostComment {
     }
     this.updatedAt = LocalDateTime.now();
   }
+
+  public MissionPostComment(MissionPost missionPost, User user, MissionPostComment parent,
+      String content) {
+    this.missionPost = missionPost;
+    this.user = user;
+    this.parent = parent;
+    this.content = content;
+    this.createdAt = LocalDateTime.now();
+  }
 }

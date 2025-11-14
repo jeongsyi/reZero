@@ -261,3 +261,18 @@ CREATE TABLE IF NOT EXISTS user_levels
     CONSTRAINT fk_user_levels_level FOREIGN KEY (level_id)
         REFERENCES levels (id) ON DELETE CASCADE
 );
+
+CREATE TABLE notifications
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL,      -- 알림 받는 사람
+    sender_id  BIGINT,                    -- 알림 보낸 사람
+    post_id    BIGINT,                    -- 관련 게시글
+    type       VARCHAR(20) NOT NULL,      -- LIKE, COMMENT, APPROVED, REJECTED
+    message    TEXT        NOT NULL,      -- 알림 내용
+    is_read    BOOLEAN     DEFAULT FALSE, -- 읽음 여부
+    created_at TIMESTAMPTZ DEFAULT now(),
+
+    CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+

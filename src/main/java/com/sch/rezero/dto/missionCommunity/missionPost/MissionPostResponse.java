@@ -5,12 +5,13 @@ import java.util.List;
 
 public record MissionPostResponse(
     Long id,
+    Long userId,
     String title,
     String description,
     String status,
     String authorName,
-    Long likeCount,
-    Long commentCount,
+    int likeCount,
+    int commentCount,
     List<String> imageUrls,
     LocalDateTime createdAt
 ) {

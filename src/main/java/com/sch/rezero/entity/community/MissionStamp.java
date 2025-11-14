@@ -13,10 +13,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(
     name = "mission_stamps",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"mission_id", "user_id", "stamp_date"})})
@@ -42,6 +47,13 @@ public class MissionStamp {
 
   @Column(name = "stamped_at")
   private LocalDateTime stampedAt;
+
+  public MissionStamp(Mission mission, User user, LocalDate stampDate, boolean stamped) {
+    this.mission = mission;
+    this.user = user;
+    this.stampDate = stampDate;
+    this.stamped = stamped;
+    this.stampedAt = stamped ? LocalDateTime.now() : null;  }
 
   public void stamp() {
     this.stamped = true;

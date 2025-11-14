@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>커뮤니티 글쓰기 | reZero</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>미션 커뮤니티 글쓰기 | reZero</title>
 
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- ✅ 공통 헤더/푸터 + 로그인 상태 반영 -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <script src="js/common.js"></script>
-
-  <!-- ✅ 페이지 전용 스크립트 -->
   <script defer src="js/community-write.js"></script>
 </head>
 <body>
-<!-- ✅ header.html 자동 로드 -->
 <div id="header-placeholder"></div>
 
 <section class="write-container">
-  <h1>커뮤니티 글쓰기</h1>
-  <form id="communityForm" enctype="multipart/form-data">
+  <h1>미션 인증글 작성</h1>
+  <form id="missionForm" enctype="multipart/form-data">
     <!-- 제목 -->
     <div class="form-group">
-      <input type="text" id="title" name="title" placeholder="제목을 입력하세요" maxlength="255" required>
+      <input type="text" id="title" name="title" placeholder="제목을 입력하세요" maxlength="100" required />
     </div>
 
     <!-- 내용 -->
     <div class="form-group">
-      <textarea id="description" name="description" rows="7" placeholder="내용을 입력하세요" required></textarea>
+      <textarea id="description" name="description" rows="7" placeholder="미션 인증 내용을 작성하세요" maxlength="2000" required></textarea>
     </div>
 
     <!-- 이미지 업로드 -->
     <div class="form-group">
-      <label for="images">📸 사진 추가 (선택)</label>
-      <input type="file" id="images" name="images" multiple accept="image/*">
+      <label for="images">📸 인증 사진 (필수)</label>
+      <input type="file" id="images" name="images" multiple accept="image/*" required />
       <div id="imagePreview" class="multi-preview"></div>
+      <small style="color:#666;">첫 번째 이미지는 썸네일로 사용됩니다.</small>
     </div>
 
     <div class="button-group">
@@ -44,7 +43,6 @@
   </form>
 </section>
 
-<!-- ✅ footer.html 자동 로드 -->
 <div id="footer-placeholder"></div>
 </body>
 </html>

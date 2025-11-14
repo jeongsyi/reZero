@@ -1,16 +1,17 @@
 package com.sch.rezero.dto.missionCommunity.missionPost;
 
-public record missionPostQuery(
+public record MissionPostQuery(
         String title,
         String description,
         String userName,
+        String status,
         Long idAfter,
         String cursor,
         Integer size,
         String sortField,
         String sortDirection
 ) {
-    public missionPostQuery {
+    public MissionPostQuery {
         if (size == null) {
             size = 20;
         }
@@ -20,5 +21,19 @@ public record missionPostQuery(
         if (sortDirection == null) {
             sortDirection = "desc";
         }
+    }
+
+    public MissionPostQuery withStatus(String newStatus) {
+        return new MissionPostQuery(
+            title,
+            description,
+            userName,
+            newStatus,
+            idAfter,
+            cursor,
+            size,
+            sortField,
+            sortDirection
+        );
     }
 }

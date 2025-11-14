@@ -1497,3 +1497,36 @@ INSERT INTO public.recycling_images ( recycling_id, image_url, created_at, updat
 -- INSERT INTO public.qna_comments ( recycling_id, user_id, parent_id, content, created_at, updated_at) VALUES ( 28, 1, 165, '물론이에요. 사진 캘린더로도 충분히 예뻐요.', '2025-11-03 16:11:15.653817 +00:00', '2025-11-03 16:11:15.653817 +00:00');
 -- INSERT INTO public.qna_comments ( recycling_id, user_id, parent_id, content, created_at, updated_at) VALUES ( 28, 10, null, '벽에 붙일 때 뭐가 좋아요?', '2025-11-03 16:11:15.653817 +00:00', '2025-11-03 16:11:15.653817 +00:00');
 -- INSERT INTO public.qna_comments ( recycling_id, user_id, parent_id, content, created_at, updated_at) VALUES ( 28, 1, 167, '양면테이프나 블루택을 쓰면 흔적이 남지 않아요.', '2025-11-03 16:11:15.653817 +00:00', '2025-11-03 16:11:15.653817 +00:00');
+
+
+
+INSERT INTO missions (
+    title,
+    description,
+    start_date,
+    end_date,
+    active
+)
+VALUES (
+           '일주일 제로웨이스트 챌린지 🌿',
+           '일주일 동안 일회용품을 사용하지 않고 생활하는 미션입니다. 텀블러·장바구니·다회용기 사용으로 참여해주세요!',
+           NOW() - INTERVAL '1 day',   -- 어제 시작
+           NOW() + INTERVAL '6 day',   -- 6일 뒤 종료
+           TRUE                        -- ✅ 현재 활성 미션
+       );
+
+INSERT INTO mission_posts (
+    user_id,
+    mission_id,
+    title,
+    description,
+    status
+)
+VALUES (
+           1,  -- ✅ users.id = 1인 유저가 있어야 함
+           1,  -- ✅ missions.id = 1인 미션 (앞에서 만든 "일주일 제로웨이스트 챌린지 🌿")
+           '텀블러로 커피 마시기 인증 ☕️',
+           '오늘 일회용컵 대신 텀블러를 사용했어요! 카페에서도 잘 받아주셨어요 😊',
+           'PENDING'  -- 처음 등록 시 기본 상태 (승인 전)
+       );
+

@@ -1,23 +1,109 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>reZero - 제로웨이스트 커뮤니티</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* 🌿 우측 상단 고정형 랭킹 박스 */
+        .floating-ranking {
+            position: fixed; /* ✅ 스크롤해도 고정 */
+            top: 110px; /* ✅ 살짝 아래로 내림 */
+            right: 40px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 14px 18px;
+            width: 240px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            border: 1px solid #e4f2e2;
+        }
+
+        .floating-ranking h3 {
+            margin: 0 0 8px 0;
+            color: #2a5a2c;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .floating-ranking ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .floating-ranking li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .floating-ranking li:last-child {
+            border-bottom: none;
+        }
+
+        .floating-ranking .profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .floating-ranking img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid #91c788;
+            object-fit: cover;
+        }
+
+        .floating-ranking .name {
+            font-size: 0.9rem;
+            color: #2f4f2f;
+        }
+
+        .floating-ranking .score {
+            font-size: 0.85rem;
+            color: #4f8a47;
+        }
+
+        @media (max-width: 768px) {
+            .floating-ranking {
+                position: static;
+                width: 100%;
+                margin: 10px auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
 <div id="header-placeholder"></div>
+
+<!-- 🌿 오른쪽 상단 고정형 랭킹 박스 -->
+<div class="floating-ranking" id="missionRanking">
+    <h3>🌿 주간 미션 랭킹 Top 5</h3>
+    <ul id="rankingList">
+        <li>불러오는 중...</li>
+    </ul>
+</div>
 
 <section class="hero" id="hero">
     <div class="hero-content">
         <h1>햇살 아래의 작은 실천</h1>
         <p>나뭇잎 그림자 사이로 스며드는 따뜻한 빛처럼,<br>
             reZero와 함께 지속 가능한 일상을 만들어가요.</p>
-        <button onclick="location.href='/recycling-list.html'">♻️ 생활 속 재활용법 보러가기</button>
+        <button onclick="location.href='/recycling-list.html'">
+            ♻️ 생활 속 재활용법 보러가기
+        </button>
     </div>
 </section>
 
@@ -37,20 +123,65 @@
 
 <div id="footer-placeholder"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script src="js/common.js"></script>
 
 <script>
-    function scrollToStats() {
-        document.getElementById("stats").scrollIntoView({behavior: "smooth"});
+    /* ✅ 헤더/푸터 include */
+    document.addEventListener("DOMContentLoaded", async () => {
+        await Promise.all([
+            fetch("/header.html")
+            .then(r => r.text())
+            .then(h => (document.getElementById("header-placeholder").innerHTML = h)),
+            fetch("/footer.html")
+            .then(r => r.text())
+            .then(h => (document.getElementById("footer-placeholder").innerHTML = h))
+        ]);
+        fetchMissionRankings();
+    });
+
+    /* 🌿 주간 미션 랭킹 불러오기 */
+    async function fetchMissionRankings() {
+        try {
+            const res = await fetch("/api/missions/rankings");
+            if (!res.ok) throw new Error("랭킹 불러오기 실패");
+            const rankings = await res.json();
+            renderRankings(rankings);
+        } catch (err) {
+            console.error(err);
+            document.getElementById("rankingList").innerHTML =
+                `<li>❌ 랭킹 데이터를 불러올 수 없습니다.</li>`;
+        }
     }
 
-    let regionChartInstance = null;
-    let ageChartInstance = null;
+    function renderRankings(rankings) {
+        const list = document.getElementById("rankingList");
+        if (!rankings || rankings.length === 0) {
+            list.innerHTML = `<li>아직 랭킹 데이터가 없습니다.</li>`;
+            return;
+        }
 
+        const medal = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+
+        list.innerHTML = rankings
+        .map((r, i) => `
+          <li>
+            <div class="profile">
+              <span>${medal[i] || r.rank}</span>
+              <img src="${r.profileUrl || '/images/default-profile.png'}" alt="프로필">
+              <span class="name">${r.userName || "익명"}</span>
+            </div>
+            <span class="score">${r.score.toFixed(1)}점</span>
+          </li>
+        `)
+        .join("");
+    }
+
+    /* 📊 통계 차트 */
     async function fetchStats() {
         const regionRes = await fetch("/api/stats/region");
         const ageRes = await fetch("/api/stats/age");
-
         const regionData = await regionRes.json();
         const ageData = await ageRes.json();
 
@@ -60,9 +191,7 @@
 
     function createDonutChart(canvasId, data, label, chartName) {
         const ctx = document.getElementById(canvasId);
-
         if (window[chartName]) window[chartName].destroy();
-
         window[chartName] = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -82,7 +211,7 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: {color: '#2a3d2b', font: {size: 14}}
+                        labels: { color: '#2a3d2b', font: { size: 14 } }
                     }
                 },
                 animation: {
@@ -95,12 +224,11 @@
         });
     }
 
-    // 화면 내려갈 때 통계 애니메이션 표시
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) fetchStats();
         });
-    }, {threshold: 0.3});
+    }, { threshold: 0.3 });
 
     observer.observe(document.getElementById("stats"));
 </script>

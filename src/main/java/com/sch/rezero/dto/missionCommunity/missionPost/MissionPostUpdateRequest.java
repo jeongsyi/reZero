@@ -1,10 +1,8 @@
 package com.sch.rezero.dto.missionCommunity.missionPost;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record MissionPostUpdateRequest(
-    @NotNull(message = "미션 ID는 필수 입력값입니다.")
     Long missionId,
 
     @Size(max = 100, message = "제목은 100자 이내로 입력해주세요.")
