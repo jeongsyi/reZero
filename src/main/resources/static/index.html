@@ -9,18 +9,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* 🌿 우측 상단 고정형 랭킹 박스 */
+        /* 🌿 좌측 상단 고정형 랭킹 박스 (왼쪽으로 이동!!) */
         .floating-ranking {
-            position: fixed; /* ✅ 스크롤해도 고정 */
-            top: 110px; /* ✅ 살짝 아래로 내림 */
-            right: 40px;
+            position: fixed;
+            top: 110px;
+            left: 40px;                 /* ⭐ 오른쪽 → 왼쪽으로 이동 */
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(8px);
             border-radius: 12px;
             padding: 14px 18px;
             width: 240px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 100;
+            z-index: 100;               /* 알림 드롭다운은 z-index:999 → 제대로 위로 뜸 */
             text-align: center;
             transition: opacity 0.4s ease, transform 0.4s ease;
             border: 1px solid #e4f2e2;
@@ -47,9 +47,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .floating-ranking li:last-child {
-            border-bottom: none;
-        }
+        .floating-ranking li:last-child { border-bottom: none; }
 
         .floating-ranking .profile {
             display: flex;
@@ -65,15 +63,8 @@
             object-fit: cover;
         }
 
-        .floating-ranking .name {
-            font-size: 0.9rem;
-            color: #2f4f2f;
-        }
-
-        .floating-ranking .score {
-            font-size: 0.85rem;
-            color: #4f8a47;
-        }
+        .floating-ranking .name { font-size: 0.9rem; color: #2f4f2f; }
+        .floating-ranking .score { font-size: 0.85rem; color: #4f8a47; }
 
         @media (max-width: 768px) {
             .floating-ranking {
@@ -88,7 +79,7 @@
 <body>
 <div id="header-placeholder"></div>
 
-<!-- 🌿 오른쪽 상단 고정형 랭킹 박스 -->
+<!-- 🌿 왼쪽 고정 랭킹 박스 -->
 <div class="floating-ranking" id="missionRanking">
     <h3>🌿 주간 미션 랭킹 Top 5</h3>
     <ul id="rankingList">
@@ -123,12 +114,13 @@
 
 <div id="footer-placeholder"></div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script src="js/common.js"></script>
 
 <script>
-    /* ✅ 헤더/푸터 include */
+    /* Header/Footer include */
     document.addEventListener("DOMContentLoaded", async () => {
         await Promise.all([
             fetch("/header.html")
@@ -141,7 +133,7 @@
         fetchMissionRankings();
     });
 
-    /* 🌿 주간 미션 랭킹 불러오기 */
+    /* 🌿 미션 랭킹 불러오기 */
     async function fetchMissionRankings() {
         try {
             const res = await fetch("/api/missions/rankings");
@@ -169,7 +161,7 @@
           <li>
             <div class="profile">
               <span>${medal[i] || r.rank}</span>
-              <img src="${r.profileUrl || '/images/default-profile.png'}" alt="프로필">
+              <img src="${r.profileUrl || '/images/default-profile.png'}">
               <span class="name">${r.userName || "익명"}</span>
             </div>
             <span class="score">${r.score.toFixed(1)}점</span>

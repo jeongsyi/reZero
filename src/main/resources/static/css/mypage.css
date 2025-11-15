@@ -108,23 +108,67 @@ body {
     color: #7fb77e;
 }
 
-.follow-stats {
-    display: flex;
-    gap: 20px;
-    margin-top: 10px;
+/* 🌿 도장판 */
+.mission-stamp-board {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 30px !important;  /* ⭐ 메뉴랑 간격 크게 띄움 */
+    padding: 20px 25px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.follow-stats span {
-    cursor: pointer;
-    color: #355c3a;
+.mission-stamp-board h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1f3f2b;
+}
+
+.stamp-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.stamp-cell {
+    width: 100%;
+    padding: 12px 0;
+    background: #f3f7f3;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
     font-weight: 600;
+    color: #3b513e;
+    border: 1px solid #d8e4d8;
 }
 
-.follow-stats span b {
-    color: #5ca77f;
+.stamp-day {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7f6b;
+    margin-bottom: 6px;
 }
 
-/* 탭 메뉴 */
+.stamp-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    margin: auto;
+    border: 2px dashed #a6b7a6;
+}
+
+.stamp-mark.stamped {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    line-height: 26px;
+    font-weight: bold;
+}
+
+
+/* ⭐⭐⭐ 탭 메뉴 */
 .mypage-tabs {
     display: flex;
     justify-content: space-around;
@@ -152,24 +196,24 @@ body {
 /* 탭 콘텐츠 */
 .tab-pane {
     display: none;
+    width: 100% !important; /* ⭐ 리스트 폭 통일 */
 }
 
 .tab-pane.active {
     display: block;
 }
 
-/* 게시물 카드 (스크랩 / 좋아요 공통) */
-/* 🌿 스크랩 카드 (정렬 수정 + 제목 크기 축소) */
+/* ⭐⭐⭐ 스크랩 그리드 (전체박스 꽉 차게) */
 .post-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 기존 220~250px → 180px로 축소 */
-    gap: 12px;
-    justify-content: center;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    width: 100%;
 }
 
+/* 🌿 스크랩 카드 */
 .post-card.compact {
-    width: 200px;
+    width: 100%;
     height: 160px;
     border-radius: 10px;
     overflow: hidden;
@@ -192,6 +236,43 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* ⭐⭐⭐ 좋아요 / 커뮤니티 리스트 폭 개선 */
+.post-list {
+    width: 100% !important;
+    padding: 0 5px;
+}
+
+.post-item {
+    width: 100%;
+    padding: 16px 24px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: background 0.2s ease;
+    box-sizing: border-box;
+}
+
+.post-item:hover {
+    background: #f9f9f9;
+}
+
+.post-item .title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.post-item .meta {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: 16px;
+    white-space: nowrap;
 }
 
 /* 프로필 수정 폼 */
@@ -231,104 +312,4 @@ body {
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-}
-
-.follow-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.follow-modal-content {
-    background: #fff;
-    width: 360px;
-    max-height: 80vh; /* ✅ */
-    overflow-y: auto; /* ✅ 모달 안쪽에서만 스크롤 */
-    padding: 20px;
-    border-radius: 12px;
-}
-
-#followListContainer {
-    max-height: 60vh; /* ✅ 이게 있어야 내부 스크롤 작동 */
-    overflow-y: auto;
-}
-
-.follow-modal.active { display: flex; }
-
-.follow-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.follow-item img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.follow-item-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background 0.2s ease;
-    cursor: pointer;
-}
-
-.follow-item-row:hover {
-    background: #f5f5f5;
-}
-
-.follow-item-row img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* 🌿 리스트형 카드 (썸네일 제거, 직사각형 형태) */
-.post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-}
-
-.post-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 14px 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.post-item:hover {
-    background: #f9f9f9;
-}
-
-.post-item .title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #333;
-    flex: 1;
-}
-
-.post-item .meta {
-    font-size: 0.8rem;
-    color: #777;
-    margin-left: 16px;
-    white-space: nowrap;
 }

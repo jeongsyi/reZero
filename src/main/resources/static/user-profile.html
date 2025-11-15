@@ -3,46 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>사용자 프로필 | reZero</title>
+
+  <!-- 공통 스타일 -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/user-profile.css">
+
+  <!-- WebSocket -->
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-  <!-- ✅ 공통 헤더/푸터 자동 로드 -->
+
+  <!-- 공통 레이아웃 JS -->
   <script defer src="/js/common.js"></script>
-  <!-- ✅ 페이지 전용 스크립트 -->
+
+  <!-- 이 페이지 전용 JS -->
   <script defer src="/js/user-profile.js"></script>
 </head>
+
 <body>
-<!-- ✅ header-placeholder: common.js가 자동 채움 -->
+
+<!-- ⭐ header 자동 로드 -->
 <div id="header-placeholder"></div>
 
 <main class="profile-container">
-  <!-- 프로필 -->
+
+  <!-- ⭐ 프로필 정보 -->
   <section class="profile-header">
+
     <div class="profile-left">
       <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img">
     </div>
+
     <div class="profile-center">
       <h2 id="userName">사용자 이름</h2>
       <p id="userRole">USER</p>
-      <div class="follow-stats">
-        <span id="followerCount">팔로워 0</span>
-        <span id="followingCount">팔로잉 0</span>
-      </div>
     </div>
-    <button id="followBtn" class="btn follow">팔로우</button>
+
+    <!-- ⭐ DM 버튼 (팔로우 제거됨) -->
+    <button id="messageBtn" class="btn follow" data-user-id="">
+      DM
+    </button>
+
   </section>
 
   <hr class="divider"/>
 
-  <!-- 게시글 -->
+  <!-- ⭐ 작성한 미션 커뮤니티 게시글 -->
   <section class="user-posts">
-    <h3 class="section-title">작성한 커뮤니티 글</h3>
+    <h3 class="section-title">작성한 미션 커뮤니티 글</h3>
     <div id="userPosts" class="community-list"></div>
   </section>
+
 </main>
 
-<!-- ✅ footer-placeholder: common.js가 자동 채움 -->
+<!-- ⭐ footer 자동 로드 -->
 <div id="footer-placeholder"></div>
+
 </body>
 </html>

@@ -11,8 +11,8 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 25px;
-  border-bottom: 1px solid #dcdcdc; /* 회색선 약간 진하게 */
-  width: 100%; /* 🔹 선 길이를 컨테이너 전체로 */
+  border-bottom: 1px solid #dcdcdc;
+  width: 100%;
   margin-bottom: 20px;
 }
 
@@ -30,17 +30,7 @@
   margin-left: 20px;
 }
 
-.follow-stats {
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
-}
-
-.follow-stats span {
-  margin-right: 10px;
-}
-
-/* 팔로우 버튼 */
+/* 메시지 버튼 (팔로우 대신 사용) */
 .btn.follow {
   background-color: #3da35a;
   color: white;
@@ -56,8 +46,8 @@
 
 /* 게시글 섹션 */
 .user-posts {
-  margin-top: -80px; /* 🔹 제목을 프로필선 바로 아래로 끌어올림 */
-  width: 100%; /* 컨테이너 가로 전체 차지 */
+  margin-top: -80px;
+  width: 100%;
 }
 
 /* 섹션 제목 */
@@ -65,16 +55,15 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 18px;
-  text-align: left; /* 🔹 왼쪽 정렬 */
-  margin-left: 0; /* 🔹 구분선 왼쪽 끝에 맞춤 */
+  text-align: left;
 }
 
-/* 커뮤니티 게시글 리스트 */
+/* 게시글 리스트 */
 .community-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 100%; /* 🔹 회색선 폭과 동일하게 */
+  width: 100%;
 }
 
 /* 게시글 카드 */
@@ -88,16 +77,14 @@
   padding: 18px 20px;
   transition: 0.2s ease;
   cursor: pointer;
-  width: 100%; /* 🔹 컨테이너 폭에 맞춤 */
-  box-sizing: border-box; /* 🔹 패딩 포함 폭 계산 */
+  width: 100%;
+  box-sizing: border-box;
 }
-
 .community-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-/* 게시글 내용 */
 .community-item .text {
   flex: 1;
   margin-right: 12px;
@@ -107,18 +94,12 @@
   font-size: 16px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 6px;
-}
-
-.community-item .desc {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
 }
 
 .community-item .meta {
   font-size: 13px;
   color: #999;
+  margin-top: 6px;
 }
 
 /* 썸네일 */
@@ -127,7 +108,6 @@
   height: 90px;
   border-radius: 8px;
   object-fit: cover;
-  flex-shrink: 0;
 }
 
 /* 빈 상태 */

@@ -276,3 +276,41 @@ CREATE TABLE notifications
     CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE chat_rooms
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user1_id   BIGINT      NOT NULL,
+    user2_id   BIGINT      NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT fk_chat_rooms_user1
+        FOREIGN KEY (user1_id) REFERENCES users (id),
+    CONSTRAINT fk_chat_rooms_user2
+        FOREIGN KEY (user2_id) REFERENCES users (id),
+    CONSTRAINT unique_chat_room_pair UNIQUE (user1_id, user2_id)
+);
+
+CREATE TABLE chat_messages
+(
+    id         BIGSERIAL PRIMARY KEY,
+    room_id    BIGINT      NOT NULL,
+    sender_id  BIGINT      NOT NULL,
+    content    TEXT        NOT NULL,
+    is_read    BOOLEAN     NOT NULL DEFAULT FALSE,
+    read_at    TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT fk_chat_messages_room
+        FOREIGN KEY (room_id) REFERENCES chat_rooms (id),
+    CONSTRAINT fk_chat_messages_sender
+        FOREIGN KEY (sender_id) REFERENCES users (id)
+);
+
+
+CREATE INDEX idx_chat_messages_room_id_id_desc
+    ON chat_messages (room_id, id DESC);
+
+CREATE INDEX idx_chat_messages_room_read
+    ON chat_messages (room_id, is_read);
+
+
