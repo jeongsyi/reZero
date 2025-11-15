@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>채팅 | reZero</title>
+
+  <!-- 공통 스타일 + 채팅 스타일 -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/chat.css">
 
@@ -10,29 +12,56 @@
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
-  <!-- ❗ common.js 제거 -->
+  <!-- common.js (header/footer 포함) -->
+  <script defer src="/js/common.js"></script>
+
+  <!-- chat logic -->
   <script defer src="/js/chat.js"></script>
+  <script defer src="/js/chat-list.js"></script>
 </head>
+
 <body>
 
+<!-- 공통 header -->
 <div id="header-placeholder"></div>
 
-<div class="chat-container">
-  <div class="chat-header">
-    <img id="partnerImg" class="partner-img" src="/images/default-profile.png">
-    <span id="partnerName">상대방</span>
+<!-- 전체 레이아웃 -->
+<div class="chat-wrapper">
+
+  <!-- ===========================
+        좌측: 채팅 리스트
+      =========================== -->
+  <div class="chat-list">
+    <h2>메시지</h2>
+
+    <div id="chatListContainer" class="chat-list-container">
+      <!-- chat-list.js에서 자동 렌더링 -->
+    </div>
   </div>
 
-  <div id="chatMessages" class="chat-messages"></div>
+  <!-- ===========================
+        우측: 1:1 채팅 메시지 창
+      =========================== -->
+  <div class="chat-container">
 
-  <div class="chat-input-area">
-    <input id="messageInput" type="text" placeholder="메시지를 입력하세요…" />
-    <button id="sendBtn">전송</button>
+    <div class="chat-header">
+      <img id="partnerImg" class="partner-img" src="/images/default-profile.png">
+      <span id="partnerName">상대방</span>
+    </div>
+
+    <div id="chatMessages" class="chat-messages"></div>
+
+    <div class="chat-input-area">
+      <input id="messageInput" type="text" placeholder="메시지를 입력하세요…">
+      <button id="sendBtn">전송</button>
+    </div>
+
   </div>
+
 </div>
 
+<!-- 공통 footer -->
 <div id="footer-placeholder"></div>
 
 </body>
 </html>
-

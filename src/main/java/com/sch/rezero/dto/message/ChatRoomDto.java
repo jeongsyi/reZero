@@ -45,4 +45,14 @@ public class ChatRoomDto {
     private Long nextCursor;
     private boolean hasNext;
   }
+
+  @Data
+  @Builder
+  public static class ListItem {
+    private Long roomId;
+    private Long partnerId;
+    private String partnerNickname;
+    private String partnerProfileImageUrl;
+    private String lastMessage;
+  }
 }

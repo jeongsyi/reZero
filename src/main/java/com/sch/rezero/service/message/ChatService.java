@@ -183,4 +183,32 @@ public class ChatService {
         .createdAt(m.getCreatedAt())
         .build();
   }
+
+  public List<ChatRoomDto.ListItem> getMyChatRooms(Long meId) {
+
+    User me = getUser(meId);
+
+    // 유저가 속한 모든 채팅방 가져오기
+    List<ChatRoom> rooms = roomRepo.findAllByUser1OrUser2(me, me);
+
+    return rooms.stream().map(room -> {
+
+      User partner = room.getUser1().equals(me)
+          ? room.getUser2()
+          : room.getUser1();
+
+      // 마지막 메시지
+      ChatMessage lastMsg = msgRepo.findTop1ByChatRoomOrderByIdDesc(room);
+
+      return ChatRoomDto.ListItem.builder()
+          .roomId(room.getId())
+          .partnerId(partner.getId())
+          .partnerNickname(partner.getName())
+          .partnerProfileImageUrl(partner.getProfileUrl())
+          .lastMessage(lastMsg != null ? lastMsg.getContent() : "")
+          .build();
+
+    }).toList();
+  }
+
 }

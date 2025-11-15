@@ -54,4 +54,10 @@ public class ChatController {
   public void markMessagesRead(@PathVariable Long roomId) {
     chatService.markMessagesAsRead(roomId, userContext.getCurrentUserId());
   }
+
+  @GetMapping("/my-rooms")
+  public List<ChatRoomDto.ListItem> getMyChatRooms() {
+    return chatService.getMyChatRooms(userContext.getCurrentUserId());
+  }
+
 }

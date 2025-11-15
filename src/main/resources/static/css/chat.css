@@ -1,14 +1,91 @@
-/* 전체 컨테이너 */
-.chat-container {
-  max-width: 650px;
+/* ===========================
+   전체 두 칸 레이아웃
+=========================== */
+.chat-wrapper {
+  display: flex;
+  max-width: 1100px;
   margin: 120px auto;
-  background: #ffffff;
+  height: 80vh;
   border-radius: 12px;
+  overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ===========================
+   왼쪽: 대화 목록
+=========================== */
+.chat-list {
+  width: 320px;
+  background: #f8f8f8;
+  border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  height: 75vh;
-  overflow: hidden;
+}
+
+.chat-list h2 {
+  padding: 20px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-list-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 개별 아이템 */
+.chat-list-item {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  background: #ffffff;
+}
+
+.chat-list-item:hover {
+  background: #f3f3f3;
+}
+
+.chat-list-item.active {
+  background: #e7f7e7;
+}
+
+/* 프로필 이미지 */
+.chat-list-item img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-list-info {
+  flex: 1;
+}
+
+.chat-list-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.chat-list-last {
+  font-size: 12px;
+  color: gray;
+  margin-top: 3px;
+}
+
+
+/* ===========================
+   오른쪽: 채팅방 UI
+=========================== */
+.chat-container {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 상단 프로필 */
@@ -31,7 +108,7 @@
   object-fit: cover;
 }
 
-/* 메시지 영역 */
+/* 메시지 목록 */
 .chat-messages {
   flex: 1;
   padding: 20px;
@@ -39,31 +116,28 @@
   background: #fafafa;
   display: flex;
   flex-direction: column;
-  gap: 12px;   /* 메시지 간격 균일하게 */
+  gap: 12px;
 }
 
-/* 메시지 박스 */
+/* 말풍선 */
 .msg {
-  max-width: 60%;             /* 💚 가로 최대 메시지 크기 제한 */
+  max-width: 60%;
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 15px;
   line-height: 1.4;
   display: flex;
-  flex-direction: column;     /* 텍스트 + 시간 세로 배치 */
-  word-break: break-word;     /* 💚 줄바꿈 강제 */
+  flex-direction: column;
+  word-break: break-word;
 }
 
-/* 내 메시지 (오른쪽) */
 .my-msg {
-  align-self: flex-end;        /* 🔥 오른쪽 정렬 */
+  align-self: flex-end;
   background: #d4f6c9;
-  text-align: left;
 }
 
-/* 상대 메시지 (왼쪽) */
 .other-msg {
-  align-self: flex-start;      /* 🔥 왼쪽 정렬 */
+  align-self: flex-start;
   background: #ffffff;
   border: 1px solid #e6e6e6;
 }
@@ -73,6 +147,14 @@
   font-size: 11px;
   color: #777;
   margin-top: 4px;
+  text-align: right;
+}
+
+/* 읽음 표시 */
+.read-mark {
+  font-size: 11px;
+  color: #4caf50;
+  margin-top: 3px;
   text-align: right;
 }
 
@@ -104,11 +186,4 @@
 
 #sendBtn:hover {
   background: #498c67;
-}
-
-.read-mark {
-  font-size: 11px;
-  color: #4caf50;
-  margin-top: 3px;
-  text-align: right;
 }

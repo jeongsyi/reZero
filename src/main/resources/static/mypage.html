@@ -1,88 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ko">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8"/>-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
-<!--    <title>마이페이지 | reZero</title>-->
-<!--    <link rel="stylesheet" href="/css/style.css"/>-->
-<!--    <link rel="stylesheet" href="css/mypage.css"/>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div id="header-placeholder"></div>-->
-
-<!--<main class="mypage-container">-->
-
-<!--    &lt;!&ndash; 프로필 헤더 &ndash;&gt;-->
-<!--    <section class="profile-header">-->
-<!--        <div class="profile-left">-->
-<!--            <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>-->
-<!--        </div>-->
-
-<!--        <div class="profile-center">-->
-<!--            <h2 id="userName">사용자 이름</h2>-->
-
-<!--            <div class="user-subinfo">-->
-<!--                <span id="userRole">ROLE_USER</span> ·-->
-<!--                <span id="userRegion">-</span> ·-->
-<!--                <span id="userBirth">-</span>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
-
-<!--    &lt;!&ndash; 탭 메뉴 &ndash;&gt;-->
-<!--    <nav class="mypage-tabs">-->
-<!--        <button data-tab="scrap" class="active">스크랩</button>-->
-<!--        <button data-tab="like">좋아요</button>-->
-<!--        <button data-tab="community">미션 커뮤니티</button>-->
-<!--        <button data-tab="edit">내 정보 수정</button>-->
-<!--    </nav>-->
-
-<!--    &lt;!&ndash; 탭 내용 &ndash;&gt;-->
-<!--    <section id="tab-content" class="tab-content">-->
-<!--        <div id="scrap" class="tab-pane active"></div>-->
-<!--        <div id="like" class="tab-pane"></div>-->
-<!--        <div id="community" class="tab-pane"></div>-->
-
-<!--        <div id="edit" class="tab-pane">-->
-<!--            <form id="profileEditForm" enctype="multipart/form-data">-->
-<!--                <label>아이디</label>-->
-<!--                <input type="text" id="editUserId" name="userId" readonly/>-->
-
-<!--                <label>프로필 이미지</label>-->
-<!--                <input type="file" id="newProfileImage" name="profileImage" accept="image/*"/>-->
-
-<!--                <label>비밀번호 변경</label>-->
-<!--                <input type="password" id="editPassword" name="password" placeholder="새 비밀번호 (선택)"/>-->
-
-<!--                <label>이름</label>-->
-<!--                <input type="text" id="editName" name="name" placeholder="이름"/>-->
-
-<!--                <label>지역</label>-->
-<!--                <input type="text" id="editRegion" name="region" placeholder="지역"/>-->
-
-<!--                <label>생년월일</label>-->
-<!--                <input type="date" id="editBirth" name="birth"/>-->
-
-<!--                <div class="form-actions">-->
-<!--                    <button type="submit" class="btn-save">저장하기</button>-->
-<!--                    <button type="button" class="btn-delete" onclick="deleteAccount()">회원 탈퇴</button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </section>-->
-
-<!--</main>-->
-
-<!--<div id="footer-placeholder"></div>-->
-
-<!--<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>-->
-<!--<script src="/js/common.js"></script>-->
-<!--<script src="js/mypage.js"></script>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -94,6 +9,25 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <!-- 마이페이지 CSS -->
     <link rel="stylesheet" href="css/mypage.css"/>
+
+    <style>
+        /* ⭐ 채팅 버튼 스타일 */
+        .chat-btn {
+            margin-top: 10px;
+            background: #5ca77f;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            border: none;
+        }
+        .chat-btn:hover {
+            background: #4d8f6a;
+        }
+    </style>
 </head>
 
 <body>
@@ -103,7 +37,7 @@
 
 <main class="mypage-container">
 
-    <!-- ⭐ 프로필 -->
+    <!-- ⭐ 프로필 영역 -->
     <section class="profile-header">
         <div class="profile-left">
             <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>
@@ -117,6 +51,9 @@
                 <span id="userRegion">-</span> ·
                 <span id="userBirth">-</span>
             </div>
+
+            <!-- ⭐⭐ 여기에 채팅 버튼 추가 ⭐⭐ -->
+            <button id="chatBtn" class="chat-btn">💬 채팅하기</button>
         </div>
     </section>
 
@@ -174,16 +111,31 @@
 <!-- ⭐ 푸터 -->
 <div id="footer-placeholder"></div>
 
-<!-- 🔥 WebSocket 라이브러리 반드시 먼저 로드 -->
+<!-- WebSocket -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
 <!-- 공통 JS -->
 <script src="/js/common.js"></script>
-
 <!-- 마이페이지 JS -->
 <script src="js/mypage.js"></script>
 
+<script>
+    /* ⭐ 채팅 버튼 동작 */
+    document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("chatBtn");
+
+        btn.addEventListener("click", () => {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("로그인 후 이용 가능합니다.");
+                return;
+            }
+            // chat.html로 이동
+            window.location.href = `/chat.html?user=${userId}`;
+        });
+    });
+</script>
+
 </body>
 </html>
-
