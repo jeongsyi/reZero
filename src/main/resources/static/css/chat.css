@@ -1,0 +1,114 @@
+/* 전체 컨테이너 */
+.chat-container {
+  max-width: 650px;
+  margin: 120px auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  height: 75vh;
+  overflow: hidden;
+}
+
+/* 상단 프로필 */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: #f4f9f4;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #355c3a;
+}
+
+.partner-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 메시지 영역 */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;   /* 메시지 간격 균일하게 */
+}
+
+/* 메시지 박스 */
+.msg {
+  max-width: 60%;             /* 💚 가로 최대 메시지 크기 제한 */
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;     /* 텍스트 + 시간 세로 배치 */
+  word-break: break-word;     /* 💚 줄바꿈 강제 */
+}
+
+/* 내 메시지 (오른쪽) */
+.my-msg {
+  align-self: flex-end;        /* 🔥 오른쪽 정렬 */
+  background: #d4f6c9;
+  text-align: left;
+}
+
+/* 상대 메시지 (왼쪽) */
+.other-msg {
+  align-self: flex-start;      /* 🔥 왼쪽 정렬 */
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+}
+
+/* 시간 */
+.msg-time {
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* 입력창 */
+.chat-input-area {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+#sendBtn {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 30px;
+  background: #5ca77f;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#sendBtn:hover {
+  background: #498c67;
+}
+
+.read-mark {
+  font-size: 11px;
+  color: #4caf50;
+  margin-top: 3px;
+  text-align: right;
+}

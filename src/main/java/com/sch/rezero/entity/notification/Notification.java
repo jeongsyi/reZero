@@ -42,7 +42,7 @@ public class Notification {
   private LocalDateTime createdAt = LocalDateTime.now();
 
   public enum Type {
-    LIKE, COMMENT, APPROVED, REJECTED
+    LIKE, COMMENT, APPROVED, REJECTED, MESSAGE
   }
 
   public void markAsRead() {

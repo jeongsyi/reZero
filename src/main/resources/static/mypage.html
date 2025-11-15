@@ -1,15 +1,109 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+<!--    <title>마이페이지 | reZero</title>-->
+<!--    <link rel="stylesheet" href="/css/style.css"/>-->
+<!--    <link rel="stylesheet" href="css/mypage.css"/>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div id="header-placeholder"></div>-->
+
+<!--<main class="mypage-container">-->
+
+<!--    &lt;!&ndash; 프로필 헤더 &ndash;&gt;-->
+<!--    <section class="profile-header">-->
+<!--        <div class="profile-left">-->
+<!--            <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>-->
+<!--        </div>-->
+
+<!--        <div class="profile-center">-->
+<!--            <h2 id="userName">사용자 이름</h2>-->
+
+<!--            <div class="user-subinfo">-->
+<!--                <span id="userRole">ROLE_USER</span> ·-->
+<!--                <span id="userRegion">-</span> ·-->
+<!--                <span id="userBirth">-</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; 탭 메뉴 &ndash;&gt;-->
+<!--    <nav class="mypage-tabs">-->
+<!--        <button data-tab="scrap" class="active">스크랩</button>-->
+<!--        <button data-tab="like">좋아요</button>-->
+<!--        <button data-tab="community">미션 커뮤니티</button>-->
+<!--        <button data-tab="edit">내 정보 수정</button>-->
+<!--    </nav>-->
+
+<!--    &lt;!&ndash; 탭 내용 &ndash;&gt;-->
+<!--    <section id="tab-content" class="tab-content">-->
+<!--        <div id="scrap" class="tab-pane active"></div>-->
+<!--        <div id="like" class="tab-pane"></div>-->
+<!--        <div id="community" class="tab-pane"></div>-->
+
+<!--        <div id="edit" class="tab-pane">-->
+<!--            <form id="profileEditForm" enctype="multipart/form-data">-->
+<!--                <label>아이디</label>-->
+<!--                <input type="text" id="editUserId" name="userId" readonly/>-->
+
+<!--                <label>프로필 이미지</label>-->
+<!--                <input type="file" id="newProfileImage" name="profileImage" accept="image/*"/>-->
+
+<!--                <label>비밀번호 변경</label>-->
+<!--                <input type="password" id="editPassword" name="password" placeholder="새 비밀번호 (선택)"/>-->
+
+<!--                <label>이름</label>-->
+<!--                <input type="text" id="editName" name="name" placeholder="이름"/>-->
+
+<!--                <label>지역</label>-->
+<!--                <input type="text" id="editRegion" name="region" placeholder="지역"/>-->
+
+<!--                <label>생년월일</label>-->
+<!--                <input type="date" id="editBirth" name="birth"/>-->
+
+<!--                <div class="form-actions">-->
+<!--                    <button type="submit" class="btn-save">저장하기</button>-->
+<!--                    <button type="button" class="btn-delete" onclick="deleteAccount()">회원 탈퇴</button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--</main>-->
+
+<!--<div id="footer-placeholder"></div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>-->
+<!--<script src="/js/common.js"></script>-->
+<!--<script src="js/mypage.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>마이페이지 | reZero</title>
+
+    <!-- 공통 CSS -->
     <link rel="stylesheet" href="/css/style.css"/>
+    <!-- 마이페이지 CSS -->
     <link rel="stylesheet" href="css/mypage.css"/>
 </head>
+
 <body>
+
+<!-- ⭐ 헤더 -->
 <div id="header-placeholder"></div>
+
 <main class="mypage-container">
+
+    <!-- ⭐ 프로필 -->
     <section class="profile-header">
         <div class="profile-left">
             <img id="profileImage" src="/images/default-profile.png" alt="프로필" class="profile-img"/>
@@ -17,50 +111,55 @@
 
         <div class="profile-center">
             <h2 id="userName">사용자 이름</h2>
+
             <div class="user-subinfo">
                 <span id="userRole">ROLE_USER</span> ·
-                <span id="userRegion">서울특별시</span> ·
-                <span id="userBirth">1999-01-01</span>
-            </div>
-            <div class="follow-stats">
-                <span id="followerCount" onclick="openFollowList('follower')">팔로워 <b>0</b></span>
-                <span id="followingCount" onclick="openFollowList('following')">팔로잉 <b>0</b></span>
+                <span id="userRegion">-</span> ·
+                <span id="userBirth">-</span>
             </div>
         </div>
     </section>
 
+    <!-- ⭐ 이번 주 미션 인증 현황 -->
+    <section class="mission-stamp-board">
+        <h3>이번 주 미션 인증 현황</h3>
+        <div id="stampGrid" class="stamp-grid"></div>
+    </section>
+
+    <!-- ⭐ 탭 메뉴 -->
     <nav class="mypage-tabs">
         <button data-tab="scrap" class="active">스크랩</button>
         <button data-tab="like">좋아요</button>
-        <button data-tab="community">커뮤니티 게시글</button>
+        <button data-tab="community">미션 커뮤니티</button>
         <button data-tab="edit">내 정보 수정</button>
     </nav>
 
+    <!-- ⭐ 탭 내용 -->
     <section id="tab-content" class="tab-content">
         <div id="scrap" class="tab-pane active"></div>
         <div id="like" class="tab-pane"></div>
-        <div id="followers" class="tab-pane"></div>
-        <div id="following" class="tab-pane"></div>
         <div id="community" class="tab-pane"></div>
+
         <div id="edit" class="tab-pane">
             <form id="profileEditForm" enctype="multipart/form-data">
+
                 <label>아이디</label>
-                <input type="text" id="editUserId" name="userId" readonly/>
+                <input type="text" id="editUserId" readonly />
 
                 <label>프로필 이미지</label>
-                <input type="file" id="newProfileImage" name="profileImage" accept="image/*"/>
+                <input type="file" id="newProfileImage" accept="image/*"/>
 
                 <label>비밀번호 변경</label>
-                <input type="password" id="editPassword" name="password" placeholder="새 비밀번호 (선택)"/>
+                <input type="password" id="editPassword" placeholder="새 비밀번호 (선택)"/>
 
                 <label>이름</label>
-                <input type="text" id="editName" name="name" placeholder="이름"/>
+                <input type="text" id="editName" placeholder="이름"/>
 
                 <label>지역</label>
-                <input type="text" id="editRegion" name="region" placeholder="지역"/>
+                <input type="text" id="editRegion" placeholder="지역"/>
 
                 <label>생년월일</label>
-                <input type="date" id="editBirth" name="birth"/>
+                <input type="date" id="editBirth"/>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-save">저장하기</button>
@@ -69,13 +168,22 @@
             </form>
         </div>
     </section>
+
 </main>
 
+<!-- ⭐ 푸터 -->
 <div id="footer-placeholder"></div>
-<div id="follow-modal-root"></div>
+
+<!-- 🔥 WebSocket 라이브러리 반드시 먼저 로드 -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<!-- 공통 JS -->
 <script src="/js/common.js"></script>
+
+<!-- 마이페이지 JS -->
 <script src="js/mypage.js"></script>
+
 </body>
 </html>
+
