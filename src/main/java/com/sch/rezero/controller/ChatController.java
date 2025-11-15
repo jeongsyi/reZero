@@ -49,10 +49,9 @@ public class ChatController {
     return chatService.getMessages(userContext.getCurrentUserId(), roomId, cursor, size);
   }
 
-  @PatchMapping("/read")
-  public void markMessagesRead(
-      @RequestParam Long roomId
-  ) {
+  // 읽음 처리
+  @PatchMapping("/{roomId}/read")
+  public void markMessagesRead(@PathVariable Long roomId) {
     chatService.markMessagesAsRead(roomId, userContext.getCurrentUserId());
   }
 }

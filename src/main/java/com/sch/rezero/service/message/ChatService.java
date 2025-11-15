@@ -13,6 +13,7 @@ import com.sch.rezero.repository.message.ChatRoomRepository;
 import com.sch.rezero.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +29,11 @@ public class ChatService {
   private final ChatMessageRepository msgRepo;
   private final UserRepository userRepo;
   private final ApplicationEventPublisher eventPublisher;
+  private final SimpMessagingTemplate messaging;
 
-  /**
-   * DM 버튼 클릭 → 방 생성 or 기존 방 반환
-   */
+  /* ===================================================
+        1) 채팅방 생성 / 조회
+     =================================================== */
   @Transactional
   public ChatRoomDto.RoomInfo getOrCreateRoom(Long meId, Long partnerId) {
 
@@ -55,9 +57,9 @@ public class ChatService {
         .build();
   }
 
-  /**
-   * 메시지 전송 + 💥 실시간 알림 이벤트 발생
-   */
+  /* ===================================================
+        2) 메시지 전송 + WebSocket 알림
+     =================================================== */
   @Transactional
   public ChatMessageDto.Response sendMessage(Long meId, ChatMessageDto.Request req) {
 
@@ -68,41 +70,47 @@ public class ChatService {
     if (!room.isParticipant(me))
       throw new IllegalArgumentException("이 채팅방 참가자가 아님");
 
-    // 메시지 저장
-    ChatMessage message = ChatMessage.builder()
+    ChatMessage saved = msgRepo.save(ChatMessage.builder()
         .chatRoom(room)
         .sender(me)
         .content(req.getContent())
         .isRead(false)
         .createdAt(LocalDateTime.now())
-        .build();
+        .build()
+    );
 
-    ChatMessage saved = msgRepo.save(message);
     ChatMessageDto.Response dto = convertToResponse(saved);
 
-    // ❤️ 상대방 ID 구하기
+    // 상대방 ID
     Long partnerId = room.getUser1().getId().equals(meId)
         ? room.getUser2().getId()
         : room.getUser1().getId();
 
-    // 🔔 메시지 알림 이벤트 발행
+    // 🔥 실시간 메시지 전달
+    messaging.convertAndSendToUser(
+        partnerId.toString(),
+        "/queue/chat",
+        dto
+    );
+
+    // 🔔 알림 이벤트 (상단 알림)
     eventPublisher.publishEvent(
         new NotificationEvent(
             this,
-            partnerId,                // 알림 받을 사람
-            meId,                     // 메시지 보낸 사람
-            Type.MESSAGE, // 타입… 메시지용 별도 타입 만들고 싶으면 Message로 변경 가능
+            partnerId,
+            meId,
+            Type.MESSAGE,
             me.getName() + "님이 메시지를 보냈습니다.",
-            null                      // postId 없음
+            null
         )
     );
 
     return dto;
   }
 
-  /**
-   * 이전 메시지 불러오기
-   */
+  /* ===================================================
+        3) 메시지 조회
+     =================================================== */
   public List<ChatMessageDto.Response> getMessages(
       Long meId, Long roomId, Long cursor, int size
   ) {
@@ -113,30 +121,51 @@ public class ChatService {
     if (!room.isParticipant(me))
       throw new IllegalArgumentException("이 채팅방 참가자가 아님");
 
-    // 최신 or cursor 기반 메시지 조회
     List<ChatMessage> messages =
-        (cursor == null)
+        cursor == null
             ? msgRepo.findTop50ByChatRoomOrderByIdDesc(room)
             : msgRepo.findTop50ByChatRoomAndIdLessThanOrderByIdDesc(room, cursor);
 
-    // size 제한
-    if (messages.size() > size) {
+    if (messages.size() > size)
       messages = messages.subList(0, size);
-    }
 
-    // 오름차순 정렬
     messages.sort((a, b) -> a.getId().compareTo(b.getId()));
 
-    // 변환
-    return messages.stream()
-        .map(this::convertToResponse)
-        .toList();
+    return messages.stream().map(this::convertToResponse).toList();
   }
 
-  // ==============================
-  // 내부 유틸
-  // ==============================
+  /* ===================================================
+        4) 읽음 처리 + WebSocket 브로드캐스트
+     =================================================== */
+  @Transactional
+  public void markMessagesAsRead(Long roomId, Long readerId) {
 
+    ChatRoom room = roomRepo.findById(roomId)
+        .orElseThrow(() -> new IllegalArgumentException("채팅방 없음"));
+
+    User reader = getUser(readerId);
+
+    List<ChatMessage> unread = msgRepo.findByChatRoomAndSenderIdNotAndIsReadFalse(
+        room, readerId
+    );
+
+    unread.forEach(ChatMessage::markAsRead);
+
+    // 💥 상대방에게 "읽음됨" 실시간 알려주기
+    Long partnerId = room.getUser1().getId().equals(readerId)
+        ? room.getUser2().getId()
+        : room.getUser1().getId();
+
+    messaging.convertAndSendToUser(
+        partnerId.toString(),
+        "/queue/read",
+        roomId   // 방 번호만 보내면 프론트가 알아서 처리함
+    );
+  }
+
+  /* ===================================================
+        내부 유틸
+     =================================================== */
   private User getUser(Long id) {
     return userRepo.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
@@ -153,20 +182,5 @@ public class ChatService {
         .readAt(m.getReadAt())
         .createdAt(m.getCreatedAt())
         .build();
-  }
-
-  @Transactional
-  public void markMessagesAsRead(Long roomId, Long readerId) {
-
-    ChatRoom room = roomRepo.findById(roomId)
-        .orElseThrow(() -> new IllegalArgumentException("채팅방 없음"));
-
-    User reader = getUser(readerId);
-
-    List<ChatMessage> unread = msgRepo.findByChatRoomAndSenderIdNotAndIsReadFalse(
-        room, readerId
-    );
-
-    unread.forEach(ChatMessage::markAsRead);   // setter 활용
   }
 }
