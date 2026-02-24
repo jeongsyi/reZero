@@ -1,13 +1,10 @@
-package sch.rezero.domain.comment.entity;
+package sch.rezero.domain.category.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -16,32 +13,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import sch.rezero.domain.recyclingPost.entity.RecyclingPost;
 
 @Entity
 @Getter
-@Table(name = "comments")
+@Table(name = "categories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Comment {
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "recycling_id", nullable = false)
-    private RecyclingPost post;
-
-//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Comment parent;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    @Column(nullable = false)
+    private String category;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
