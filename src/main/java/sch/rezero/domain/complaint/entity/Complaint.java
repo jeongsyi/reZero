@@ -50,6 +50,4 @@ public class Complaint {
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-
-
 }

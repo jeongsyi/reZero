@@ -1,7 +1,7 @@
 package sch.rezero.domain.complaint.entity;
 
 public enum Status {
-  PENDING,
-  RESOLVED,
-  REJECTED
+    PENDING,
+    APPROVED,
+    REJECTED
 }
