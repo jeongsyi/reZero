@@ -1,4 +1,4 @@
-package sch.rezero.domain.complaint.entity;
+package sch.rezero.domain.group.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,34 +18,27 @@ import sch.rezero.domain.user.entity.User;
 
 @Entity
 @Getter
-@Table(name = "complaints")
+@Table(name = "groups")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Complaint {
+public class Groups {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "reporter_id", nullable = false)
-  private User reporter;
+  @JoinColumn(name = "leader_id", nullable = false)
+  private User leader;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "reported_id", nullable = false)
-  private User reported;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-  @Column(name = "status", nullable = false)
-  private Status status;
-
-  @Column(name = "reason", nullable = false)
-  private String reason;
+  @Column(name = "description", nullable = false)
+  private String description;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
 
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
