@@ -1,0 +1,17 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: rezero
+    version: 1.0.0
+  profiles:
+    active: dev # dev, prod
+  servlet:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 20MB
