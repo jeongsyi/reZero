@@ -17,13 +17,13 @@ CREATE TABLE users
 (
     id              BIGINT PRIMARY KEY,
     login_id        VARCHAR(50)  NOT NULL UNIQUE,
-    password        VARCHAR(20)  NOT NULL,
+    password        VARCHAR(50)  NOT NULL,
     name            VARCHAR(100) NOT NULL,
     role            VARCHAR(20)  NOT NULL DEFAULT 'user',
     profile_url     VARCHAR(255),
     complaint_count INT          NOT NULL DEFAULT 0,
     locked_at       TIMESTAMP,
-    locked          BOOLEAN      NOT NULL,
+    locked          BOOLEAN      NOT NULL DEFAULT FALSE,
     deleted_at      TIMESTAMP,
     created_at      TIMESTAMP    NOT NULL,
     updated_at      TIMESTAMP
@@ -131,6 +131,7 @@ CREATE TABLE scraps
     post_id    BIGINT    NOT NULL,
     user_id    BIGINT    NOT NULL,
     created_at TIMESTAMP NOT NULL,
+    CONSTRAINT UQ_user_scrap UNIQUE (user_id, post_id),
     CONSTRAINT FK_recycling_posts_scraps FOREIGN KEY (post_id) REFERENCES recycling_posts (id) ON DELETE CASCADE,
     CONSTRAINT FK_users_scraps FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
