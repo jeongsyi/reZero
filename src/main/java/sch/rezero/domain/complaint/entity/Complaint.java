@@ -2,6 +2,8 @@ package sch.rezero.domain.complaint.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +38,7 @@ public class Complaint {
   private User reported;
 
   @Column(name = "status", nullable = false)
+  @Enumerated(EnumType.STRING)
   private Status status;
 
   @Column(name = "reason", nullable = false)
@@ -49,5 +52,7 @@ public class Complaint {
 
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
+
+
 
 }

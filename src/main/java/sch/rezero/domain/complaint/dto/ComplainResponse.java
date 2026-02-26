@@ -8,8 +8,8 @@ public record ComplainResponse(
     Long reportedId,
     String reason,
     String status,
-    LocalDateTime created_at,
-    LocalDateTime updated_at
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
 
 }
