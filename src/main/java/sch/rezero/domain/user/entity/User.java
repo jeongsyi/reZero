@@ -2,6 +2,8 @@ package sch.rezero.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +35,7 @@ public class User {
   private String name;
 
   @Column(name = "role", nullable = false)
+  @Enumerated(EnumType.STRING)
   private Role role;
 
   @Column(name = "profile_url")
@@ -45,7 +48,7 @@ public class User {
   private LocalDateTime lockedAt;
 
   @Column(name = "locked", nullable = false)
-  private Boolean locked;
+  private boolean locked;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;

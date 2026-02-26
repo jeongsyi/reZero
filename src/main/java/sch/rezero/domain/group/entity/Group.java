@@ -21,7 +21,7 @@ import sch.rezero.domain.user.entity.User;
 @Table(name = "groups")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Groups {
+public class Group {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
