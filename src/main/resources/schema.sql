@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS group_members CASCADE;
-DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS `groups` CASCADE;
 DROP TABLE IF EXISTS complaints CASCADE;
@@ -52,12 +52,13 @@ CREATE TABLE group_members
     CONSTRAINT FK_groups_group_members FOREIGN KEY (group_id) REFERENCES `groups` (id) ON DELETE CASCADE
 );
 
-CREATE TABLE category
+CREATE TABLE categories
 (
     id         BIGINT PRIMARY KEY,
     category   VARCHAR(20) NOT NULL,
     created_at TIMESTAMP   NOT NULL,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE stores
@@ -122,7 +123,7 @@ CREATE TABLE recycling_posts
     thumb_nail_image VARCHAR(255) NOT NULL,
     deleted_at       TIMESTAMP,
     CONSTRAINT FK_users_recycling_posts FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_category_recycling_posts FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+    CONSTRAINT FK_category_recycling_posts FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );
 
 CREATE TABLE scraps
@@ -138,11 +139,11 @@ CREATE TABLE scraps
 
 CREATE TABLE popular_posts
 (
-    id      BIGINT PRIMARY KEY,
-    post_id BIGINT NOT NULL,
+    id       BIGINT PRIMARY KEY,
+    post_id  BIGINT      NOT NULL,
     `period` VARCHAR(20) NOT NULL,
-    `rank`  BIGINT NOT NULL,
-    score   INT    NOT NULL,
+    `rank`   BIGINT      NOT NULL,
+    score    INT         NOT NULL,
     CONSTRAINT FK_recycling_posts_popular_posts FOREIGN KEY (post_id) REFERENCES recycling_posts (id) ON DELETE CASCADE
 );
 
@@ -176,5 +177,5 @@ CREATE TABLE interests
     category_id BIGINT NOT NULL,
     PRIMARY KEY (user_id, category_id),
     CONSTRAINT FK_users_interests FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_category_interests FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+    CONSTRAINT FK_category_interests FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );
