@@ -7,4 +7,5 @@ import sch.rezero.domain.category.entity.Category;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+    boolean existsByCategory(String category);
 }
