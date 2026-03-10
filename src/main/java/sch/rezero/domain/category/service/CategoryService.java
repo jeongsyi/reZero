@@ -3,6 +3,7 @@ package sch.rezero.domain.category.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sch.rezero.config.exception.ApiException;
 import sch.rezero.domain.category.dto.request.CategoryCreateRequest;
 import sch.rezero.domain.category.dto.request.CategoryUpdateRequest;
@@ -19,6 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    @Transactional
     public CategoryResponse create(CategoryCreateRequest request) {
         if (categoryRepository.existsByCategory(request.category())) {
             throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
@@ -31,6 +33,7 @@ public class CategoryService {
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
+    @Transactional(readOnly = true)
     public CategoryResponse findById(Long id) {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
@@ -40,6 +43,7 @@ public class CategoryService {
     }
 
     //TODO : 추후 페이지네이션으로 구현
+    @Transactional(readOnly = true)
     public List<CategoryResponse> findAll() {
         return categoryRepository.findAll()
                                  .stream()
@@ -47,21 +51,30 @@ public class CategoryService {
                                  .toList();
     }
 
+    @Transactional
     public CategoryResponse update(CategoryUpdateRequest request, Long id) {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
+
+        if (categoryRepository.existsByCategory(request.category())) {
+            throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
+        }
+
         category.updateCategory(request);
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
-    public void softDelete(Long id) {
+    @Transactional
+    public CategoryResponse softDelete(Long id) {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
         category.softDelete();
+        return categoryMapper.toDto(category);
     }
 
+    @Transactional
     public void hardDelete(Long id) {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
