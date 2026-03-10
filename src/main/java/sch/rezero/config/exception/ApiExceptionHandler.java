@@ -22,4 +22,28 @@ public class ApiExceptionHandler {
                              .body(response);
     }
 
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException exception) {
+        log.error("Exception occurred: {}, time: {}", exception.getMessage(), LocalDateTime.now());
+
+        ErrorCode errorCode = GlobalErrorCode.BAD_REQUEST;
+        ErrorResponse response = new ErrorResponse(errorCode.getCode(), errorCode.getDescription(),
+            errorCode.getHttpStatus());
+
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                             .body(response);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception exception) {
+        log.error("Exception occurred: {}, time: {}", exception.getMessage(), LocalDateTime.now());
+
+        ErrorCode errorCode = GlobalErrorCode.SERVER_ERROR;
+        ErrorResponse response = new ErrorResponse(errorCode.getCode(), errorCode.getDescription(),
+            errorCode.getHttpStatus());
+
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                             .body(response);
+    }
 }
