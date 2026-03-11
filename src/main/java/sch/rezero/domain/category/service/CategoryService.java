@@ -22,7 +22,7 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponse create(CategoryCreateRequest request) {
-        if (categoryRepository.existsByCategory(request.category())) {
+        if (categoryRepository.existsByCategoryAndDeletedAtIsNull(request.category())) {
             throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
         }
 
@@ -52,12 +52,12 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponse update(CategoryUpdateRequest request, Long id) {
+    public CategoryResponse update(Long id, CategoryUpdateRequest request) {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
 
-        if (categoryRepository.existsByCategory(request.category())) {
+        if (categoryRepository.existsByCategoryAndIdNot(request.category(), id)) {
             throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
         }
 
