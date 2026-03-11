@@ -39,6 +39,10 @@ public class CategoryService {
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
 
+        if (category.getDeletedAt() != null) {
+            throw new ApiException(CategoryErrorCode.CATEGORY_DELETED);
+        }
+
         return categoryMapper.toDto(category);
     }
 
