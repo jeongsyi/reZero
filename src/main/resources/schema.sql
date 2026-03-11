@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS group_members CASCADE;
-DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS `groups` CASCADE;
 DROP TABLE IF EXISTS complaints CASCADE;
@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS interests CASCADE;
 
 CREATE TABLE users
 (
-    id              BIGINT PRIMARY KEY,
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
     login_id        VARCHAR(50)  NOT NULL UNIQUE,
     password        VARCHAR(50)  NOT NULL,
     name            VARCHAR(100) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE users
 
 CREATE TABLE `groups`
 (
-    id          BIGINT PRIMARY KEY,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     leader_id   BIGINT      NOT NULL,
     name        VARCHAR(50) NOT NULL,
     description VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE TABLE `groups`
 
 CREATE TABLE group_members
 (
-    id        BIGINT PRIMARY KEY,
+    id        BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id   BIGINT    NOT NULL,
     group_id  BIGINT    NOT NULL,
     approved  BOOLEAN   NOT NULL DEFAULT FALSE,
@@ -52,17 +52,18 @@ CREATE TABLE group_members
     CONSTRAINT FK_groups_group_members FOREIGN KEY (group_id) REFERENCES `groups` (id) ON DELETE CASCADE
 );
 
-CREATE TABLE category
+CREATE TABLE categories
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     category   VARCHAR(20) NOT NULL,
     created_at TIMESTAMP   NOT NULL,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE stores
 (
-    id              BIGINT PRIMARY KEY,
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(255)   NOT NULL,
     address         VARCHAR(500)   NOT NULL,
     lat             DECIMAL(10, 7) NOT NULL,
@@ -72,7 +73,7 @@ CREATE TABLE stores
 
 CREATE TABLE reviews
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id    BIGINT    NOT NULL,
     store_id   BIGINT    NOT NULL,
     content    TEXT      NOT NULL,
@@ -85,7 +86,7 @@ CREATE TABLE reviews
 
 CREATE TABLE complaints
 (
-    id          BIGINT PRIMARY KEY,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     reporter_id BIGINT      NOT NULL,
     reported_id BIGINT      NOT NULL,
     reason      TEXT        NOT NULL,
@@ -99,7 +100,7 @@ CREATE TABLE complaints
 
 CREATE TABLE notifications
 (
-    notification_id BIGINT PRIMARY KEY,
+    notification_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id         BIGINT       NOT NULL,
     title           VARCHAR(100) NOT NULL,
     content         VARCHAR(500) NOT NULL,
@@ -112,7 +113,7 @@ CREATE TABLE notifications
 
 CREATE TABLE recycling_posts
 (
-    id               BIGINT PRIMARY KEY,
+    id               BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id          BIGINT       NOT NULL,
     category_id      BIGINT       NOT NULL,
     title            VARCHAR(255) NOT NULL,
@@ -122,12 +123,12 @@ CREATE TABLE recycling_posts
     thumb_nail_image VARCHAR(255) NOT NULL,
     deleted_at       TIMESTAMP,
     CONSTRAINT FK_users_recycling_posts FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_category_recycling_posts FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+    CONSTRAINT FK_category_recycling_posts FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );
 
 CREATE TABLE scraps
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     post_id    BIGINT    NOT NULL,
     user_id    BIGINT    NOT NULL,
     created_at TIMESTAMP NOT NULL,
@@ -138,17 +139,17 @@ CREATE TABLE scraps
 
 CREATE TABLE popular_posts
 (
-    id      BIGINT PRIMARY KEY,
-    post_id BIGINT NOT NULL,
+    id       BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id  BIGINT      NOT NULL,
     `period` VARCHAR(20) NOT NULL,
-    `rank`  BIGINT NOT NULL,
-    score   INT    NOT NULL,
+    `rank`   BIGINT      NOT NULL,
+    score    INT         NOT NULL,
     CONSTRAINT FK_recycling_posts_popular_posts FOREIGN KEY (post_id) REFERENCES recycling_posts (id) ON DELETE CASCADE
 );
 
 CREATE TABLE recycling_images
 (
-    id           BIGINT PRIMARY KEY,
+    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     recycling_id BIGINT       NOT NULL,
     image_url    VARCHAR(255) NOT NULL,
     created_at   TIMESTAMP    NOT NULL,
@@ -158,7 +159,7 @@ CREATE TABLE recycling_images
 
 CREATE TABLE comments
 (
-    id           BIGINT PRIMARY KEY,
+    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     recycling_id BIGINT    NOT NULL,
     user_id      BIGINT    NOT NULL,
     parent_id    BIGINT,
@@ -176,5 +177,5 @@ CREATE TABLE interests
     category_id BIGINT NOT NULL,
     PRIMARY KEY (user_id, category_id),
     CONSTRAINT FK_users_interests FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT FK_category_interests FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+    CONSTRAINT FK_category_interests FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );

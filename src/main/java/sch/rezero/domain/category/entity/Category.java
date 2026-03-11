@@ -9,11 +9,14 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import sch.rezero.domain.category.dto.request.CategoryUpdateRequest;
 
+@Builder
 @Entity
 @Getter
 @Table(name = "categories")
@@ -36,4 +39,17 @@ public class Category {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public void updateCategory(CategoryUpdateRequest request) {
+        if (request.category() != null && !request.category()
+                                                  .isEmpty()) {
+            this.category = request.category();
+        }
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
