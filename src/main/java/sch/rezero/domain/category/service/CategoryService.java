@@ -57,7 +57,11 @@ public class CategoryService {
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
 
-        if (categoryRepository.existsByCategoryAndIdNotAndDeletedAtIsNull(request.category(), id)) {
+        if (category.getDeletedAt() != null) {
+            throw new ApiException(CategoryErrorCode.CATEGORY_DELETED);
+        }
+
+        if (categoryRepository.existsByCategoryAndIdNot(request.category(), id)) {
             throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
         }
 
@@ -70,6 +74,11 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
+
+        if (category.getDeletedAt() != null) {
+            throw new ApiException(CategoryErrorCode.CATEGORY_DELETED);
+        }
+
         category.softDelete();
         return categoryMapper.toDto(category);
     }
