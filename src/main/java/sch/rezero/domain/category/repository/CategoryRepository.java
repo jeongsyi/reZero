@@ -9,5 +9,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     boolean existsByCategoryAndDeletedAtIsNull(String category);
 
-    boolean existsByCategoryAndIdNot(String category, Long id);
+    boolean existsByCategoryAndIdNotAndDeletedAtIsNull(String category, Long id);
 }

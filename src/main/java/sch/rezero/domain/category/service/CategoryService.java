@@ -57,7 +57,7 @@ public class CategoryService {
                                               .orElseThrow(
                                                   () -> new ApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
 
-        if (categoryRepository.existsByCategoryAndIdNot(request.category(), id)) {
+        if (categoryRepository.existsByCategoryAndIdNotAndDeletedAtIsNull(request.category(), id)) {
             throw new ApiException(CategoryErrorCode.DUPLICATE_CATEGORY_NAME);
         }
 
