@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS interests CASCADE;
 
 CREATE TABLE users
 (
-    id              BIGINT PRIMARY KEY,
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
     login_id        VARCHAR(50)  NOT NULL UNIQUE,
     password        VARCHAR(50)  NOT NULL,
     name            VARCHAR(100) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE users
 
 CREATE TABLE `groups`
 (
-    id          BIGINT PRIMARY KEY,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     leader_id   BIGINT      NOT NULL,
     name        VARCHAR(50) NOT NULL,
     description VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE TABLE `groups`
 
 CREATE TABLE group_members
 (
-    id        BIGINT PRIMARY KEY,
+    id        BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id   BIGINT    NOT NULL,
     group_id  BIGINT    NOT NULL,
     approved  BOOLEAN   NOT NULL DEFAULT FALSE,
@@ -54,7 +54,7 @@ CREATE TABLE group_members
 
 CREATE TABLE categories
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     category   VARCHAR(20) NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP,
@@ -63,7 +63,7 @@ CREATE TABLE categories
 
 CREATE TABLE stores
 (
-    id              BIGINT PRIMARY KEY,
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(255)   NOT NULL,
     address         VARCHAR(500)   NOT NULL,
     lat             DECIMAL(10, 7) NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE stores
 
 CREATE TABLE reviews
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id    BIGINT    NOT NULL,
     store_id   BIGINT    NOT NULL,
     content    TEXT      NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE reviews
 
 CREATE TABLE complaints
 (
-    id          BIGINT PRIMARY KEY,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     reporter_id BIGINT      NOT NULL,
     reported_id BIGINT      NOT NULL,
     reason      TEXT        NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE complaints
 
 CREATE TABLE notifications
 (
-    notification_id BIGINT PRIMARY KEY,
+    notification_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id         BIGINT       NOT NULL,
     title           VARCHAR(100) NOT NULL,
     content         VARCHAR(500) NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE notifications
 
 CREATE TABLE recycling_posts
 (
-    id               BIGINT PRIMARY KEY,
+    id               BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id          BIGINT       NOT NULL,
     category_id      BIGINT       NOT NULL,
     title            VARCHAR(255) NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE recycling_posts
 
 CREATE TABLE scraps
 (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     post_id    BIGINT    NOT NULL,
     user_id    BIGINT    NOT NULL,
     created_at TIMESTAMP NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE scraps
 
 CREATE TABLE popular_posts
 (
-    id       BIGINT PRIMARY KEY,
+    id       BIGINT PRIMARY KEY AUTO_INCREMENT,
     post_id  BIGINT      NOT NULL,
     `period` VARCHAR(20) NOT NULL,
     `rank`   BIGINT      NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE popular_posts
 
 CREATE TABLE recycling_images
 (
-    id           BIGINT PRIMARY KEY,
+    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     recycling_id BIGINT       NOT NULL,
     image_url    VARCHAR(255) NOT NULL,
     created_at   TIMESTAMP    NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE recycling_images
 
 CREATE TABLE comments
 (
-    id           BIGINT PRIMARY KEY,
+    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     recycling_id BIGINT    NOT NULL,
     user_id      BIGINT    NOT NULL,
     parent_id    BIGINT,
